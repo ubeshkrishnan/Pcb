@@ -18,11 +18,8 @@ const MainNavigator = () => {
           headerShown: false,
           gestureEnabled: false,
         }}>
-        <Stack.Screen
-          name="LoginScreen" 
-          component={LoginScreen}
-        />
-      </Stack.Navigator>
+         <Stack.Screen name="LoginScreen" component={LoginScreen}/>
+ </Stack.Navigator>
     </NavigationContainer>
   );
 };
