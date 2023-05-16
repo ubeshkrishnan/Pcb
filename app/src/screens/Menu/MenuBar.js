@@ -1,12 +1,10 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const Dashboard = () => {
+export default function vcvxcvvxc() {
   return (
     <View>
-      <Text>Dashboard</Text>
+      <Text>vdgcvxcvvxc</Text>
     </View>
   )
 }
-
-export default Dashboard

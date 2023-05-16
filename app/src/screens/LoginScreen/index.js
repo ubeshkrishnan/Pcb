@@ -4,8 +4,7 @@ import Header from './Header';
 import Body from './Body';
 import Footer from './Footer';
 
-const LoginScreen = (props) => {
-  console.log(props,'asd')
+const LoginScreen = () => {
   return (
     <View style={styles.container}>
       <Header />

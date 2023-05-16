@@ -13,10 +13,12 @@ eNova solutions
 const styles = StyleSheet.create({
   footer: {
     backgroundColor: '#fff',
-    height: 60,
+    color:'black',
+    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingLeft:80,
+    paddingLeft:50,
+    paddingTop:10,
 
   },
   text: {

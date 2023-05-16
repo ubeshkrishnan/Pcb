@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 
-const Header = () => {
+const HeaderSession = () => {
   return (
     <View style={styles.header}>
       <Text style={styles.title}>TamilNadu Pollution Control Board</Text>
@@ -12,9 +12,9 @@ const Header = () => {
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: '#fff',
-    height: 86,
-    paddingTop: 38,
+    backgroundColor: '#FFFFFF',
+    height: 85,
+    paddingTop: 25,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -28,4 +28,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Header;
+export default HeaderSession;

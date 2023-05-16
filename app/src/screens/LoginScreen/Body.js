@@ -1,23 +1,28 @@
 import React, { useState } from 'react';
 import { StyleSheet, TextInput, View, Text, TouchableOpacity, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const Body = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigation = useNavigation(); // Get the navigation object
 
   const handleLogin = () => {
     console.log('Email:', email);
     console.log('Password:', password);
   };
 
+  const handleNavigateToDashboard = () => {
+    navigation.navigate('Dashboard'); // Navigate to the Dashboard screen
+  };
+
   return (
     <View style={styles.container}>
-    
       <Image
         source={require('../../assets/tlogo.png')}
         style={styles.image}
       />
- <Text style={styles.text}>Login</Text>
+      <Text style={styles.text}>Login</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -36,8 +41,9 @@ const Body = () => {
         autoCapitalize="none"
       />
 
-     
-
+      <TouchableOpacity style={styles.button} onPress={handleNavigateToDashboard}>
+        <Text style={styles.buttonText}>Go to Dashboard</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -52,7 +58,7 @@ const styles = StyleSheet.create({
   image: {
     width: 150,
     height: 150,
-    marginBottom: 10, // adjust this value to move the image upward
+    marginBottom: 10, 
   },
   input: {
     width: '80%',
@@ -62,7 +68,6 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 10,
     fontSize: 16,
-    
   },
   button: {
     backgroundColor: '#007AFF',
@@ -75,10 +80,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  text:{
-fontSize:25,
-color:'blue',
-fontWeight:'bold',
+  text: {
+    fontSize: 25,
+    color: 'blue',
+    fontWeight: 'bold',
   },
 });
 
