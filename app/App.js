@@ -1,23 +1,13 @@
-
-import { StyleSheet, View,StatusBar } from 'react-native';
-import Header from './Header';
-import Body from './Body';
-import Footer from './Footer';
+import { StyleSheet, View, StatusBar,SafeAreaView } from 'react-native';
+import MainNavigator from './src/navigation/mainNavigator';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Header />
-      <Body />
-      <Footer />
-      <StatusBar style="auto" />
-    </View>
-  );
+  return (<SafeAreaView>
+
+    <MainNavigator />
+  </SafeAreaView>
+  )
+
+
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-});

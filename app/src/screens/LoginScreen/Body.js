@@ -14,7 +14,7 @@ const Body = () => {
     <View style={styles.container}>
     
       <Image
-        source={require('./tlogo.png')}
+        source={require('../../assets/tlogo.png')}
         style={styles.image}
       />
  <Text style={styles.text}>Login</Text>
@@ -36,9 +36,7 @@ const Body = () => {
         autoCapitalize="none"
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>GET OTP</Text>
-      </TouchableOpacity>
+     
 
     </View>
   );

@@ -5,9 +5,8 @@ const Header = () => {
   return (
     <View style={styles.header}>
       <Text style={styles.title}>TamilNadu Pollution Control Board</Text>
-      <Text >தமிழ்நாடு மாசு கட்டுப்பாட்டு வாரியம்</Text>
- 
-    </View>
+      <Text style={styles.tamil}>தமிழ்நாடு மாசு கட்டுப்பாட்டு வாரியம்</Text>
+ </View>
   );
 };
 
@@ -24,6 +23,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'blue',
   },
+  tamil:{
+    color:'black'
+  }
 });
 
 export default Header;

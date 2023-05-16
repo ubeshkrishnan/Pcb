@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Text, SafeAreaView, StyleSheet, TouchableOpacity} from 'react-native';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
+import { GetCategoryListApi } from '../../api/login';
 export default class App extends Component {
   constructor() {
     super();
@@ -10,6 +11,7 @@ export default class App extends Component {
     };
   }
   componentDidMount() {
+    
     FingerprintScanner.isSensorAvailable()
       .then((biometryType) => {
         this.setState({biometryType});
