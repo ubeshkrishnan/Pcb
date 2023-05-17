@@ -5,14 +5,15 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HeaderSession from '../screens/HeaderSession';
 import LoginScreen from "../screens/LoginScreen";
 import DashboardScreen from "../screens/Dashboard/DashboardScreen";
-import MenuBar from '../screens/Menu';
+import Routes from '../screens/Drawer/Routes'
+import Drawer from '../screens/Drawer';
+import DashboardGraph from '../screens/Dashboard/DashboardGraph';
 
 const MainNavigator = () => {
   const Stack = createNativeStackNavigator();
 
   return (
     <NavigationContainer ref={navigationRef} onReady={() => isReadyRef.current = true}>
-    
       <Stack.Navigator
         initialRouteName="LoginScreen"
         screenOptions={{
@@ -23,17 +24,25 @@ const MainNavigator = () => {
           gestureEnabled: false,
         }}
       >
-
-      <Stack.Screen name="Header" component={HeaderSession} />
-      <Stack.Screen name="Menu" component={MenuBar} />
-        <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen name="Drawer" component={Drawer} />
+        <Stack.Screen name="HeaderSession" component={HeaderSession} />
+        <Stack.Screen name="Routes" component={Routes} />
+        <Stack.Screen name="DashboardGraph" component={DashboardGraph} />
         <Stack.Screen
-         name="Dashboard" 
-         component={DashboardScreen} 
+          name="LoginScreen"
+          component={LoginScreen}
           options={{
-            title:"Dashboard",
+            header: () => <HeaderSession />, // Render HeaderSession component as the header
           }}
-         /> 
+        />
+        <Stack.Screen
+          name="Dashboard"
+          component={DashboardScreen}
+          options={{
+            header: () => <HeaderSession />, // Render HeaderSession component as the header
+            title: "Dashboard",
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
