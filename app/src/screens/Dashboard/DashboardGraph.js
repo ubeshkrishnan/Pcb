@@ -27,10 +27,14 @@ const DashboardGraph = () => {
       </View>
       <View style={styles.dataContainer}>
         {/* Render dynamically fetched data */}
-        <Text style={styles.dataText}>Completed: {completed}</Text>
-        <Text style={styles.dataText}>Incomplete: {incomplete}</Text>
-        <Text style={styles.dataText}>Scheduled: {scheduled}</Text>
-        <Text style={styles.dataText}>Unscheduled: {unscheduled}</Text>
+        <View style={styles.rowContainer}>
+          <Text style={styles.dataText}>Completed: {completed}</Text>
+          <Text style={styles.dataText}>Incomplete: {incomplete}</Text>
+        </View>
+        <View style={styles.rowContainer}>
+          <Text style={styles.dataTextt}>Scheduled: {scheduled}</Text>
+          <Text style={styles.dataTextt}>Unscheduled: {unscheduled}</Text>
+        </View>
       </View>
     </View>
   );
@@ -56,6 +60,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 20,
+    backgroundColor: '#D0E3F1',
   },
   bar: {
     width: 50,
@@ -73,11 +78,20 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'black',
     marginVertical: 5,
-    backgroundColor: 'grey',
+    backgroundColor: '#BFDDF3',
     width: 150,
     height: 30,
+    marginTop:70,
   },
+  dataTextt:{
+    fontSize: 18,
+    color: 'black',
+    marginVertical: 5,
+    backgroundColor: '#BFDDF3',
+    width: 150,
+    height: 30,
+    marginTop:50,
+  }
 });
-
 
 export default DashboardGraph;

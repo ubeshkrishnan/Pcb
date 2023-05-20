@@ -3,8 +3,11 @@ import React from 'react'
 import Records from './RecordScreen';
 import Regular from  './RegularScreen';
 import Actionable from './ActionableScreen';
-import  SpotSampling from './SpotSamplingScreen'
-import Basicinfo from './BasicInformationScreen'
+import  SpotSampling from './SpotSamplingScreen';
+import Basicinfo from './BasicInformationScreen';
+import ReviewData from "./ReviewData";
+import Logout from "./LogOut";
+import RegularField from "./RegularField"
 const Drawer = () => {
   return (
     <View style={styles.container}>
@@ -13,7 +16,11 @@ const Drawer = () => {
   <Actionable/>
   <SpotSampling/>
   <Basicinfo/>
+  <ReviewData/>
+  <Logout/>
+  <RegularField/>
     </View>
+    
   )
 }
 

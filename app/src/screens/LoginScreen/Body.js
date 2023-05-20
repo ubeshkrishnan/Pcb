@@ -42,7 +42,7 @@ const Body = () => {
       />
 
       <TouchableOpacity style={styles.button} onPress={handleNavigateToDashboard}>
-        <Text style={styles.buttonText}>Go to Dashboard</Text>
+        <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
     </View>
   );
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#D0E3F1',
   },
   image: {
     width: 150,
