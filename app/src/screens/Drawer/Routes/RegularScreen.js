@@ -46,6 +46,26 @@ export default class Regular extends Component {
 
   render() {
     const { cards, inputValues, isModalVisible } = this.state;
+const placeholders = [
+  "Number",
+  "Scheme",
+  "Category",
+   " Region/Taluk",
+  "Scheduled Type",
+ "Village",
+  "No.of Samples",
+  "Sample Type"
+];
+const inputStyles = [
+  styles.firstInput,
+  styles.secondInput,
+  styles.thirdInput,
+  styles.fourthInput,
+  styles.fifthInput,
+  styles.sixthInput,
+  styles.seventhInput,
+  styles.eighthInput,
+];
 
     return (
       <View>
@@ -81,27 +101,27 @@ export default class Regular extends Component {
         </TouchableOpacity>
       ))}
 
-        <Modal visible={isModalVisible} animationType="slide">
-          <View style={styles.modalContainer}>
-            {[1, 2, 3, 4].map((inputIndex) => (
-              <TextInput
-                key={inputIndex}
-                style={styles.input}
-                placeholder={`Enter card content ${inputIndex}`}
-                value={inputValues[inputIndex - 1]}
-                onChangeText={(text) => this.handleInputChange(inputIndex - 1, text)}
-              />
-            ))}
+       <Modal visible={isModalVisible} animationType="slide">
+  <View style={styles.modalContainer}>
+    {[1, 2, 3, 4, 5,6,7,8].map((inputIndex) => (
+      <TextInput
+        key={inputIndex}
+        style={styles.input}
+        placeholder={placeholders[inputIndex - 1]}
+        value={inputValues[inputIndex - 1]}
+        onChangeText={(text) => this.handleInputChange(inputIndex - 1, text)}
+      />
+    ))}
 
-            <TouchableOpacity style={styles.saveButton} onPress={this.handleSaveCard}>
-              <Text style={styles.buttonLabel}>Save</Text>
-            </TouchableOpacity>
+    <TouchableOpacity style={styles.saveButton} onPress={this.handleSaveCard}>
+      <Text style={styles.buttonLabelSave}>Save</Text>
+    </TouchableOpacity>
 
-            <TouchableOpacity style={styles.cancelButton} onPress={this.handleCancel}>
-              <Text style={styles.buttonLabel}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
+    <TouchableOpacity style={styles.cancelButton} onPress={this.handleCancel}>
+      <Text style={styles.buttonLabelCancel}>Cancel</Text>
+    </TouchableOpacity>
+  </View>
+</Modal>
       </View>
     );
   }
@@ -148,6 +168,7 @@ const styles = {
     marginRight: 10,
     height: 100,
     borderRadius: 10,
+    width:300,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -158,9 +179,7 @@ const styles = {
     // marginBottom: 10, // Adjust the marginBottom value as needed
   },
   
-  buttonLabel:{
-    color:'black'
-  },
+
   modalContainer:{
 color:'red'
   },
@@ -168,10 +187,13 @@ color:'red'
     color:'black'
   },
   modalContainer: {
-    backgroundColor: 'grey', // Set input screen color as grey
+    // backgroundColor: 'grey', // Set input screen color as grey
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+     justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
   },
   input: {
     color: 'black', // Set input color as red
@@ -183,5 +205,49 @@ color:'red'
     padding: 5,
     marginTop: 10,
   },
+// For input fields
+//  input: {
+//     // Your common input styles
+//   },
+  firstInput: {
+    // Updated style for the first input
+    color: 'red', // Set the desired color for the first input
 
+  },
+  secondInput: {
+    // Styles specific to the second input
+  },
+  thirdInput: {
+    // Styles specific to the third input
+  },
+  fourthInput: {
+    // Styles specific to the fourth input
+  },
+  fifthInput: {
+    // Styles specific to the fifth input
+  },
+  sixthInput: {
+    // Styles specific to the sixth input
+  },
+  seventhInput: {
+    // Styles specific to the seventh input
+  },
+  eighthInput: {
+    // Styles specific to the eighth input
+  },
+  saveButton: {
+    // Your save button styles
+  },
+  cancelButton: {
+    // Your cancel button styles
+  },
+  buttonLabelSave: {
+    // Your button label styles
+    color:'green',
+    fontWeight:'bold',
+  },
+  buttonLabelCancel:{
+    color:'red',
+    
+  }
 };
