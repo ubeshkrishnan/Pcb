@@ -1,4 +1,4 @@
-import { View, Text, StatusBar, StyleSheet } from 'react-native';
+import { View, Text, StatusBar, StyleSheet,Image } from 'react-native';
 import React from 'react';
 
 const DashboardGraph = () => {
@@ -20,10 +20,14 @@ const DashboardGraph = () => {
       <View style={styles.hrLine} />
       <View style={styles.graphContainer}>
         {/* Reversed order of bars */}
-        <View style={[styles.bar, { height: calculateBarHeight(unscheduled) }]} />
+        {/* <View style={[styles.bar, { height: calculateBarHeight(unscheduled) }]} />
         <View style={[styles.bar, { height: calculateBarHeight(scheduled) }]} />
         <View style={[styles.bar, { height: calculateBarHeight(incomplete) }]} />
-        <View style={[styles.bar, { height: calculateBarHeight(completed) }]} />
+        <View style={[styles.bar, { height: calculateBarHeight(completed) }]} /> */}
+        <Image
+    source={require('../../assets/bar.png')}
+    style={[styles.bar, { height: calculateBarHeight(maxDataValue) }]}
+  />
       </View>
       <View style={styles.dataContainer}>
         {/* Render dynamically fetched data */}
@@ -58,13 +62,17 @@ const styles = StyleSheet.create({
   },
   graphContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     marginBottom: 20,
-    backgroundColor: '#D0E3F1',
+    // backgroundColor: '#D0E3F1',
   },
   bar: {
-    width: 50,
-    backgroundColor: 'blue',
+    flex: 1,
+    // resizeMode: 'contain',
+    height:200,
+    marginTop:40,
+    width:200,
+    backgroundColor:'grey',
   },
   dataContainer: {
     marginBottom: 10,
@@ -82,6 +90,8 @@ const styles = StyleSheet.create({
     width: 150,
     height: 30,
     marginTop:70,
+    borderRadius:20,
+    paddingRight:10,
   },
   dataTextt:{
     fontSize: 18,
@@ -91,6 +101,8 @@ const styles = StyleSheet.create({
     width: 150,
     height: 30,
     marginTop:50,
+    borderRadius:20,
+    marginRight:10,
   }
 });
 

@@ -15,6 +15,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import BasicInfo from '../screens/Drawer/Routes/BasicInformationScreen';
 import ReviewData from "../screens/Drawer/Routes/ReviewData";
 import LogOut from "../screens/Drawer/Routes/LogOut"
+import CameraPopup from "../screens/Drawer/Routes/CameraPopup"
 // import RegularField from "../screens/Drawer/Routes/RegularField"
 const MainNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -32,6 +33,7 @@ const MainNavigator = () => {
         <Drawer.Screen name="ReviewData" component={ReviewData} />
         {/* <Drawer.Screen name="RegularField" component={RegularField} /> */}
         <Drawer.Screen name="LogOut" component={LogOut} />
+        <Drawer.Screen name="." component={CameraPopup} />
       </Drawer.Navigator>
     );
   };
@@ -50,6 +52,7 @@ const MainNavigator = () => {
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Routes" component={Routes} />
         <Stack.Screen name="DashboardGraph" component={DashboardGraph} />
+        <Stack.Screen name="CameraPopup" component={CameraPopup}/>
         <Stack.Screen
           name="Dashboard"
           component={DrawerNavigator} // Render DrawerNavigator component instead of DashboardScreen

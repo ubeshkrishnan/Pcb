@@ -1,12 +1,22 @@
-import React from 'react';
-import { StyleSheet, View, Text, Image } from 'react-native';
+import React, { useRef, useEffect } from 'react';
+import { StyleSheet, View, Text, Image, Animated } from 'react-native';
 
 const HeaderSession = () => {
+  const logoOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(logoOpacity, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
   return (
     <View style={styles.header}>
       <View style={styles.leftContainer}>
-        <Image
-          style={styles.logo}
+        <Animated.Image
+          style={[styles.logo, { opacity: logoOpacity }]}
           source={require('../assets/tlogo.png')}
         />
         <View style={styles.textContainer}>
@@ -18,22 +28,22 @@ const HeaderSession = () => {
         <Image
           style={styles.profileImage}
           source={require('../assets/profile.png')}
-          
         />
-          <Text style={styles.title}>E1023</Text>
+        <Text style={styles.title}>E1023</Text>
       </View>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   header: {
     backgroundColor: 'cyan',
-    height: 90,
+    height: 95,
     paddingTop: 15,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    // borderBottomLeftRadius:30,
+    // borderBottomRightRadius:30,
   },
   leftContainer: {
     flexDirection: 'row',

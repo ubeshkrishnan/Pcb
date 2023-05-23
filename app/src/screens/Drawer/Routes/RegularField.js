@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { View, Text, Modal, TouchableOpacity, TextInput } from 'react-native';
-import RegularFields from "./RegularField";
 
 export default class RegularField extends Component {
   constructor(props) {
