@@ -1,8 +1,8 @@
 import { Text, View, TextInput, Button, ScrollView, StyleSheet } from 'react-native';
 import React, { Component } from 'react';
 
-export default class SpotSampling extends Component {
-  render() {
+const  SpotSampling =()=> {
+ 
     return (
       <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: 'white' }}>
         <View style={styles.container}>
@@ -25,7 +25,8 @@ export default class SpotSampling extends Component {
       </ScrollView>
     );
   }
-}
+
+export default SpotSampling;
 
 const styles = StyleSheet.create({
   container: {
