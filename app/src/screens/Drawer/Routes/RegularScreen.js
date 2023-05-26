@@ -138,6 +138,7 @@ const Regular = () => {
             <View style={styles.row}>
               <View style={styles.column}>
                 <Text style={styles.CardDetail}>
+   
                   Region/Taluk:<Text style={styles.CardMap}> Coimbatore</Text>
                 </Text>
                 <Text style={styles.CardDetail}>
@@ -170,6 +171,7 @@ const Regular = () => {
 
         <Modal visible={isModalVisible} animationType="slide">
           <View style={styles.modalContainer}>
+        
             {[1, 2, 3, 4, 5, 6, 7, 8].map((inputIndex) => (
               <TextInput
                 key={inputIndex}

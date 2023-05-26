@@ -84,6 +84,7 @@ const Regular = ({ navigation }) => {
 
       {cards.map((card, cardIndex) => (
         <TouchableOpacity key={cardIndex} onPress={navigateToReviewData}>
+    
           <View style={styles.card}>
             {card.content.map((row, rowIndex) => (
               <View key={rowIndex} style={styles.row}>
@@ -144,13 +145,15 @@ const Regular = ({ navigation }) => {
 </View>
 
 <Modal visible={isModalVisible} animationType="slide">
+
 <View style={styles.modalContainer}>
+<Text placeholderTextColor="black" >Hi</Text>
   {[1, 2, 3, 4, 5, 6].map((inputIndex) => (
     <TextInput
       key={inputIndex}
       style={styles.input}
       placeholder={placeholders[inputIndex - 1]}
-      placeholderTextColor="black"
+  
       value={inputValues[inputIndex - 1]}
       onChangeText={(text) => handleInputChange(inputIndex - 1, text)}
     />

@@ -22,7 +22,7 @@ import CameraPopup from '../screens/Drawer/Routes/CameraPopup';
 import NoInternet from '../screens/NoInternet';
 // import { NetworkProvider } from 'react-native-offline';
 import NetInfo from "@react-native-community/netinfo";
-
+import FingerPrint from '../screens/FingerPrint/FingerPrint';
 const MainNavigator = () => {
   const [isOnline, setIsOnline] = useState(false);
 
@@ -84,6 +84,7 @@ const MainNavigator = () => {
             }}
           />
           <Stack.Screen name="NoInternet" component={NoInternet} />
+          <Stack.Screen name="FingerPrint" component={FingerPrint} />
         </Stack.Navigator>
       </NavigationContainer>
   

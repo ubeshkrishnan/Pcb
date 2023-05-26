@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Text, View, TextInput, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-const Regular = () => {
+const ActionableScreen = () => {
   const [cards, setCards] = useState([]);
   const [inputValues, setInputValues] = useState(['', '', '', '', '', '', '', '']);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -14,7 +14,16 @@ const Regular = () => {
   const handleSaveCard = () => {
     const newCard = {
       content: [
-        [inputValues[0], inputValues[1], inputValues[2], inputValues[3], inputValues[4], inputValues[5], inputValues[6], inputValues[7]], // Region/Taluk, Village
+        [
+          inputValues[0],
+          inputValues[1],
+          inputValues[2],
+          inputValues[3],
+          inputValues[4],
+          inputValues[5],
+          inputValues[6],
+          inputValues[7],
+        ],
       ],
     };
     setCards((prevCards) => [...prevCards, newCard]);
@@ -29,15 +38,15 @@ const Regular = () => {
 
   const handleInputChange = (index, text) => {
     setInputValues((prevInputValues) => {
-      const newInputValues = [...prevInputValues];
-      newInputValues[index] = text;
-      return newInputValues;
+      const updatedInputValues = [...prevInputValues];
+      updatedInputValues[index] = text;
+      return updatedInputValues;
     });
   };
 
   const navigateToActionableScreenChild = () => {
-    navigation.navigate('ActionableScreenChild'); 
-  };
+    navigation.navigate('ActionableScreenChild'); // Replace 'ActionableScreenChild' with the actual name of your route
+  }
 
   const placeholders = [
     'Number',
@@ -49,7 +58,6 @@ const Regular = () => {
     'No.of Samples',
     'Sample Type',
   ];
-
   const inputStyles = [
     styles.firstInput,
     styles.secondInput,
@@ -80,8 +88,8 @@ const Regular = () => {
         </View>
 
         {cards.map((card, cardIndex) => (
-          <TouchableOpacity key={cardIndex} onPress={navigateToReviewData}>
-            <View style={styles.RegularCardMain}>
+          <TouchableOpacity key={cardIndex} onPress={navigateToActionableScreenChild}>
+            <View style={styles.ActionableCardMain}>
               <Text style={styles.CardSerialNo}></Text>
               {card.content.map((row, rowIndex) => (
                 <View key={rowIndex} style={styles.row}>
@@ -97,101 +105,97 @@ const Regular = () => {
                     <Text style={styles.CardDetail}>
                       Village:
                       <Text style={styles.CardMap}>{row[3]}</Text>
-                    </Text>
+                      </Text>
                     <Text style={styles.CardDetail}>
                       No Of Samples:
                       <Text style={styles.CardMap}>{row[4]}</Text>
-</Text>
-<Text style={styles.CardDetail}>
-  Category:
-  <Text style={styles.CardMap}>{row[5]}</Text>
-</Text>
-<Text style={styles.CardDetail}>
-  Scheduled Type:
-  <Text style={styles.CardMap}>{row[6]}</Text>
-</Text>
-<Text style={styles.CardDetail}>
-  Sample Type:
-  <Text style={styles.CardMap}>{row[7]}</Text>
-</Text>
-</View>
-</View>
-))}
-</View>
-</TouchableOpacity>
-))}
+                    </Text>
+                    <Text style={styles.CardDetail}>
+                      Category:
+                      <Text style={styles.CardMap}>{row[5]}</Text>
+                    </Text>
+                    <Text style={styles.CardDetail}>
+                      Scheduled Type:
+                      <Text style={styles.CardMap}>{row[6]}</Text>
+                    </Text>
+                    <Text style={styles.CardDetail}>
+                      Sample Type:
+                      <Text style={styles.CardMap}>{row[7]}</Text>
+                    </Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </TouchableOpacity>
+        ))}
 
-<View style={styles.RegularCardMain}>
-  <TouchableOpacity onPress={navigateToActionableScreenChild}>
-    <Text style={styles.CardSerialNo}>
-      11000
-      <Text style={styles.CardDetailRight}>Sivajothi Blue Metal</Text>
-    </Text>
-    <View style={styles.row}>
-      <View style={styles.column}>
-        <Text style={styles.CardDetail}>
-          Region/Taluk:
-          <Text style={styles.CardMap}> Coimbatore</Text>
-        </Text>
-        <Text style={styles.CardDetail}>
-          Village:
-          <Text style={styles.CardMap}> Korapatti</Text>
-        </Text>
-      </View>
-      <View style={styles.column}>
-        <Text style={styles.CardDetail}>
-          No Of Samples:
-          <Text style={styles.CardMap}> 2</Text>
-        </Text>
-        <Text style={styles.CardDetail}>
-          Category:
-          <Text style={styles.CardMap}>Red Large</Text>
-        </Text>
-      </View>
-    </View>
-    <View style={styles.row}>
-      <View style={styles.column}>
-        <Text style={styles.CardDetail}>
-          Scheduled Type:
-          <Text style={styles.CardMap}> Scheduled</Text>
-        </Text>
-      </View>
-      <View style={styles.column}>
-        <Text style={styles.CardDetail}>
-          Sample Type:
-          <Text style={styles.CardMap}> Effluent</Text>
-        </Text>
-      </View>
-    </View>
-  </TouchableOpacity>
-</View>
+        <View style={styles.ActionableCardMain}>
+          <TouchableOpacity onPress={navigateToActionableScreenChild}>
+            <Text style={styles.CardSerialNo}>
+              11000
+              <Text style={styles.CardDetailRight}>Sivajothi Blue Metal</Text>
+            </Text>
+            <View style={styles.row}>
+              <View style={styles.column}>
+                <Text style={styles.CardDetail}>
+                  Region/Taluk:<Text style={styles.CardMap}> Coimbatore</Text>
+                </Text>
+                <Text style={styles.CardDetail}>
+                  Village:<Text style={styles.CardMap}> Korapatti</Text>
+                </Text>
+              </View>
+              <View style={styles.column}>
+                <Text style={styles.CardDetail}>
+                  No Of Samples:<Text style={styles.CardMap}> 2</Text>
+                </Text>
+                <Text style={styles.CardDetail}>
+                  Category:<Text style={styles.CardMap}>Red Large</Text>
+                </Text>
+              </View>
+            </View>
+            <View style={styles.row}>
+              <View style={styles.column}>
+                <Text style={styles.CardDetail}>
+                  Scheduled Type:<Text style={styles.CardMap}> Scheduled</Text>
+                </Text>
+              </View>
+              <View style={styles.column}>
+                <Text style={styles.CardDetail}>
+                  Sample Type:<Text style={styles.CardMap}> Effluent</Text>
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
 
-<Modal visible={isModalVisible} animationType="slide">
-<View style={styles.modalContainer}>
-  {[1, 2, 3, 4, 5, 6, 7, 8].map((inputIndex) => (
-    <TextInput
-      key={inputIndex}
-      style={styles.input}
-      placeholder={placeholders[inputIndex - 1]}
-      value={inputValues[inputIndex - 1]}
-      onChangeText={(text) => handleInputChange(inputIndex - 1, text)}
-    />
-  ))}
+        <Modal visible={isModalVisible} animationType="slide">
+          <View style={styles.modalContainer}>
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((inputIndex) => (
+              <TextInput
+                key={inputIndex}
+                style={styles.input}
+                placeholder={placeholders[inputIndex - 1]}
+                placeholderTextColor="black"
+                value={inputValues[inputIndex - 1]}
+                onChangeText={(text) => handleInputChange(inputIndex - 1, text)}
+              />
+            ))}
 
-  <TouchableOpacity style={styles.saveButton} onPress={handleSaveCard}>
-    <Text style={styles.buttonLabelSave}>Save</Text>
-  </TouchableOpacity>
+            <TouchableOpacity style={styles.saveButton} onPress={handleSaveCard}>
+              <Text style={styles.buttonLabelSave}>Save</Text>
+            </TouchableOpacity>
 
-  <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
-    <Text style={styles.buttonLabelCancel}>Cancel</Text>
-  </TouchableOpacity>
-</View>
-</Modal>
-</View>
-</ScrollView>
-);
+            <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+              <Text style={styles.buttonLabelCancel}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      </View>
+    </ScrollView>
+  );
 };
 
+export default ActionableScreen;
 
 
 
@@ -312,15 +316,26 @@ color:'red'
   },
   buttonLabelSave: {
     // Your button label styles
-    color:'green',
+    color:'white',
     fontWeight:'bold',
+    backgroundColor:'green',
+    width:45,
+    borderRadius:10,
+    marginTop:10,
+    paddingLeft:7,
   },
   buttonLabelCancel:{
     color:'red',
-    
+    color:'white',
+    fontWeight:'bold',
+    backgroundColor:'red',
+    width:54,
+    height:20,
+    borderRadius:10,
+    marginTop:10,
   },
-  // Regular card
-  RegularCardMain: {
+  // Actionable card
+  ActionableCardMain: {
     backgroundColor: '#D0E3F1',
     marginTop: 20,
     width: 350,
@@ -362,4 +377,3 @@ color:'black',
   color:'black',
  },
 };
-export default Regular;
