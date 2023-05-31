@@ -1,3 +1,4 @@
+// import axios from 'axios';
 // import React, { useRef, useEffect, useState } from 'react';
 // import {
 //   View,
@@ -9,10 +10,12 @@
 //   ScrollView,
 //   StyleSheet,
 // } from 'react-native';
+
 // import { useNavigation } from '@react-navigation/native';
 // import Header from './Header';
 // import Footer from './Footer';
 // import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+// import Url from "../../../Global_Variable/api_link";
 
 // const LoginScreen = () => {
 //   const logoOpacity = useRef(new Animated.Value(0)).current;
@@ -50,11 +53,10 @@
 //   const validatePassword = () => {
 //     setCheckValidPassword(password.length < 6);
 //   };
-
-//   const submit = () => {
+//   const submit = async () => {
 //     const isValidEmail = emailRegex.test(email);
-//     const isValidPassword = password.length >= 6; // Assuming a minimum password length of 6 characters
-
+//     const isValidPassword = password.length >= 6;
+  
 //     if (!isValidEmail) {
 //       setCheckValidEmail(true);
 //       setError('Please enter a valid email');
@@ -64,9 +66,28 @@
 //     } else {
 //       // Both email and password are valid, perform login action
 //       setError('');
-//       handleNavigateToDashboard();
+  
+//       try {
+//         const res = await axios.post(Url+'/login', { email, password });
+  
+//         if (res.status === 200) {
+//           // Successful login
+//           // Handle the successful login action, such as navigating to the dashboard
+//           handleNavigateToDashboard();
+//         } else {
+//           // Unsuccessful login
+//           setError('Invalid email or password');
+//         }
+//       } catch (err) {
+//         // Handle login error
+//         console.error('Error during login:', err);
+//         setError('An error occurred during login');
+//       }
 //     }
 //   };
+  
+  
+  
 
 //   return (
 //     <ScrollView style={{ backgroundColor: '#D0E3F1', height: '100%' }}>
@@ -239,7 +260,7 @@
 //   },
 //   });
 
-
+// Finger print
 
 import React, { useRef, useEffect, useState } from 'react';
 import {
