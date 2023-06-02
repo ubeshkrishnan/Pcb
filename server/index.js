@@ -1,15 +1,14 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const { Pool } = require('pg');
-const cors = require('cors');
 
 const app = express();
-const port = 3000;
+const port = 5005;
+const cors = require('cors');
+const { application } = require('express');
 
-app.use(cors());
-app.use(bodyParser.json());
+// Create a connection pool to PostgreSQL
+const pool = new Pool({
 
-const client = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'db_pcb',
@@ -17,43 +16,61 @@ const client = new Pool({
   port: 5432,
 });
 
-async function connectToDatabase() {
-  try {
-    await client.connect();
-    console.log('Connected to the database');
-  } catch (err) {
-    console.error('Connection error', err.stack);
-  }
-}
+// Middleware to parse JSON requests
+app.use(express.json());
+app.use(cors());
 
-connectToDatabase();
+// app.use(cors({
+// }));
 
-app.post('/login', async (req, res) => {
+app.get("/", (req, res) => {
+  res.send("hello wolrd");
+});
+// Route to handle login request
+app.post('/auth', (req, res) => {
   const { email, password } = req.body;
 
-  // Retrieve user from the database
-  const query = 'SELECT * FROM users WHERE email = $1';
-  const values = [email];
-  const result = await client.query(query, values);
-
-  if (result.rowCount === 0) {
-    // User not found
-    return res.status(401).json({ error: 'Invalid email or password' });
-    
-  }
-
-  const user = result.rows[0];
-
-  if (password !== user.raw_password) {
-    // Invalid password
-    return res.status(401).json({ error: 'Invalid email or password' });
-  }
-
-  // Successful login
-  return res.status(200).json({ message: 'Login successfulll' });
+  // Query the database using the provided email
+  // pool.query('SELECT * FROM users WHERE email = $1', [email], (error, results) => {
+  //   console.log(email);
+  //   if (error) {
+  //     console.error('Error during login:', error);
+  //     res.status(500).json({ error: 'An error occurred during login' });
+  //   } else if (results.rows.length === 0) {
+  //     res.status(401).json({ error: 'Invalid email or password' });
+  //   } else {
+  //     const user = results.rows[0];
   
+  //     // Compare the provided password with the raw password stored in the database
+  //     if (password !== user.raw_password) {
+  //       res.status(401).json({ error: 'Invalid email or password' });
+  //     } else {
+  //       res.status(200).json({ message: 'Login successful' });
+  //     }
+  //   }
+  // });
+  app.post("/auth", (req, res) => {
+    const { email, password } = req.body;
+    const sql = "SELECT * FROM users WHERE email = ? AND raw_password = ?";
+    pool.query(sql, [email, password], (err, result) => {
+      if (err) {
+        res.status(500).send({ message: "Error occurred" });
+      } else if (result.length === 0) {
+        res.status(401).send({ message: "Invalid username or password" });
+      } else {
+        console.log("ddddddddddd", result);
+      
+        res
+          .status(200)
+          .send({ message: "Login successful"});
+      }
+    });
+  });
 });
 
+
+// Start the server
 app.listen(port, () => {
-  console.log(`Server listening at http://localhost:${port}`);
+  console.log(`Server running on http://localhost:${port}`);
 });
+
