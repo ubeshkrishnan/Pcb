@@ -139,8 +139,7 @@ const styles = StyleSheet.create({
   },
   inputColumn: {
     flex: 1,
-
-    marginBottom:20,
+    marginBottom:10,
   },
   label: {
     fontSize: 16,
@@ -150,7 +149,7 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1,
     color:'black',
-    // height:20,
+
   },
   container: {
     // flex: 1,
@@ -204,7 +203,8 @@ width:200,
   },
   picker: {
     borderColor: 'black',
-    backgroundColor: 'black',
+    backgroundColor: 'grey',
+    height:10,
   },
 });
 export default ReviewData;

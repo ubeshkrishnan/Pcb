@@ -1,12 +1,30 @@
-import { View, Text, StatusBar, StyleSheet,Image } from 'react-native';
-import React from 'react';
+import { View, Text, StatusBar, StyleSheet, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const DashboardGraph = () => {
-  // Assume you have the dynamic data available as variables
-  const completed = 180;
-  const incomplete = 50;
-  const scheduled = 100;
-  const unscheduled = 220;
+  const [completed, setCompleted] = useState(0);
+  const [incomplete, setIncomplete] = useState(0);
+  const [scheduled, setScheduled] = useState(0);
+  const [unscheduled, setUnscheduled] = useState(0);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:5005/dashboard");
+      const data = response.data;
+
+      setCompleted(data.completed);
+      setIncomplete(data.incomplete);
+      setScheduled(data.scheduled);
+      setUnscheduled(data.unscheduled);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const maxDataValue = Math.max(completed, incomplete, scheduled, unscheduled);
 
@@ -19,30 +37,25 @@ const DashboardGraph = () => {
       <Text style={styles.dashboardText}>Dashboard</Text>
       <View style={styles.hrLine} />
       <View style={styles.graphContainer}>
-        {/* Reversed order of bars */}
-        {/* <View style={[styles.bar, { height: calculateBarHeight(unscheduled) }]} />
-        <View style={[styles.bar, { height: calculateBarHeight(scheduled) }]} />
-        <View style={[styles.bar, { height: calculateBarHeight(incomplete) }]} />
-        <View style={[styles.bar, { height: calculateBarHeight(completed) }]} /> */}
-        <Image
-    source={require('../../assets/bar.png')}
-    style={[styles.bar, { height: calculateBarHeight(maxDataValue) }]}
-  />
+        {/* <Image
+          source={require('../../assets/bar.png')}
+          style={[styles.bar, { height: calculateBarHeight(maxDataValue) }]}
+        /> */}
       </View>
       <View style={styles.dataContainer}>
-        {/* Render dynamically fetched data */}
         <View style={styles.rowContainer}>
           <Text style={styles.dataText}>Completed: {completed}</Text>
           <Text style={styles.dataText}>Incomplete: {incomplete}</Text>
         </View>
         <View style={styles.rowContainer}>
-          <Text style={styles.dataTextt}>Scheduled: {scheduled}</Text>
-          <Text style={styles.dataTextt}>Unscheduled: {unscheduled}</Text>
+          <Text style={styles.dataText}>Scheduled: {scheduled}</Text>
+          <Text style={styles.dataText}>Unscheduled: {unscheduled}</Text>
         </View>
       </View>
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

@@ -59,38 +59,11 @@ const LoginScreen = () => {
       username: email,
       password: password,
     };
-// console.log(Url,"asdas")
-// const res = await 
-    // fetch("https://8a27-117-209-145-254.ngrok-free.app", {
-    //   method:'GET',
-    //   // headers: {
-    //   //   'Accept': 'application/json',
-    //   //   'Content-Type': 'application/json'
-    //   // },
-    //   // body: JSON.stringify(data)
-    // })
 
-    // console.log(res,"dsdhd");
-      // .then((response) => response.json())
-      
-      // .then((res) => {
-      //   if (res.success === true) {
-      //     var username = res.message;
-      //     AsyncStorage.setItem('username', username);
-      //     handleNavigateToDashboard();
-      //     alert("Login success");
-      //   } else {
-      //     setError('Invalid email or passwordesle');
-      //   }
-      // })
-      // .catch((error) => {
-      //   console.error('Error:', error);
-      //   setError('Invalid email or passwordcat');
-      // });
-      const response = await axios.post("http://localhost:5005/auth",{"email":"admin@gmail.com","password":"lims@123"})
-      console.log(response.data,"sadhas");
+    const response =  axios.post("http://43.204.187.76:5005/auth",{email:"ube@gmail.com",password:"1234567"});
+    console.log(response.data,"sadhas");
 
-      // console.log(response.data,"asd")
+    // console.log(response.data,"asd")
   };
 
 
@@ -106,6 +79,7 @@ const LoginScreen = () => {
       setError('Please enter a valid password (minimum 6 characters)');
     } else {
       // Both email and password are valid, perform login action
+      handleNavigateToDashboard();
       setError('');
       postData(); // Call the postData method here
     }
@@ -131,71 +105,71 @@ const LoginScreen = () => {
       </SafeAreaView>
 
       <View style={styles.formContainer}>
-        <Text style={styles.loginContainer}>Log In</Text>
+        <Text style={styles.loginContainer        }>Log In</Text>
         <Text style={styles.loginDetails}>Enter Your Details To Login</Text>
         <View style={styles.inputContainer}>
           <View style={styles.inputIconContainer}></View>
           <Text style={styles.label}>Email</Text>
 
-<TextInput
-  style={[
-    styles.input,
-    checkValidEmail && styles.inputError,
-  ]}
-  placeholder="@gmail.com"
-  placeholderTextColor="#CCCCCC"
-  value={email}
-  onChangeText={setEmail}
-  onBlur={validateEmail}
-/>
+          <TextInput
+            style={[
+              styles.input,
+              checkValidEmail && styles.inputError,
+            ]}
+            placeholder="@gmail.com"
+            placeholderTextColor="#CCCCCC"
+            value={email}
+            onChangeText={setEmail}
+            onBlur={validateEmail}
+          />
 
-{checkValidEmail && (
-  <Text style={styles.errorText}>Please enter a valid email</Text>
-)}
+          {checkValidEmail && (
+            <Text style={styles.errorText}>Please enter a valid email</Text>
+          )}
 
-<View style={styles.passwordContainer}>
-  <Text style={styles.label}>Password</Text>
-  <View style={styles.passwordInputContainer}>
-    <TextInput
-      style={[
-        styles.input,
-        checkValidPassword && styles.inputError,
-      ]}
-      secureTextEntry={!showPassword}
-      placeholder="********"
-      placeholderTextColor="#CCCCCC"
-      value={password}
-      onChangeText={setPassword}
-      onBlur={validatePassword}
-    />
-    <TouchableOpacity
-      style={styles.visibilityIcon}
-      onPress={togglePasswordVisibility}
-    >
-      <MaterialIcons
-        name={showPassword ? 'visibility' : 'visibility-off'}
-        size={24}
-        color={showPassword ? 'gray' : 'lightgray'}
-      />
-    </TouchableOpacity>
-  </View>
-  {checkValidPassword && (
-    <Text style={styles.errorText}>
-      Enter a valid password (minimum 6 characters)
-    </Text>
-  )}
-</View>
+          <View style={styles.passwordContainer}>
+            <Text style={styles.label}>Password</Text>
+            <View style={styles.passwordInputContainer}>
+              <TextInput
+                style={[
+                  styles.input,
+                  checkValidPassword && styles.inputError,
+                ]}
+                secureTextEntry={!showPassword}
+                placeholder="********"
+                placeholderTextColor="#CCCCCC"
+                value={password}
+                onChangeText={setPassword}
+                onBlur={validatePassword}
+              />
+              <TouchableOpacity
+                style={styles.visibilityIcon}
+                onPress={togglePasswordVisibility}
+              >
+                <MaterialIcons
+                  name={showPassword ? 'visibility' : 'visibility-off'}
+                  size={24}
+                  color={showPassword ? 'gray' : 'lightgray'}
+                />
+              </TouchableOpacity>
+            </View>
+            {checkValidPassword && (
+              <Text style={styles.errorText}>
+                Enter a valid password (minimum 6 characters)
+              </Text>
+            )}
+          </View>
 
-{error !== '' && <Text style={styles.errorText}>{error}</Text>}
+          {error !== '' && <Text style={styles.errorText}>{error}</Text>}
 
-<TouchableOpacity style={styles.loginButton} onPress={submit}>
-  <Text style={styles.buttonText}>Login</Text>
-</TouchableOpacity>
-</View>
-</View>
-<Footer />
-</ScrollView>
-);
+          <TouchableOpacity style={styles.loginButton} onPress={submit}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <Footer />
+    </ScrollView>
+  );
 };
 
 export default LoginScreen;

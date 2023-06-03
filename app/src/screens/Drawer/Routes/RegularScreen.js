@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect} from 'react';
 import { Text, View, TextInput, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
+import Axios from "axios";
 const Regular = () => {
   const [cards, setCards] = useState([]);
   const [inputValues, setInputValues] = useState(['', '', '', '', '', '', '', '']);
@@ -11,6 +12,16 @@ const Regular = () => {
     setIsModalVisible(true);
   };
 
+
+  useEffect(() =>{
+    RegularDetail()
+  },[]);
+
+
+  const RegularDetail = async = () =>{
+    const responce =  Axios.get('http://43.204.187.76:5005/regularcarddetail');
+    console.log(responce,"api cal")
+  }
   const handleSaveCard = () => {
     const newCard = {
       content: [
