@@ -56,16 +56,25 @@ const LoginScreen = () => {
 
   const postData = async () => {
     const data = {
-      username: email,
+      email: email,
       password: password,
     };
 
-    const response =  axios.post("http://43.204.187.76:5005/auth",{email:"ube@gmail.com",password:"1234567"});
-    console.log(response.data,"sadhas");
+    try {
+      const response = await axios.post(Url+"/auth", data);
 
-    // console.log(response.data,"asd")
+      if (response.data.success) {
+        // Successful login
+        handleNavigateToDashboard();
+      } else {
+        // Login error
+        setError('Invalid email or password');
+      }
+    } catch (error) {
+      // Error during login
+      setError('An error occurred during login FRONT');
+    }
   };
-
 
   const submit = () => {
     const isValidEmail = emailRegex.test(email);
@@ -79,11 +88,11 @@ const LoginScreen = () => {
       setError('Please enter a valid password (minimum 6 characters)');
     } else {
       // Both email and password are valid, perform login action
-      handleNavigateToDashboard();
       setError('');
       postData(); // Call the postData method here
     }
   };
+
 
 
   return (

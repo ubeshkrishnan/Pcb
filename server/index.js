@@ -1,76 +1,48 @@
-const express = require('express');
-const { Pool } = require('pg');
-
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 const app = express();
-const port = 5005;
-const cors = require('cors');
-const { application } = require('express');
 
-// Create a connection pool to PostgreSQL
-const pool = new Pool({
 
-  user: 'postgres',
-  host: 'localhost',
-  database: 'db_pcb',
-  password: 'Dollar$1',
-  port: 5432,
-});
+// app.use();
+app.use(cors({
+  origin: 'http://localhost:5005'
+}));
 
-// Middleware to parse JSON requests
-app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(cors());
+const db = require("./Sql/db");
 
-app.get("/", (req, res) => {
-  res.send("hello wolrd LOCAL");
+const Login = require("./routers/Login");
+const Dashboard = require("./routers/Dashboard");
+const FingerPrint = require("./routers/FingerPrint");
+const RegularScreen = require("./routers/RegularScreen");
+const Header = require("./routers/Header");
+// const RegularChildScreen = require("./routers/RegularChildScreen");
+// const ActionableScreen = require("./routers/ActionableScreen");
+// const ActionableChildScreen = require("./routers/ActionableChildScreen");
+// const BasicInformation = require("./routers/BasicInformation");
+// const SpotSampling = require("./routers/SpotSampling");
+// const ReviewData = require("./routers/ReviewData");
+
+
+
+
+app.use(Login);
+app.use(Dashboard);
+app.use(FingerPrint);
+app.use(RegularScreen);
+app.use(Header);
+// app.use(RegularChildScreen);
+// app.use(ActionableScreen);
+// app.use(ActionableChildScreen);
+// app.use(BasicInformation);
+// app.use(SpotSampling);
+// app.use(ReviewData);
+
+
+app.listen(5005, () => {  
+  console.log("Server Is Running At Port Number 5005 LOCAL");
 });
-
-
-
-// Login
-app.post("/auth", (req, res) => {
-  const { email, password } = req.body;
-  const sql = "SELECT * FROM users WHERE email = $1 AND raw_password = $2";
-  pool.query(sql, [email, password],async (err, result) => {
-    const awt = await result
-    console.log(awt);
-    if (err) {
-      res.status(500).send({ message: "Error occurred" });
-    } else if (result.rows.length === 0) {
-      res.status(401).send({ message: "Invalid username or password" });
-    } else {
-      console.log("Result:", result.rows);
-      res.status(200).send({ message: "Login successful LOCAL" });
-    }
-  });
-});
-
-// Dashboard
-// Endpoint to retrieve dashboard data
-  app.get('/dashboard', (req, res) => {
-  // Assume the dynamic data is retrieved from a database or another data source
-  const completed = 180;
-  const incomplete = 60;
-  const scheduled = 100;
-  const unscheduled = 220;
-
-  const data = {
-    completed,
-    incomplete,
-    scheduled,
-    unscheduled,
-  };
-
-  res.json(data);
-});
-
-
-// Regular screen
-app.get('/regularcarddetail', (req, res) => {
-
-
-});
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
-

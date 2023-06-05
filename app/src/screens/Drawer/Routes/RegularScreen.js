@@ -3,11 +3,18 @@ import { Text, View, TextInput, TouchableOpacity, Modal, ScrollView } from 'reac
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import Axios from "axios";
+import Url from "../../../../Global_Variable/api_link"
+
 const Regular = () => {
+
+const[taluk,setTaluk] =useState([]);
+
+
   const [cards, setCards] = useState([]);
   const [inputValues, setInputValues] = useState(['', '', '', '', '', '', '', '']);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const navigation = useNavigation();
+  
   const handleAddCard = () => {
     setIsModalVisible(true);
   };
@@ -18,10 +25,16 @@ const Regular = () => {
   },[]);
 
 
-  const RegularDetail = async = () =>{
-    const responce =  Axios.get('http://43.204.187.76:5005/regularcarddetail');
-    console.log(responce,"api cal")
-  }
+  const RegularDetail = async () => {
+    try {
+      const response = await Axios.get(Url+'/regularcarddetail');
+      const data = response.data;
+      setCards(data);
+    } catch (error) {
+      console.log('Error fetching Regular card details:', error);
+    }
+  };
+
   const handleSaveCard = () => {
     const newCard = {
       content: [
@@ -116,7 +129,7 @@ const Regular = () => {
                     <Text style={styles.CardDetail}>
                       Village:
                       <Text style={styles.CardMap}>{row[3]}</Text>
-                      </Text>
+                    </Text>
                     <Text style={styles.CardDetail}>
                       No Of Samples:
                       <Text style={styles.CardMap}>{row[4]}</Text>
