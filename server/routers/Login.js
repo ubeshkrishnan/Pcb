@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const crypto = require("crypto");
 const app = express();
-const pool = require("../Sql/db"); 
+const db = require("../Sql/db"); 
 
 // app.use();
 app.use(cors());
@@ -19,7 +19,7 @@ app.post("/auth", (req, res) => {
   const { email, password } = req.body;
   const md5Password = crypto.createHash("md5").update(password).digest("hex");
   const sql = "SELECT * FROM users WHERE email = $1";
-  pool.query(sql, [email], async (err, result) => {
+  db.query(sql, [email], async (err, result) => {
     if (err) {
       res.status(500).send({ message: "Error occurred" });
     } else if (result.rows.length === 0) {
