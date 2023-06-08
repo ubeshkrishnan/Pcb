@@ -19,8 +19,9 @@ const CameraPopup = () => {
 const [viewLocation, setViewLocation] = useState([]);
 
 const handleReviewData = () => {
-  navigation.navigate('ReviewData', { viewLocation });
+  navigation.navigate('ReviewData', { viewLocation: viewLocation });
 };
+
   useEffect(() => {
     // Get the user's current geolocation
     const requestLocationPermission = async () => {
@@ -35,11 +36,14 @@ const handleReviewData = () => {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
               });
+              setLocation(location);
+              setViewLocation([location.coords]);
               setViewLocation([
                 {
                   latitude: position.coords.latitude,
                   longitude: position.coords.longitude,
                 },
+                
               ]);
             },
             error => {
@@ -97,6 +101,12 @@ const handleReviewData = () => {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         });
+        setViewLocation([
+          {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          },
+        ]);
       },
       error => {
         console.log('Error getting geolocation:', error);

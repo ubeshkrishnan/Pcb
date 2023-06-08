@@ -8,12 +8,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-app.get("/modal", (req, res) => {
+app.get("/modalregular", (req, res) => {
   res.send("hello modalregular");
 });
 
 
-app.post('/data', (req, res) => {
+app.post('/modalregular', (req, res) => {
     const { serialno, companyname, taluk, village, sample, category, scheduletype, sampletype } = req.body;
   
     // Insert the data into the PostgreSQL database

@@ -21,11 +21,12 @@ const FingerPrint = require("./routers/FingerPrint");
 const RegularScreen = require("./routers/RegularScreen");
 const Header = require("./routers/Header");
 const ModalRegular = require("./routers/ModalRegular");
+const RegularChildScreen = require("./routers/RegularChildScreen");
 // const ActionableScreen = require("./routers/ActionableScreen");
 // const ActionableChildScreen = require("./routers/ActionableChildScreen");
 // const BasicInformation = require("./routers/BasicInformation");
 // const SpotSampling = require("./routers/SpotSampling");
-// const ReviewData = require("./routers/ReviewData");
+const ReviewData = require("./routers/ReviewData");
 
 
 
@@ -36,12 +37,12 @@ app.use(FingerPrint);
 app.use(RegularScreen);
 app.use(Header);
 app.use(ModalRegular);
-// app.use(RegularChildScreen);
+app.use(RegularChildScreen);
 // app.use(ActionableScreen);
 // app.use(ActionableChildScreen);
 // app.use(BasicInformation);
 // app.use(SpotSampling);
-// app.use(ReviewData);
+app.use(ReviewData);
 
 
 app.listen(5005, () => {  

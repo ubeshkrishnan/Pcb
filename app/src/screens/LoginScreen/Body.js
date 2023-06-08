@@ -65,7 +65,7 @@ const LoginScreen = () => {
 
       if (response.data.success) {
         // Successful login
-        // handleNavigateToDashboard();
+        handleNavigateToDashboard();
       } else {
         // Login error
         setError('Invalid email or password');
@@ -89,7 +89,7 @@ const LoginScreen = () => {
     } else {
       // Both email and password are valid, perform login action
       setError('');
-      handleNavigateToDashboard();
+      // handleNavigateToDashboard();
       postData(); // Call the postData method here
     }
   };

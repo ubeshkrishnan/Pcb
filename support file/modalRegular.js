@@ -33,7 +33,7 @@ const ModalRegular = ({ visible, item, setcards }) => {
       ...inputValues
     };
 
-    fetch(Url+'/api/your-endpoint', {
+    fetch(Url+'/modalregular', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

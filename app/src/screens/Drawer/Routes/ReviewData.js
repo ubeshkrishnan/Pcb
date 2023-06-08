@@ -2,18 +2,15 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TextInput, Button, ScrollView, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
+import { Url } from '../../../../Global_Variable/api_link';
 
-
-const ReviewData = () => {
+const ReviewData = ({ route, navigation }) => {
   const [selectedSampleType, setSelectedSampleType] = useState('');
   const [selectedContainerType, setSelectedContainerType] = useState('');
-  const navigation = useNavigation();
+  const [users, setUsers] = useState([]);
+  const { viewLocation } = route.params;
 
   const handleImageClick = () => {
-    // Navigate to the CameraPopup component or perform any other action
-    // For simplicity, let's assume you're using React Navigation and want to navigate to CameraPopup
-    // this.props.navigation.navigate('CameraPopup');
     navigation.navigate('CameraPopup');
     console.log('CameraPopup');
   };
@@ -48,52 +45,13 @@ const ReviewData = () => {
             </View>
           </View>
 
+          {/* Rest of the input fields */}
+          
           <View style={styles.inputRow}>
             <View style={styles.inputColumn}>
-              <Text style={styles.label}>Serial No</Text>
-              <TextInput style={styles.input} />
-            </View>
-            <View style={styles.inputColumn}>
-              <Text style={styles.label}>Point of collection</Text>
-              <TextInput style={styles.input} />
-            </View>
-          </View>
+              <Text style={styles.label}>Latitude</Text>
+              <TextInput style={styles.input} value={viewLocation?.[0]?.latitude?.toString()} />
 
-          <View style={styles.inputRow}>
-            <View style={styles.inputColumn}>
-              <Text style={styles.label}>Collection Time</Text>
-              <TextInput style={styles.input} />
-            </View>
-
-            <View style={styles.inputColumn}>
-              <Text style={styles.label}>Container</Text>
-              <Picker
-                selectedValue={selectedContainerType}
-                onValueChange={(itemValue) => setSelectedContainerType(itemValue)}
-                style={styles.picker}
-              >
-                <Picker.Item label="Option 1" value="option1" />
-                <Picker.Item label="Option 2" value="option2" />
-                <Picker.Item label="Option 3" value="option3" />
-              </Picker>
-            </View>
-          </View>
-
-          <View style={styles.inputRow}>
-            <View style={styles.inputColumn}>
-              <Text style={styles.label}>Sampled by</Text>
-              <TextInput style={styles.input} />
-            </View>
-            <View style={styles.inputColumn}>
-              <Text style={styles.label}>Color</Text>
-              <TextInput style={styles.input} />
-            </View>
-          </View>
-
-          <View style={styles.inputRow}>
-            <View style={styles.inputColumn}>
-              <Text style={styles.label}>Latitute</Text>
-              <TextInput style={styles.input} />
             </View>
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Turbidity</Text>
@@ -104,7 +62,8 @@ const ReviewData = () => {
           <View style={styles.inputRow}>
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Longitude</Text>
-              <TextInput style={styles.input} />
+              <TextInput style={styles.input} value={viewLocation?.[0]?.longitude?.toString()} />
+
             </View>
 
             <View style={styles.inputColumn}>
@@ -125,12 +84,14 @@ const ReviewData = () => {
         <View style={styles.buttonRow}>
           <Button title="Drafts" onPress={() => console.log('Drafts')} color="black" />
           <Button title="Save" onPress={() => console.log('Save')} color="green" />
-          <Button title="Cancel" onPress={() =>{navigation.goBack()}} color="red" />
+          <Button title="Cancel" onPress={() => navigation.goBack()} color="red" />
         </View>
       </View>
     </ScrollView>
   );
 };
+
+
 const styles = StyleSheet.create({
   inputRow: {
     flexDirection: 'row',
