@@ -20,7 +20,7 @@ import ReviewData from '../screens/Drawer/Routes/ReviewData';
 import LogOut from '../screens/Drawer/Routes/LogOut';
 import CameraPopup from '../screens/Drawer/Routes/CameraPopup';
 import NoInternet from '../screens/NoInternet';
-// import { NetworkProvider } from 'react-native-offline';
+import { NetworkProvider } from 'react-native-offline';
 import NetInfo from "@react-native-community/netinfo";
 import FingerPrint from '../screens/FingerPrint/FingerPrint';
 const MainNavigator = () => {
@@ -43,13 +43,13 @@ const MainNavigator = () => {
     return (
       <Drawer.Navigator>
         <Drawer.Screen name="MAIN-MENU" component={DashboardScreen} />
-        <Drawer.Screen name="Regular" component={RegularScreen} />
-        <Drawer.Screen name="Actionable" component={ActionableScreen} />
-        <Drawer.Screen name="SpotSampling" component={SpotSampling} />
+        <Drawer.Screen name="Regular Sampling" component={RegularScreen} />
+        <Drawer.Screen name="Actionable Sampling" component={ActionableScreen} />
+        <Drawer.Screen name="Spot Sampling" component={SpotSampling} />
         <Drawer.Screen name="Basic Information" component={BasicInfo} />
         <Drawer.Screen name="Records" component={RecordsScreen} />
-        <Drawer.Screen name="ReviewData" component={ReviewData} />
-        <Drawer.Screen name="ActionableScreenChild" component={ActionableScreenChild} />
+        <Drawer.Screen name="Review Data" component={ReviewData} />
+        <Drawer.Screen name="Actionable ScreenChild" component={ActionableScreenChild} />
 
         {/* <Drawer.Screen name="RegularField" component={RegularField} /> */}
         <Drawer.Screen name="LogOut" component={LogOut} />
@@ -83,7 +83,7 @@ const MainNavigator = () => {
               title: 'Dashboard',
             }}
           />
-          <Stack.Screen name="NoInternet" component={NoInternet} />
+        
           <Stack.Screen name="FingerPrint" component={FingerPrint} />
         </Stack.Navigator>
       </NavigationContainer>
@@ -93,6 +93,7 @@ const MainNavigator = () => {
 
 export default MainNavigator;
 
+// No Internet
 // import React, { useState, useEffect } from 'react';
 // import { View, Text } from 'react-native';
 // import { NavigationContainer } from '@react-navigation/native';

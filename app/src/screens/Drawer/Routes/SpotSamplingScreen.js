@@ -10,12 +10,13 @@ const  SpotSampling =()=> {
           <TextInput style={styles.input} placeholder="Serial No" placeholderTextColor="#CCCCCC" />
           <Text style={styles.label}>Point Of Collection</Text>
           <TextInput style={styles.input} placeholder="Point Of Collection" placeholderTextColor="#CCCCCC" />
+          <Text style={styles.label}>Collection Time Stamp</Text>
+          <TextInput style={styles.input} placeholder="Collection Time Stamp" placeholderTextColor="#CCCCCC" />
           <Text style={styles.label}>Latitude</Text>
           <TextInput style={styles.input} placeholder="Latitude" placeholderTextColor="#CCCCCC" />
           <Text style={styles.label}>Longitude</Text>
           <TextInput style={styles.input} placeholder="Longitude" placeholderTextColor="#CCCCCC" />
-          <Text style={styles.label}>Field 5</Text>
-          <TextInput style={styles.input} placeholder="Field 5" placeholderTextColor="#CCCCCC" />
+      
           <Text style={styles.buttonContainer}>
             <Button title="Save" onPress={() => console.log('Save pressed')} />
             <View style={styles.buttonSpacer} /> {/* Adding space between buttons */}

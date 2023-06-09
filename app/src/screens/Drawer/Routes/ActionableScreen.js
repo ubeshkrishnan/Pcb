@@ -72,19 +72,36 @@ const ActionableScreen = () => {
   return (
     <ScrollView>
       <View>
-        <Text style={styles.CardSerialNo}>
+        {/* <Text style={styles.CardSerialNo}>
           <MaterialIcons name="search" size={20} style={styles.SearchIcon} />
           <Text style={styles.CardMap}> SAMPLING</Text>
-        </Text>
+        </Text> */}
 
         <View style={styles.horizontalLine}></View>
 
         <View style={styles.rowContainer}>
-          <TextInput style={styles.searchBar} placeholder="Search" />
-
-          <TouchableOpacity style={styles.addButton} onPress={handleAddCard}>
+  <TextInput
+    style={styles.searchBarInput}
+    placeholder="Search"
+    placeholderTextColor="gray"
+    // value={searchValue}
+    onChangeText={text => setSearchValue(text)}
+    // onSubmitEditing={handleSearch}
+  />
+  <View style={styles.searchIconContainer}>
+    <MaterialIcons
+      name="search"
+      size={20}
+      color="gray"
+      // onPress={handleSearch}
+    />
+  </View>
+  <TouchableOpacity style={styles.addButton} onPress={handleAddCard}>
             <Text style={styles.addButtonLabel}>Add</Text>
           </TouchableOpacity>
+</View>
+
+         
         </View>
 
         {cards.map((card, cardIndex) => (
@@ -190,7 +207,6 @@ const ActionableScreen = () => {
             </TouchableOpacity>
           </View>
         </Modal>
-      </View>
     </ScrollView>
   );
 };
@@ -215,6 +231,21 @@ const styles = {
     marginLeft: 30,
     marginTop: 20,
   },
+  searchBarInput:{
+    borderColor: 'black',
+    color:'black',
+    borderWidth: 1,
+    height:40, 
+    width:180,
+    borderRadius:7,
+    paddingLeft: 27, // Adjust this value to align the placeholder text
+    paddingRight: 10,
+  },
+  searchIconContainer: {
+    position: 'absolute',
+    paddingLeft:5,
+    // right: 1,
+  },
   searchBar: {
     flex: 1,
     height: 35,
@@ -228,12 +259,17 @@ const styles = {
   addButton: {
     backgroundColor: 'grey',
     padding: 10,
-    borderRadius: 20,
-    MarginLeft:20,
+    borderRadius:10,
+    // alignSelf: 'flex-end', // Align the button to the right
+    marginRight: 70,
+    // paddingLeft:30,
   },
   addButtonLabel: {
     color: 'white',
     fontWeight: 'bold',
+    marginLeft: 'auto', // Push the label to the right
+    marginRight: 10,
+     // Add some right margin for spacing
   },
   card: {
     backgroundColor: 'red',

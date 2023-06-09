@@ -69,9 +69,11 @@ import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 const Fingerprint = () => {
   const [isFingerprintEnabled, setIsFingerprintEnabled] = useState(false);
+  const [storedFingerprints, setStoredFingerprints] = useState(null);
 
   useEffect(() => {
     checkFingerprintAvailability();
+    loadFingerprints();
     return () => {
       FingerprintScanner.release();
     };
@@ -86,25 +88,59 @@ const Fingerprint = () => {
     }
   };
 
-  const handleFingerprintAuth = () => {
-    FingerprintScanner.authenticate({ title: 'Login with Fingerprint' })
-      .then(() => {
-        // Fingerprint authentication successful
+  const loadFingerprints = () => {
+    // Load the stored fingerprints from wherever you are storing them
+    // For simplicity, we'll initialize with a predefined set of fingerprints
+    const fingerprints = ['fingerprint1', 'fingerprint2', 'fingerprint3'];
+    setStoredFingerprints(fingerprints);
+  };
+
+  const handleFingerprintAuth = async () => {
+    try {
+      if (storedFingerprints && storedFingerprints.length > 0) {
+        await FingerprintScanner.authenticate({
+          title: 'Login with Fingerprint',
+          message: 'Scan your fingerprint to login',
+          fallbackEnabled: true,
+          fingerprints: storedFingerprints,
+        });
         console.log('Fingerprint authentication successful');
-      })
-      .catch((error) => {
-        // Fingerprint authentication failed
-        console.log('Fingerprint authentication failed:', error);
+      } else {
+        console.log('No stored fingerprints found');
+      }
+    } catch (error) {
+      console.log('Fingerprint authentication failed:', error);
+    }
+  };
+
+  const registerFingerprint = async () => {
+    try {
+      const fingerprints = await FingerprintScanner.authenticate({
+        title: 'Register Fingerprint',
+        message: 'Scan your fingerprint to register',
+        fallbackEnabled: true,
       });
+      setStoredFingerprints(fingerprints);
+      console.log('Fingerprint registration successful');
+    } catch (error) {
+      console.log('Fingerprint registration failed:', error);
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Login Screen</Text>
-      {isFingerprintEnabled && (
-        <TouchableOpacity style={styles.button} onPress={handleFingerprintAuth}>
-          <Text style={styles.buttonText}>Login with Fingerprint</Text>
-        </TouchableOpacity>
+      {!isFingerprintEnabled ? (
+        <Text>Fingerprint sensor not available</Text>
+      ) : (
+        <View>
+          <TouchableOpacity style={styles.button} onPress={handleFingerprintAuth}>
+            <Text style={styles.buttonText}>Login with Fingerprint</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={registerFingerprint}>
+            <Text style={styles.buttonText}>Register Fingerprint</Text>
+          </TouchableOpacity>
+        </View>
       )}
     </View>
   );
@@ -113,8 +149,8 @@ const Fingerprint = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   heading: {
     fontSize: 24,
@@ -122,17 +158,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: '#e91e63',
+    marginTop: 10,
     paddingHorizontal: 20,
     paddingVertical: 10,
+    backgroundColor: '#007AFF',
     borderRadius: 5,
   },
   buttonText: {
-    color: '#ffffff',
+    color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
   },
 });
 
 export default Fingerprint;
-

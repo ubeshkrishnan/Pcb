@@ -14,6 +14,9 @@ const RegularScreen = () => {
   const [inputValues, setInputValues] = useState(['', '', '', '', '', '', '', '']);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [filteredCards, setFilteredCards] = useState([]);
+  const [searchResult, setSearchResult] = useState([]);
+
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -28,6 +31,7 @@ const RegularScreen = () => {
       const data = response.data;
       console.log(response, "api cal");
       setCards(data);
+      setFilteredCards(data);
     } catch (error) {
       console.log('Error fetching Regular card details:', error);
     }
@@ -73,13 +77,19 @@ const RegularScreen = () => {
     'Sample Type',
   ];
 
-  const handleSearch = () => {
-    // Filter the cards based on the search value
-    const filteredCards = cards.filter(card =>
-      card.company_name.toLowerCase().includes(searchValue.toLowerCase())
-    );
-    setCards(filteredCards);
+  const handleSearch = (text) => {
+    const filteredCards = cards.filter(card => {
+      const companyName = card.company_name.toLowerCase();
+      const searchValueLower = text.toLowerCase();
+      return companyName.includes(searchValueLower);
+    });
+  
+    setFilteredCards(filteredCards);
   };
+  
+  
+  
+  
 
   const renderItem = ({ item }) => {
     return (
@@ -99,72 +109,80 @@ const RegularScreen = () => {
                 </Text>
                 <Text style={styles.CardDetail}> Village:
                   <Text style={styles.CardMap}>{item.village}</Text>
-                </Text>
-              </View>
-              <View style={styles.column}>
-                <Text style={styles.CardDetail}>
-                  No Of Samples:
-                  <Text style={styles.CardMap}>{item.water}</Text>
-                </Text>
-                <Text style={styles.CardDetail}>
-                  Category:
-                  <Text style={styles.CardMap}>{item.category}</Text>
-                </Text>
-              </View>
-            </View>
-            <View style={styles.row}>
-              <View style={styles.column}>
-                {regularscheduletype.map((scheduleItem, index) => (
-                  <Text key={index} style={styles.CardDetail}>
-                    Scheduled Type:
-                    <Text style={styles.CardMap}>{scheduleItem.schedule_type}</Text>
-                  </Text>
-                ))}
-              </View>
-              <View style={styles.column}>
-                {sampletype.map((sampleItem, index) => (
-                  <Text key={index} style={styles.CardDetail}>
-                    Sample Type:
-                    <Text style={styles.CardMap}>{sampleItem.sample_type}</Text>
-                  </Text>
-                ))}
-              </View>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    );
-  };
-
-  return (
-    <ScrollView>
-      <View>
-        <Text style={styles.CardSerialNo}>
-          <MaterialIcons name="search" size={20} style={styles.SearchIcon} />
-          <Text style={styles.headersample}> SAMPLING</Text>
-        </Text>
-        <View style={styles.horizontalLine}></View>
-
-        <View style={styles.rowContainer}>
-          <TextInput
-            style={styles.searchBar}
-            placeholder="Search"
-            value={searchValue}
-            onChangeText={text => setSearchValue(text)}
-            onSubmitEditing={handleSearch}
-          />
-        </View>
-
-        <FlatList
-          data={cards}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-        />
-      </View>
-    </ScrollView>
-  );
+</Text>
+</View>
+<View style={styles.column}>
+<Text style={styles.CardDetail}>
+No Of Samples:
+<Text style={styles.CardMap}>{item.water}</Text>
+</Text>
+<Text style={styles.CardDetail}>
+Category:
+<Text style={styles.CardMap}>{item.category}</Text>
+</Text>
+</View>
+</View>
+<View style={styles.row}>
+<View style={styles.column}>
+{regularscheduletype.map((scheduleItem, index) => (
+<Text key={index} style={styles.CardDetail}>
+Scheduled Type:
+<Text style={styles.CardMap}>{scheduleItem.schedule_type}</Text>
+</Text>
+))}
+</View>
+<View style={styles.column}>
+{sampletype.map((sampleItem, index) => (
+<Text key={index} style={styles.CardDetail}>
+Sample Type:
+<Text style={styles.CardMap}>{sampleItem.sample_type}</Text>
+</Text>
+))}
+</View>
+</View>
+</TouchableOpacity>
+</View>
+</ScrollView>
+);
 };
 
+return (
+<ScrollView>
+<View>
+{/* <Text style={styles.headersample}>
+SAMPLING
+</Text> */}
+<View style={styles.horizontalLine}></View>
+<View style={styles.rowContainer}>
+<TextInput
+  style={styles.searchBarInput}
+  placeholder="Search"
+  placeholderTextColor="gray"
+  value={searchValue}
+  onChangeText={text => {
+    setSearchValue(text);
+    handleSearch(text);
+  }}
+/>
+
+<View style={styles.searchIconContainer}>
+<MaterialIcons
+           name="search"
+           size={20}
+           color="gray"
+           onPress={handleSearch}
+         />
+</View>
+</View>
+<FlatList
+  data={filteredCards}
+  renderItem={renderItem}
+  keyExtractor={item => item.id}
+/>
+  </View>
+</ScrollView>
+);
+}
 
 
 
@@ -184,16 +202,44 @@ flexDirection: 'row',
 alignItems: 'center',
 marginLeft: 30,
 marginTop: 20,
+borderRadius: 20,
+borderColor:'black',
+},
+searchIconContainer: {
+  position: 'absolute',
+  paddingLeft:5,
+  // right: 1,
+},
+headersample:{
+  backgroundColor: '#CCCCCC',
+  height: 37,
+  color: 'black',
+  fontSize: 15,
+  fontWeight: 'bold',
+  paddingLeft: 20,
+  paddingTop: 9,
+
 },
 searchBar: {
-flex: 1,
-height: 35,
-width: 100,
-borderColor: 'gray',
-borderWidth: 1,
-paddingLeft: 10,
-borderRadius: 20,
-marginRight: 10,
+  flex: 1,
+  height: 35,
+  width: 100,
+  borderColor: 'red',
+  borderWidth: 1,
+  paddingLeft: 10,
+  borderRadius: 20,
+  marginRight: 10,
+  color: 'red',
+},
+searchBarInput:{
+  borderColor: 'black',
+  color:'black',
+  borderWidth: 1,
+  height:40, 
+  width:180,
+  borderRadius:7,
+  paddingLeft: 27, // Adjust this value to align the placeholder text
+  paddingRight: 10,
 },
 card: {
 backgroundColor: 'red',
@@ -258,7 +304,7 @@ RegularCardMain: {
   backgroundColor: '#D0E3F1',
   marginTop: 20,
   width: 350,
-  height: 137,
+  height: 139,
   padding: 10,
   marginLeft: 5,
   },
@@ -296,7 +342,8 @@ RegularCardMain: {
   },
   SearchIcon: {
   marginTop: 30,
-  marginLeft: 10,
+  marginLeft: 20,
+  paddingRight:20,
   },
   };
   

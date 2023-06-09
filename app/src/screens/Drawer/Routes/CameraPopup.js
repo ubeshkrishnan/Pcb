@@ -22,45 +22,35 @@ const handleReviewData = () => {
   navigation.navigate('ReviewData', { viewLocation: viewLocation });
 };
 
-  useEffect(() => {
-    // Get the user's current geolocation
-    const requestLocationPermission = async () => {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+useEffect(() => {
+  const requestLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        Geolocation.getCurrentPosition(
+          position => {
+            setLocation({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            });
+            setViewLocation([{ ...location }]);
+          },
+          error => {
+            console.log('Error getting geolocation:', error);
+          }
         );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          Geolocation.getCurrentPosition(
-            position => {
-              setLocation({
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-              });
-              setLocation(location);
-              setViewLocation([location.coords]);
-              setViewLocation([
-                {
-                  latitude: position.coords.latitude,
-                  longitude: position.coords.longitude,
-                },
-                
-              ]);
-            },
-            error => {
-              console.log('Error getting geolocation:', error);
-            }
-          );
-          
-        } else {
-          console.log('Location permission denied');
-        }
-      } catch (err) {
-        console.warn(err);
+      } else {
+        console.log('Location permission denied');
       }
-    };
+    } catch (err) {
+      console.warn(err);
+    }
+  };
 
-    requestLocationPermission();
-  }, []);
+  requestLocationPermission();
+}, []);
 
   // const handleReviewData = () => {
   //   navigation.navigate('ReviewData');
@@ -120,7 +110,7 @@ const handleReviewData = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.imagecontainer}>
       <TouchableOpacity style={styles.button} onPress={openCamera}>
         <Text style={styles.buttonText}>Open Camera</Text>
       </TouchableOpacity>
@@ -154,7 +144,12 @@ const handleReviewData = () => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
+  imageContainer: {
+    alignItems: 'center',
+  },
+  
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -177,6 +172,7 @@ const styles = StyleSheet.create({
   geolocation: {
     color: 'red',
     marginBottom: 10,
+    
   },
   showGeolocation: {
     display: 'flex',
@@ -186,8 +182,18 @@ const styles = StyleSheet.create({
   },
   showGeolocation: {
     marginTop: 10,
-  }
+  },
+  captureButton: {
+    backgroundColor: 'grey',
+    borderRadius: 25,
+    color: 'blue',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 50,
+    height: 50,
+  },
 });
+
 
 
 export default CameraPopup;

@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   bar: {
     flex: 1,
-    // resizeMode: 'contain',
+    resizeMode: 'contain',
     height:200,
     marginTop:40,
     width:200,

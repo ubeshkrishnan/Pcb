@@ -23,8 +23,8 @@ const RegularScreenChild = ({ navigation }) => {
     }
   };
 
-  const navigateToReviewData = () => {
-    navigation.navigate('ReviewData');
+  const navigateToReviewData = (item) => {
+    navigation.navigate('Review Data', { data: item });
   };
 
   if (isLoading) {
@@ -46,7 +46,7 @@ const RegularScreenChild = ({ navigation }) => {
 
       {data.map((item) => (
         <View style={styles.RegularCard} key={item.id}>
-          <TouchableOpacity onPress={navigateToReviewData}>
+          <TouchableOpacity onPress={() => navigateToReviewData(item)}>
             <Text style={styles.CardSerialNo}>
               {item.serialNo}
               <Text style={styles.CardDetailRight}>11001-01</Text>
@@ -77,6 +77,7 @@ const RegularScreenChild = ({ navigation }) => {
 };
 
 export default RegularScreenChild;
+
 
 const styles = {
   CardSerialNo: {

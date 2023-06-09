@@ -3,16 +3,21 @@ import { View, Text, StyleSheet, Image, TextInput, Button, ScrollView, Touchable
 import { Picker } from '@react-native-picker/picker';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Url } from '../../../../Global_Variable/api_link';
-
 const ReviewData = ({ route, navigation }) => {
   const [selectedSampleType, setSelectedSampleType] = useState('');
   const [selectedContainerType, setSelectedContainerType] = useState('');
   const [users, setUsers] = useState([]);
-  const { viewLocation } = route.params;
+  const { data } = route.params;
 
   const handleImageClick = () => {
     navigation.navigate('CameraPopup');
     console.log('CameraPopup');
+  };
+
+  const handleSave = () => {
+    // Perform save logic here
+    console.log('Save button clicked');
+    console.log('Data:', data);
   };
 
   return (
@@ -28,7 +33,7 @@ const ReviewData = ({ route, navigation }) => {
           <View style={styles.inputRow}>
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Sample Type</Text>
-              <TextInput style={styles.input} />
+              <TextInput style={styles.input} value={data?.sampleType} onChangeText={(text) => setData({ ...data, sampleType: text })} />
             </View>
 
             <View style={styles.inputColumn}>
@@ -44,26 +49,51 @@ const ReviewData = ({ route, navigation }) => {
               </Picker>
             </View>
           </View>
-
-          {/* Rest of the input fields */}
-          
+          <View style={styles.inputRow}>
+            <View style={styles.inputColumn}>
+              <Text style={styles.label}>Serial No</Text>
+              <TextInput style={styles.input} />
+            </View>
+            <View style={styles.inputColumn}>
+              <Text style={styles.label}>Point of collection</Text>
+              <TextInput style={styles.input} />
+            </View>
+          </View>
+          <View style={styles.inputRow}>
+            <View style={styles.inputColumn}>
+              <Text style={styles.label}>Collection Time </Text>
+              <TextInput style={styles.input} />
+            </View>
+            <View style={styles.inputColumn}>
+              <Text style={styles.label}>Container</Text>
+              <TextInput style={styles.input} />
+            </View>
+          </View>
+          <View style={styles.inputRow}>
+            <View style={styles.inputColumn}>
+              <Text style={styles.label}>Sampled by</Text>
+              <TextInput style={styles.input} />
+            </View>
+            <View style={styles.inputColumn}>
+              <Text style={styles.label}>Color</Text>
+              <TextInput style={styles.input} />
+            </View>
+          </View>
           <View style={styles.inputRow}>
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Latitude</Text>
-              <TextInput style={styles.input} value={viewLocation?.[0]?.latitude?.toString()} />
-
+              <TextInput style={styles.input} value={data?.latitude?.toString()} onChangeText={(text) => setData({ ...data, latitude: text })} />
             </View>
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Turbidity</Text>
-              <TextInput style={styles.input} />
+              <TextInput style={styles.input} value={data?.turbidity} onChangeText={(text) => setData({ ...data, turbidity: text })} />
             </View>
           </View>
 
           <View style={styles.inputRow}>
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Longitude</Text>
-              <TextInput style={styles.input} value={viewLocation?.[0]?.longitude?.toString()} />
-
+              <TextInput style={styles.input} value={data?.longitude?.toString()} onChangeText={(text) => setData({ ...data, longitude: text })} />
             </View>
 
             <View style={styles.inputColumn}>
@@ -83,7 +113,7 @@ const ReviewData = ({ route, navigation }) => {
 
         <View style={styles.buttonRow}>
           <Button title="Drafts" onPress={() => console.log('Drafts')} color="black" />
-          <Button title="Save" onPress={() => console.log('Save')} color="green" />
+          <Button title="Save" onPress={handleSave} color="green" />
           <Button title="Cancel" onPress={() => navigation.goBack()} color="red" />
         </View>
       </View>
@@ -96,20 +126,20 @@ const styles = StyleSheet.create({
   inputRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    color:'black'
+    color: 'black'
   },
   inputColumn: {
     flex: 1,
-    marginBottom:10,
+    marginBottom: 10,
   },
   label: {
     fontSize: 16,
-    color:'black'
+    color: 'black'
   },
   input: {
     borderColor: 'gray',
     borderWidth: 1,
-    color:'black',
+    color: 'black',
 
   },
   container: {
@@ -139,33 +169,33 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 10,
     marginRight: 10,
-    color:'black',
+    color: 'black',
   },
   buttonRow: {
-    marginBottom:20,
+    marginBottom: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '65%',
   },
-  draft:{
-    Color:'black'
+  draft: {
+    Color: 'black'
   },
-  captureButtonBg:{
-backgroundColor:'grey',
-height:100,
-width:200,
+  captureButtonBg: {
+    backgroundColor: 'grey',
+    height: 100,
+    width: 200,
   },
-  
-  captureButton:{
+
+  captureButton: {
     backgroundColor: 'grey',
     borderRadius: 25,
-    color:'blue',
-  
+    color: 'blue',
+
   },
   picker: {
     borderColor: 'black',
     backgroundColor: 'grey',
-    height:10,
+    height: 10,
   },
 });
 export default ReviewData;
