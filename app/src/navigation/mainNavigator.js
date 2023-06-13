@@ -48,9 +48,6 @@ const MainNavigator = () => {
         <Drawer.Screen name="Spot Sampling" component={SpotSampling} />
         <Drawer.Screen name="Basic Information" component={BasicInfo} />
         <Drawer.Screen name="Records" component={RecordsScreen} />
-        <Drawer.Screen name="Review Data" component={ReviewData} />
-        <Drawer.Screen name="Actionable ScreenChild" component={ActionableScreenChild} />
-
         {/* <Drawer.Screen name="RegularField" component={RegularField} /> */}
         <Drawer.Screen name="LogOut" component={LogOut} />
         <Drawer.Screen name="." component={CameraPopup} />
@@ -75,6 +72,8 @@ const MainNavigator = () => {
           <Stack.Screen name="DashboardGraph" component={DashboardGraph} />
           <Stack.Screen name="CameraPopup" component={CameraPopup} />
           <Stack.Screen name="RegularScreenChild" component={RegularScreenChild} />
+          <Stack.Screen name="ActionableScreenChild" component={ActionableScreenChild} />
+           <Drawer.Screen name="Review Data" component={ReviewData} />
           <Stack.Screen
             name="Dashboard"
             component={DrawerNavigator} // Render DrawerNavigator component instead of DashboardScreen

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import { View, Text, StyleSheet, Image, TextInput, Button, ScrollView, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -8,6 +8,7 @@ const ReviewData = ({ route, navigation }) => {
   const [selectedContainerType, setSelectedContainerType] = useState('');
   const [users, setUsers] = useState([]);
   const { data } = route.params;
+  const [dropdownData, setDropdownData] = useState([]);
 
   const handleImageClick = () => {
     navigation.navigate('CameraPopup');
@@ -20,6 +21,16 @@ const ReviewData = ({ route, navigation }) => {
     console.log('Data:', data);
   };
 
+  const fetchDropdownData = () => {
+    fetch(Url+'reviewdataview')
+      .then(response => response.json())
+      .then(data => setDropdownData(data))
+      .catch(error => console.log('Error fetching dropdown data:', error));
+  };
+  useEffect(() => {
+    fetchDropdownData();
+  }, []);
+  
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
       <View style={styles.container}>
@@ -65,8 +76,16 @@ const ReviewData = ({ route, navigation }) => {
               <TextInput style={styles.input} />
             </View>
             <View style={styles.inputColumn}>
-              <Text style={styles.label}>Container</Text>
-              <TextInput style={styles.input} />
+              <Text style={styles.label}>container</Text>
+              <Picker
+                selectedValue={selectedSampleType}
+                onValueChange={(itemValue) => setSelectedSampleType(itemValue)}
+                style={styles.picker}
+              >
+                <Picker.Item label="Option 1" value="option1" />
+                <Picker.Item label="Option 2" value="option2" />
+                <Picker.Item label="Option 3" value="option3" />
+              </Picker>
             </View>
           </View>
           <View style={styles.inputRow}>

@@ -25,7 +25,7 @@ const RegularChildScreen = require("./routers/RegularChildScreen");
 // const ActionableScreen = require("./routers/ActionableScreen");
 // const ActionableChildScreen = require("./routers/ActionableChildScreen");
 // const BasicInformation = require("./routers/BasicInformation");
-// const SpotSampling = require("./routers/SpotSampling");
+const SpotSampling = require("./routers/SpotSampling");
 const ReviewData = require("./routers/ReviewData");
 
 
@@ -41,7 +41,7 @@ app.use(RegularChildScreen);
 // app.use(ActionableScreen);
 // app.use(ActionableChildScreen);
 // app.use(BasicInformation);
-// app.use(SpotSampling);
+app.use(SpotSampling);
 app.use(ReviewData);
 
 

@@ -103,6 +103,9 @@ useEffect(() => {
       }
     );
     setLocationVisible(true);
+    console.log(setViewLocation,"lcoation");
+    console.log('viewLocation:', viewLocation);
+
   };
 
   const showAppSettings = () => {

@@ -1,34 +1,94 @@
 import { Text, View, TextInput, Button, ScrollView, StyleSheet } from 'react-native';
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
+import { Url } from '../../../../Global_Variable/api_link';
 
-const  SpotSampling =()=> {
- 
-    return (
-      <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: 'white' }}>
-        <View style={styles.container}>
-          <Text style={styles.label}>Serial No</Text>
-          <TextInput style={styles.input} placeholder="Serial No" placeholderTextColor="#CCCCCC" />
-          <Text style={styles.label}>Point Of Collection</Text>
-          <TextInput style={styles.input} placeholder="Point Of Collection" placeholderTextColor="#CCCCCC" />
-          <Text style={styles.label}>Collection Time Stamp</Text>
-          <TextInput style={styles.input} placeholder="Collection Time Stamp" placeholderTextColor="#CCCCCC" />
-          <Text style={styles.label}>Latitude</Text>
-          <TextInput style={styles.input} placeholder="Latitude" placeholderTextColor="#CCCCCC" />
-          <Text style={styles.label}>Longitude</Text>
-          <TextInput style={styles.input} placeholder="Longitude" placeholderTextColor="#CCCCCC" />
-      
-          <Text style={styles.buttonContainer}>
-            <Button title="Save" onPress={() => console.log('Save pressed')} />
-            <View style={styles.buttonSpacer} /> {/* Adding space between buttons */}
-            <Button title="Cancel" onPress={() => console.log('Cancel pressed')} />
-          </Text>
-        </View>
-      </ScrollView>
-    );
-  }
+const SpotSampling = () => {
+  const [serialNo, setSerialNo] = useState('');
+  const [pointOfCollection, setPointOfCollection] = useState('');
+  const [collectionTimeStamp, setCollectionTimeStamp] = useState('');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+
+  const handleSave = () => {
+    // Create an object with the data to be sent
+    const data = {
+      serialNo: serialNo,
+      pointOfCollection: pointOfCollection,
+      collectionTimeStamp: collectionTimeStamp,
+      latitude: latitude,
+      longitude: longitude,
+    };
+
+    // Make the POST request
+    axios.post(Url+'/spotsampling', data)
+      .then(response => {
+        console.log('POST request successful', response.data);
+      })
+      .catch(error => {
+        console.error('Error making POST request', error);
+      });
+  };
+
+  return (
+    <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: 'white' }}>
+      <View style={styles.container}>
+        <Text style={styles.label}>Serial No</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Serial No"
+          placeholderTextColor="#CCCCCC"
+          value={serialNo}
+          onChangeText={text => setSerialNo(text)}
+        />
+
+        <Text style={styles.label}>Point Of Collection</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Point Of Collection"
+          placeholderTextColor="#CCCCCC"
+          value={pointOfCollection}
+          onChangeText={text => setPointOfCollection(text)}
+        />
+
+        <Text style={styles.label}>Collection Time Stamp</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Collection Time Stamp"
+          placeholderTextColor="#CCCCCC"
+          value={collectionTimeStamp}
+          onChangeText={text => setCollectionTimeStamp(text)}
+        />
+
+        <Text style={styles.label}>Latitude</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Latitude"
+          placeholderTextColor="#CCCCCC"
+          value={latitude}
+          onChangeText={text => setLatitude(text)}
+        />
+
+        <Text style={styles.label}>Longitude</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Longitude"
+          placeholderTextColor="#CCCCCC"
+          value={longitude}
+          onChangeText={text => setLongitude(text)}
+        />
+
+        <Text style={styles.buttonContainer}>
+          <Button title="Save" onPress={handleSave} />
+          <View style={styles.buttonSpacer} /> {/* Adding space between buttons */}
+          <Button title="Cancel" onPress={() => console.log('Cancel pressed')} />
+        </Text>
+      </View>
+    </ScrollView>
+  );
+};
 
 export default SpotSampling;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import axios from "axios";
 import { Url } from "../../../../Global_Variable/api_link"
 import RegularscreenData from './RegularscreenData';
-import ModalRegular from './modalRegular';
+import ModalRegular from './modalRegularChild';
 
 const RegularScreen = () => {
   const [regularscheduletype, setRegularScheduleType] = useState([]);
@@ -15,8 +15,7 @@ const RegularScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [filteredCards, setFilteredCards] = useState([]);
-  const [searchResult, setSearchResult] = useState([]);
-
+  // for navigation
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -78,116 +77,134 @@ const RegularScreen = () => {
   ];
 
   const handleSearch = (text) => {
-    const filteredCards = cards.filter(card => {
-      const companyName = card.company_name.toLowerCase();
+    const filteredCards = cards.filter((card) => {
+      const companyName = (card.company_name || "").toLowerCase();
+      const taluk = (card.taluk || "").toLowerCase();
+      const village = (card.village || "").toLowerCase();
+      const category = (card.category || "").toLowerCase();
+      const scheduleTypes = regularscheduletype?.map((item) => (item.schedule_type || "").toLowerCase()) || [];
+      const sampleTypes = sampletype?.map((item) => (item.sample_type || "").toLowerCase()) || [];
       const searchValueLower = text.toLowerCase();
-      return companyName.includes(searchValueLower);
-    });
   
-    setFilteredCards(filteredCards);
-  };
-  
-  
-  
-  
-
-  const renderItem = ({ item }) => {
-    return (
-      <ScrollView>
+      return (
+        companyName.includes(searchValueLower) ||
+        taluk.includes(searchValueLower) ||
+        village.includes(searchValueLower) ||
+        category.includes(searchValueLower) ||
+        scheduleTypes.includes(searchValueLower) ||
+        sampleTypes.includes(searchValueLower)
+        );
+        });
+        setFilteredCards(filteredCards);
+      };
+      const renderItem = ({ item }) =>{
+        return (
+        <ScrollView>
         <View style={styles.RegularCardMain}>
-          {isModalVisible && <ModalRegular visible={isModalVisible} item={cards} setcards={setCards}/>}
-          <TouchableOpacity onPress={navigateToRegularScreenChild}>
-            <Text style={styles.CardSerialNo}>
-              11000
-              <Text style={styles.CardDetailRight}>{item.company_name}</Text>
-            </Text>
-            <View style={styles.row}>
-              <View style={styles.column}>
-                <Text style={styles.CardDetail}>
-                  Region/Taluk:
-                  <Text style={styles.CardMap}>{item.taluk}</Text>
-                </Text>
-                <Text style={styles.CardDetail}> Village:
-                  <Text style={styles.CardMap}>{item.village}</Text>
-</Text>
-</View>
-<View style={styles.column}>
-<Text style={styles.CardDetail}>
-No Of Samples:
-<Text style={styles.CardMap}>{item.water}</Text>
-</Text>
-<Text style={styles.CardDetail}>
-Category:
-<Text style={styles.CardMap}>{item.category}</Text>
-</Text>
-</View>
-</View>
-<View style={styles.row}>
-<View style={styles.column}>
-{regularscheduletype.map((scheduleItem, index) => (
-<Text key={index} style={styles.CardDetail}>
-Scheduled Type:
-<Text style={styles.CardMap}>{scheduleItem.schedule_type}</Text>
-</Text>
-))}
-</View>
-<View style={styles.column}>
-{sampletype.map((sampleItem, index) => (
-<Text key={index} style={styles.CardDetail}>
-Sample Type:
-<Text style={styles.CardMap}>{sampleItem.sample_type}</Text>
-</Text>
-))}
-</View>
-</View>
-</TouchableOpacity>
-</View>
-</ScrollView>
-);
-};
-
-return (
-<ScrollView>
-<View>
-{/* <Text style={styles.headersample}>
-SAMPLING
-</Text> */}
-<View style={styles.horizontalLine}></View>
-<View style={styles.rowContainer}>
-<TextInput
-  style={styles.searchBarInput}
-  placeholder="Search"
-  placeholderTextColor="gray"
-  value={searchValue}
-  onChangeText={text => {
-    setSearchValue(text);
-    handleSearch(text);
-  }}
-/>
-
-<View style={styles.searchIconContainer}>
-<MaterialIcons
-           name="search"
-           size={20}
-           color="gray"
-           onPress={handleSearch}
-         />
-</View>
-</View>
-<FlatList
-  data={filteredCards}
-  renderItem={renderItem}
-  keyExtractor={item => item.id}
-/>
-  </View>
-</ScrollView>
-);
-}
-
-
-
-
+        {isModalVisible && <ModalRegular visible={isModalVisible} item={cards} setcards={setCards}/>}
+        <TouchableOpacity onPress={navigateToRegularScreenChild}>
+        <Text style={styles.CardSerialNo}>
+        11000
+        <Text style={styles.CardDetailRight}>{item.company_name}</Text>
+        </Text>
+        <View style={styles.row}>
+        <View style={styles.column}>
+        <Text style={styles.CardDetail}>
+        Region/Taluk:
+        <Text style={styles.CardMap}>{item.taluk}</Text>
+        </Text>
+        <Text style={styles.CardDetail}> Village:
+        <Text style={styles.CardMap}>{item.village}</Text>
+        </Text>
+        </View>
+        <View style={styles.column}>
+        <Text style={styles.CardDetail}>
+        No Of Samples:
+        <Text style={styles.CardMap}>{item.water}</Text>
+        </Text>
+        <Text style={styles.CardDetail}>
+        Category:
+        <Text style={styles.CardMap}>{item.category}</Text>
+        </Text>
+        </View>
+        </View>
+        <View style={styles.row}>
+        <View style={styles.column}>
+        {regularscheduletype.map((scheduleItem, index) => (
+        <Text key={index} style={styles.CardDetail}>
+        Scheduled Type:
+        <Text style={styles.CardMap}>{scheduleItem.schedule_type}</Text>
+        </Text>
+        ))}
+        </View>
+        <View style={styles.column}>
+        {sampletype.map((sampleItem, index) => (
+        <Text key={index} style={styles.CardDetail}>
+        Sample Type:
+        <Text style={styles.CardMap}>{sampleItem.sample_type}</Text>
+        </Text>
+        ))}
+        </View>
+        </View>
+        </TouchableOpacity>
+        </View>
+        </ScrollView>
+        );
+        };
+        
+        const renderNoRecords = () => {
+        return (
+        <View style={styles.noRecordsContainer}>
+        <Text style={styles.noRecordsText}>No records found</Text>
+        </View>
+        );
+        };
+        
+        return (
+        <ScrollView>
+        <View>
+        <View style={styles.horizontalLine}></View>
+        <View style={styles.rowContainer}>
+        <TextInput
+        style={styles.searchBarInput}
+        placeholder="Search"
+        placeholderTextColor="gray"
+        value={searchValue}
+        onChangeText={(text) => {
+        setSearchValue(text);
+        handleSearch(text);
+        }}
+        autoFocus // Enable autofocus
+        />
+       
+        <View style={styles.searchIconContainer}>
+        <MaterialIcons
+                   name="search"
+                   size={20}
+                   color="gray"
+                   onPress={handleSearch}
+                 />
+        </View>
+        </View>
+        <FlatList
+        data={filteredCards}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        ListEmptyComponent={renderNoRecords}
+        />
+        </View>
+        </ScrollView>
+        );
+        };
+        export default RegularScreen;
+        
 const styles = {
+  noRecordsText:{
+color:"grey",
+textAlign:"center",
+marginTop:40,
+fontSize:16,
+  },
 headerText: {
 color: 'black',
 marginTop: 15,
@@ -347,4 +364,3 @@ RegularCardMain: {
   },
   };
   
-  export default RegularScreen;

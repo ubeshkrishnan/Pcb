@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Text, View, TextInput, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const ModalRegular = ({ visible, item, setcards }) => {
+const ModalActionable = ({ visible, item, setcards }) => {
   const [inputValues, setInputValues] = useState({
     serialno: '',
     companyname: '',
@@ -173,4 +173,4 @@ const styles = {
   },
 };
 
-export default ModalRegular;
+export default ModalActionable;

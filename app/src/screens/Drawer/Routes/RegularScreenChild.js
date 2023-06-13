@@ -3,18 +3,28 @@ import { Text, View, TouchableOpacity, Modal, ActivityIndicator } from 'react-na
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import { Url } from '../../../../Global_Variable/api_link';
+import ModalRegularChild from './modalRegularChild';
 
 const RegularScreenChild = ({ navigation }) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
 
+  const openModal = () => {
+    setModalVisible(true);
+  };
+  
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+  
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(Url+'/regularscreenchild');
+      const response = await axios.get(Url + '/regularscreenchild');
       setData(response.data);
       setIsLoading(false);
     } catch (error) {
@@ -38,8 +48,11 @@ const RegularScreenChild = ({ navigation }) => {
   return (
     <View>
       <Text style={styles.CardSerialNo}>
-        {/* <MaterialIcons name="search" size={20} style={styles.SearchIcon} /> */}
-        <Text >11000 - Sivajothi Blue Metal</Text>
+        11000 - Sivajothi Blue Metal
+        <TouchableOpacity onPress={openModal} style={styles.addButton}>
+          <MaterialIcons name="add" size={20} />
+          <Text style={styles.addButtonLabel}>Add</Text>
+        </TouchableOpacity>
       </Text>
 
       <View style={styles.horizontalLine}></View>
@@ -52,6 +65,8 @@ const RegularScreenChild = ({ navigation }) => {
               <Text style={styles.CardDetailRight}>11001-01</Text>
             </Text>
 
+            <ModalRegularChild visible={modalVisible} item={data} setcards={setData} onClose={closeModal} />
+
             <Text style={styles.CardDetail}>
               Point of Collection:
               <Text style={styles.CardMap}> {item.poc_type}</Text>
@@ -62,13 +77,10 @@ const RegularScreenChild = ({ navigation }) => {
             </Text>
             <Text style={styles.CardDetail}>
               Latitude:<Text style={styles.CardMap}> {item.latitude}</Text>
-              {/* <MaterialIcons name="keyboard-arrow-right" size={40} style={styles.RightArrowIcon} /> */}
             </Text>
-            
             <Text style={styles.CardDetail}>
               Longitude:<Text style={styles.CardMap}> {item.longitude}</Text>
             </Text>
-     
           </TouchableOpacity>
         </View>
       ))}
@@ -122,8 +134,21 @@ const styles = {
     borderBottomColor: 'black',
     borderBottomWidth: 1,
   },
-  // ArrowContainer: {
-  //   marginLeft: 10, // Adjust the spacing as needed
-  // },
+  addButton: {
+    flexDirection: 'row',
+    marginLeft:50,
+  },
+  
+  
+  addButtonIcon: {
+    marginLeft:40,
+  },
+  addButtonLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft:40,
+    color:'red',
+  },
+  
   
 };

@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Text, View, TextInput, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
+
 const ActionableScreen = () => {
   const [cards, setCards] = useState([]);
   const [inputValues, setInputValues] = useState(['', '', '', '', '', '', '', '']);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const navigation = useNavigation();
+  
   const handleAddCard = () => {
     setIsModalVisible(true);
   };
@@ -72,12 +74,7 @@ const ActionableScreen = () => {
   return (
     <ScrollView>
       <View>
-        {/* <Text style={styles.CardSerialNo}>
-          <MaterialIcons name="search" size={20} style={styles.SearchIcon} />
-          <Text style={styles.CardMap}> SAMPLING</Text>
-        </Text> */}
-
-        <View style={styles.horizontalLine}></View>
+      <View style={styles.horizontalLine}></View>
 
         <View style={styles.rowContainer}>
   <TextInput
@@ -87,6 +84,7 @@ const ActionableScreen = () => {
     // value={searchValue}
     onChangeText={text => setSearchValue(text)}
     // onSubmitEditing={handleSearch}
+    autoFocus // Enable autofocus
   />
   <View style={styles.searchIconContainer}>
     <MaterialIcons
@@ -100,11 +98,8 @@ const ActionableScreen = () => {
             <Text style={styles.addButtonLabel}>Add</Text>
           </TouchableOpacity>
 </View>
-
-         
-        </View>
-
-        {cards.map((card, cardIndex) => (
+    </View>
+ {/* {cards.map((card, cardIndex) => (
           <TouchableOpacity key={cardIndex} onPress={navigateToActionableScreenChild}>
             <View style={styles.ActionableCardMain}>
               <Text style={styles.CardSerialNo}></Text>
@@ -144,7 +139,7 @@ const ActionableScreen = () => {
               ))}
             </View>
           </TouchableOpacity>
-        ))}
+        ))} */}
 
         <View style={styles.ActionableCardMain}>
           <TouchableOpacity onPress={navigateToActionableScreenChild}>
