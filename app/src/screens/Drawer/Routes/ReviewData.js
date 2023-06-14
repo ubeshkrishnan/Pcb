@@ -1,15 +1,36 @@
-import React, { useState ,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TextInput, Button, ScrollView, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Url } from '../../../../Global_Variable/api_link';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateLocation } from '../../../store/Reviewstore';
+
 const ReviewData = ({ route, navigation }) => {
+
+  const store = useSelector(store => store.counter)
+  const dispatch =useDispatch();
+  // console.log(store.location, "reviewdata check")
+  
   const [selectedSampleType, setSelectedSampleType] = useState('');
   const [selectedContainerType, setSelectedContainerType] = useState('');
   const [users, setUsers] = useState([]);
   const { data } = route.params;
   const [dropdownData, setDropdownData] = useState([]);
+  const [datas, setData] = useState({
 
+    sample_type: '',
+    longitude: '',
+    latitude: '',
+    turbidity: '',
+    serial_no: '',
+    point_of_collection: '',
+    collection_time: '',
+    container: '',
+    sampled_by: '',
+    color: '',
+    treatment_type: '',
+  });
   const handleImageClick = () => {
     navigation.navigate('CameraPopup');
     console.log('CameraPopup');
@@ -22,15 +43,27 @@ const ReviewData = ({ route, navigation }) => {
   };
 
   const fetchDropdownData = () => {
-    fetch(Url+'reviewdataview')
+    fetch(Url + 'reviewdataview')
       .then(response => response.json())
       .then(data => setDropdownData(data))
       .catch(error => console.log('Error fetching dropdown data:', error));
   };
   useEffect(() => {
     fetchDropdownData();
+
   }, []);
-  
+  useEffect(() => {
+    setData({ ...datas, longitude: store.location.longitude, latitude: store.location.latitude })
+    return()=>{
+      // console.log("lat long")
+      setData({ ...datas, longitude:'', latitude: ''})
+      dispatch(updateLocation({
+        latitude:'',
+        longitude: '',
+      }));
+    }
+  }, [store.location])
+
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
       <View style={styles.container}>
@@ -101,18 +134,18 @@ const ReviewData = ({ route, navigation }) => {
           <View style={styles.inputRow}>
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Latitude</Text>
-              <TextInput style={styles.input} value={data?.latitude?.toString()} onChangeText={(text) => setData({ ...data, latitude: text })} />
+              <TextInput style={styles.input} value={datas?.latitude?.toString()} onChangeText={(text) => setData({ ...data, latitude: text })} />
             </View>
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Turbidity</Text>
-              <TextInput style={styles.input} value={data?.turbidity} onChangeText={(text) => setData({ ...data, turbidity: text })} />
+              <TextInput style={styles.input} value={datas?.turbidity} onChangeText={(text) => setData({ ...data, turbidity: text })} />
             </View>
           </View>
 
           <View style={styles.inputRow}>
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Longitude</Text>
-              <TextInput style={styles.input} value={data?.longitude?.toString()} onChangeText={(text) => setData({ ...data, longitude: text })} />
+              <TextInput style={styles.input} value={datas?.longitude?.toString()} onChangeText={(text) => setData({ ...data, longitude: text })} />
             </View>
 
             <View style={styles.inputColumn}>

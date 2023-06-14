@@ -4,22 +4,23 @@ import axios from 'axios';
 import { Url } from '../../../../Global_Variable/api_link';
 
 const SpotSampling = () => {
-  const [serialNo, setSerialNo] = useState('');
-  const [pointOfCollection, setPointOfCollection] = useState('');
-  const [collectionTimeStamp, setCollectionTimeStamp] = useState('');
+  const [serial_no, setSerialNo] = useState('');
+  const [point_of_collection, setPointOfCollection] = useState('');
+  const [collection_time, setCollectionTimeStamp] = useState('');
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
 
   const handleSave = () => {
     // Create an object with the data to be sent
+
     const data = {
-      serialNo: serialNo,
-      pointOfCollection: pointOfCollection,
-      collectionTimeStamp: collectionTimeStamp,
+      serial_no: serial_no,
+      point_of_collection: point_of_collection,
+      collection_time: collection_time,
       latitude: latitude,
       longitude: longitude,
     };
-
+console.log(data,"data")
     // Make the POST request
     axios.post(Url+'/spotsampling', data)
       .then(response => {
@@ -38,7 +39,7 @@ const SpotSampling = () => {
           style={styles.input}
           placeholder="Serial No"
           placeholderTextColor="#CCCCCC"
-          value={serialNo}
+          value={serial_no}
           onChangeText={text => setSerialNo(text)}
         />
 
@@ -47,7 +48,7 @@ const SpotSampling = () => {
           style={styles.input}
           placeholder="Point Of Collection"
           placeholderTextColor="#CCCCCC"
-          value={pointOfCollection}
+          value={point_of_collection}
           onChangeText={text => setPointOfCollection(text)}
         />
 
@@ -56,7 +57,7 @@ const SpotSampling = () => {
           style={styles.input}
           placeholder="Collection Time Stamp"
           placeholderTextColor="#CCCCCC"
-          value={collectionTimeStamp}
+          value={collection_time}
           onChangeText={text => setCollectionTimeStamp(text)}
         />
 

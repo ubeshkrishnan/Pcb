@@ -1,8 +1,10 @@
 import React, { useRef, useEffect } from 'react';
 import { StyleSheet, View, Text, Image, Animated } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const HeaderSession = () => {
+const HeaderSession = async () => {
   const logoOpacity = useRef(new Animated.Value(0)).current;
+  const userdata = await AsyncStorage.getItem('login');
 
   useEffect(() => {
     Animated.timing(logoOpacity, {

@@ -2,19 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, TextInput, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Url } from '../../../../Global_Variable/api_link';
+import SelectDropdown from 'react-native-select-dropdown';
 
 const ModalRegularChild = ({ visible, item, setcards }) => {
   const [inputValues, setInputValues] = useState({
-    serialno: '',
-    pointofcollection: '',
-    collectiontime: '',
+    serial_no: '',
+    point_of_collection: null,
+    collection_time: '',
     latitude: '',
     longitude: '',
   });
 
   const [pointOfCollectionOptions, setPointOfCollectionOptions] = useState([]);
-
-  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const navigation = useNavigation();
 
@@ -26,15 +25,25 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
   };
 
   const handleCancel = () => {
-    setInputValues({});
+    setInputValues({
+      serial_no: '',
+      point_of_collection: null,
+      collection_time: '',
+      latitude: '',
+      longitude: '',
+    });
     navigation.goBack();
   };
 
   const handleSave = () => {
     const postData = {
-      ...inputValues,
+      serial_no:inputValues.serial_no,
+      poc_val: inputValues.point_of_collection ? inputValues.point_of_collection.poc_id : null,
+      collection_time_val: inputValues.collection_time,
+      latitude_val: inputValues.latitude,
+      longitude_val: inputValues.longitude,
     };
-
+console.log(postData,'post data')
     fetch(Url + '/modalregular', {
       method: 'POST',
       headers: {
@@ -46,8 +55,6 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
       .then((data) => {
         item.push(inputValues);
         setcards(item);
-        // console.log(item.length, 'asdad');
-        // console.log(inputValues, 'daaata');
       })
       .catch((error) => {
         console.error(error);
@@ -67,46 +74,37 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
   useEffect(() => {
     fetchPointOfCollectionOptions();
   }, []);
-
   return (
     <Modal visible={visible} animationType="slide">
       <ScrollView>
         <View style={styles.modalContainer}>
           <TextInput
             style={styles.inputField}
-            value={inputValues.serialno}
-            onChangeText={(value) => handleInputChange('serialno', value)}
+            value={inputValues.serial_no}
+            onChangeText={(value) => handleInputChange('serial_no', value)}
             placeholder="Serial No"
             placeholderTextColor="black"
           />
+          <SelectDropdown
+            data={pointOfCollectionOptions}
+            onSelect={(selectedItem) => handleInputChange('point_of_collection', selectedItem)}
+            defaultButtonText="Select Point of Collection"
+            buttonTextAfterSelection={(selectedItem) => selectedItem.poc_type}
+            rowTextForSelection={(item, index) => {
+              return item.poc_type
 
-          <TouchableOpacity
-            style={styles.dropdownContainer}
-            onPress={() => setDropdownOpen(!dropdownOpen)}
-          >
-            <Text style={styles.dropdownLabel}>Point Of Collection</Text>
-            <Text style={styles.dropdownValue}>{inputValues.pointofcollection}</Text>
-          </TouchableOpacity>
-          {/* Render the dropdown options */}
-          {dropdownOpen && (
-            <View style={styles.dropdownOptionsContainer}>
-            {pointOfCollectionOptions.map((option) => (
-  <TouchableOpacity
-    key={option.poc_id}
-    style={styles.dropdownOption}
-    onPress={() => handleInputChange('pointofcollection', option.poc_type)}
-  >
-    <Text style={styles.dropdownOptionLabel}>{option.poc_type}</Text>
-  </TouchableOpacity>
-))}
-
-            </View>
-          )}
+            }}
+            buttonStyle={styles.dropdownButton}
+            buttonTextStyle={styles.dropdownButtonText}
+            renderDropdownIcon={() => <Text style={styles.dropdownIcon}>▼</Text>}
+            dropdownStyle={styles.dropdown}
+            dropdownTextStyle={styles.dropdownText}
+          />
 
           <TextInput
             style={styles.inputField}
-            value={inputValues.collectiontime}
-            onChangeText={(value) => handleInputChange('collectiontime', value)}
+            value={inputValues.collection_time}
+            onChangeText={(value) => handleInputChange('collection_time', value)}
             placeholder="Collection Time Stamp"
             placeholderTextColor="black"
           />
@@ -122,8 +120,7 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
             value={inputValues.longitude}
             onChangeText={(value) => handleInputChange('longitude', value)}
             placeholder="Longitude"
-            placeholderTextColor="black"
-          />
+            placeholderTextColor="black" />
 
           <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
             <Text style={styles.buttonLabelSave}>Save</Text>
@@ -139,7 +136,6 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
 };
 
 export default ModalRegularChild;
-
 
 
 const styles = {
@@ -165,6 +161,10 @@ const styles = {
     paddingLeft: 7,
     width: 55,
     height: 20,
+  },
+  dropdownIcon: {
+    color: 'black',
+    fontSize: 20,
   },
   buttonLabelSave: {
     color: 'white',

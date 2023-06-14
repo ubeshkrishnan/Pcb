@@ -6,8 +6,15 @@ import axios from "axios";
 import { Url } from "../../../../Global_Variable/api_link"
 import RegularscreenData from './RegularscreenData';
 import ModalRegular from './modalRegularChild';
+import {useDispatch,useSelector } from 'react-redux'
+import {increment} from '../../../store/Reviewstore'
+
 
 const RegularScreen = () => {
+  const store = useSelector(store => store.counter);
+  // console.log(store,"store")
+  const dispatch =  useDispatch();
+
   const [regularscheduletype, setRegularScheduleType] = useState([]);
   const [sampletype, setSampleType] = useState([]);
   const [cards, setCards] = useState([]);
@@ -100,6 +107,8 @@ const RegularScreen = () => {
       const renderItem = ({ item }) =>{
         return (
         <ScrollView>
+
+   
         <View style={styles.RegularCardMain}>
         {isModalVisible && <ModalRegular visible={isModalVisible} item={cards} setcards={setCards}/>}
         <TouchableOpacity onPress={navigateToRegularScreenChild}>
@@ -176,7 +185,7 @@ const RegularScreen = () => {
         }}
         autoFocus // Enable autofocus
         />
-       
+          <TouchableOpacity onPress={()=>{console.log("increment");dispatch(increment(2))}}><Text style={{color:'red'}} >click me</Text></TouchableOpacity>
         <View style={styles.searchIconContainer}>
         <MaterialIcons
                    name="search"
@@ -192,6 +201,7 @@ const RegularScreen = () => {
         keyExtractor={(item) => item.id}
         ListEmptyComponent={renderNoRecords}
         />
+        
         </View>
         </ScrollView>
         );
