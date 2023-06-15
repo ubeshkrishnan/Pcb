@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TextInput, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Url } from '../../../../Global_Variable/api_link';
+import { Url } from '../../../../../Global_Variable/api_link';
 import SelectDropdown from 'react-native-select-dropdown';
 
 const ModalRegularChild = ({ visible, item, setcards }) => {

@@ -4,7 +4,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import axios from "axios";
 import { Url } from "../../../../Global_Variable/api_link"
-import RegularscreenData from './RegularscreenData';
 import ModalRegular from './modalRegular';
 
 const Regular = () => {

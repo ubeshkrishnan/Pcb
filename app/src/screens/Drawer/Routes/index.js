@@ -2,8 +2,8 @@ import { View, Text,StatusBar ,StyleSheet } from 'react-native'
 import React from 'react'
 import Records from './RecordScreen';
 import Regular from  './RegularScreen';
-import Actionable from './ActionableScreen';
-import  SpotSampling from './SpotSamplingScreen';
+import Actionable from './Actionable/ActionableScreen';
+import  SpotSampling from './Spot Sample/SpotSamplingScreen';
 import Basicinfo from './BasicInformationScreen';
 import ReviewData from "./ReviewData";
 import Logout from "./LogOut";

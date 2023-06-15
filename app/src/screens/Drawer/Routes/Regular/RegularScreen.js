@@ -3,10 +3,10 @@ import { Text, View, TextInput, TouchableOpacity, FlatList } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import axios from "axios";
-import { Url } from "../../../../Global_Variable/api_link"
-import ModalRegular from './Regular/modalRegularChild';
+import { Url } from "../../../../../Global_Variable/api_link"
+import ModalRegular from './modalRegularChild';
 import { useDispatch, useSelector } from 'react-redux';
-import { increment } from '../../../store/Reviewstore';
+import { increment } from '../../../../store/Reviewstore';
 
 const RegularScreen = () => {
   const store = useSelector(store => store.counter);

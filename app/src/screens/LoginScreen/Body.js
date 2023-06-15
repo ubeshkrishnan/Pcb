@@ -73,16 +73,20 @@ const LoginScreen = () => {
   
       if (response.data.success) {
         // Successful login
-        await AsyncStorage.setItem('login', response.data);
+        await AsyncStorage.setItem('login', JSON.stringify(response.data));
+        const storedData = await AsyncStorage.getItem('login');
+        const data = JSON.parse(storedData);
+
+        
         handleNavigateToDashboard();
-        return; // Add this line to exit the function and prevent further execution
+        return;
       }
-      
+  
       // Login error
       setError('Invalid email or password');
     } catch (error) {
       // Error during login
-      setError('An error occurred during login FRONT');
+      setError('An error occurred during login FRONT: ' + error.message);
     }
   };
   

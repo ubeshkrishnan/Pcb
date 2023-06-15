@@ -1,12 +1,20 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { StyleSheet, View, Text, Image, Animated } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const HeaderSession = async () => {
+const HeaderSession = () => {
   const logoOpacity = useRef(new Animated.Value(0)).current;
-  const userdata = await AsyncStorage.getItem('login');
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
+    const fetchData = async () => {
+      const storedData = await AsyncStorage.getItem('login');
+      const data = JSON.parse(storedData);
+      setUserData(data);
+    };
+
+    fetchData();
+
     Animated.timing(logoOpacity, {
       toValue: 1,
       duration: 1000,
@@ -31,11 +39,12 @@ const HeaderSession = async () => {
           style={styles.profileImage}
           source={require('../assets/profile.png')}
         />
-        <Text style={styles.title}>E1023</Text>
+        <Text style={styles.title}>{userData?.username}</Text>
       </View>
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   header: {
     backgroundColor: 'cyan',

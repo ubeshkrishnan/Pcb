@@ -1,7 +1,7 @@
 import { Text, View, TextInput, Button, ScrollView, StyleSheet } from 'react-native';
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Url } from '../../../../Global_Variable/api_link';
+import { Url } from '../../../../../Global_Variable/api_link';
 
 const SpotSampling = () => {
   const [serial_no, setSerialNo] = useState('');
