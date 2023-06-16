@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { Axios } from 'axios';
 import React, { useRef, useEffect, useState } from 'react';
 import {
   View,
@@ -9,6 +9,7 @@ import {
   Animated,
   ScrollView,
   StyleSheet,
+  Alert,
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
@@ -18,12 +19,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Url} from "../../../Global_Variable/api_link";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
-
 const LoginScreen = () => {
   const logoOpacity = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
-
   const [email, setEmail] = useState('admin@gmail.com');
   const [password, setPassword] = useState('lims@123');
   const [showPassword, setShowPassword] = useState(false);
@@ -32,10 +30,6 @@ const LoginScreen = () => {
   const [error, setError] = useState('');
 
   // local storage
-  
-  
-
-
   const emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
   const togglePasswordVisibility = () => {
@@ -73,13 +67,13 @@ const LoginScreen = () => {
   
       if (response.data.success) {
         // Successful login
-        await AsyncStorage.setItem('login', JSON.stringify(response.data));
-        const storedData = await AsyncStorage.getItem('login');
+         AsyncStorage.setItem('login', JSON.stringify(response.data));
+        const storedData = AsyncStorage.getItem('login');
         const data = JSON.parse(storedData);
-
-        
-        handleNavigateToDashboard();
-        return;
+        // console.log(AsyncStorage.getItem('login'))
+        alert(AsyncStorage.getItem('login'))
+        // handleNavigateToDashboard();
+        // return;
       }
   
       // Login error
@@ -110,6 +104,12 @@ const LoginScreen = () => {
   
         if (response.data.success) {
           // Successful login
+    
+          AsyncStorage.setItem('login', JSON.stringify(response.data));
+          // alert(AsyncStorage.getItem('login'))
+          AsyncStorage.getItem("login").then((value) => {
+            alert("checking the local storage value"+value)
+         })
           handleNavigateToDashboard();
         } else {
           // Login error
@@ -118,6 +118,7 @@ const LoginScreen = () => {
       } catch (error) {
         // Error during login
         setError('An error occurred during login FRONT');
+        alert('Error')
       }
     }
   };
@@ -230,6 +231,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
   },
+  
   inputContainer: {
     marginVertical: 10,
     alignItems: 'center',

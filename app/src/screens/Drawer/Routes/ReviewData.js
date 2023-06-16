@@ -52,6 +52,7 @@ const ReviewData = ({ route, navigation }) => {
     fetchDropdownData();
 
   }, []);
+  
   useEffect(() => {
     setData({ ...datas, longitude: store.location.longitude, latitude: store.location.latitude })
     return()=>{

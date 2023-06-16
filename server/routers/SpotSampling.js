@@ -15,39 +15,26 @@ app.get("/spotsampling", (req, res) => {
   res.send("hello Spot sample");
 });
 
-// Endpoint to retrieve regular card details::::
-app.post('/spotsampling', (req, res) => {
-  const { collection_time, latitude, longitude } = req.body;
 
-  // Generate a unique serial number
-  const serialNo = generateSerialNumber();
 
-  // Insert the data into the database
-  const query = 'INSERT INTO sample_details (serial_no, collection_time, latitude, longitude) VALUES ($1, $2, $3, $4)';
-  const values = [serialNo, collection_time, latitude, longitude];
+// Endpoint to retrieve regular card details
+app.get('/spotpointofcollection', (req, res) => {
+  const { poc_id, collection_time, latitude, longitude, sample_id } = req.query;
 
-  db.query(query, values, (err) => {
-    if (err) {
-      console.error('Error inserting data into PostgreSQL:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
+  // Update the sample_details table with the provided values
+  const query = `UPDATE sample_details SET poc_id = $1, collection_time = $2, latitude = $3, longitude = $4 WHERE sample_id = $5 AND poc_ic = $6`;
+  const values = [poc_id, collection_time, latitude, longitude, sample_id, poc_id];
+
+  db.query(query, values, (error, result) => {
+    if (error) {
+      console.error('Error executing query:', error);
+      res.status(500).json({ error: 'Internal server error' });
     } else {
-      console.log('Data inserted successfully');
-      res.status(200).json({ message: 'Data inserted successfully' });
+      res.json({ success: true });
     }
   });
 });
 
-function generateSerialNumber() {
-  // Generate the serial number logic here
-  // You can use any logic or library to generate a unique serial number
-  // For example, you can use a timestamp or a combination of random characters
-
-  // Example: Generate a timestamp-based serial number
-  const timestamp = Date.now();
-  const serialNo = `SN-${timestamp}`;
-
-  return serialNo;
-}
 
 
 

@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     // borderBottomLeftRadius:30,
     // borderBottomRightRadius:30,
   },
@@ -69,7 +69,10 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center', // Add this line to center the text horizontally
   },
+  
   title: {
     fontSize: 12,
     fontWeight: 'bold',

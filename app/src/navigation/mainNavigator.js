@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { isReadyRef, navigationRef } from '../helpers';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -11,7 +10,7 @@ import RegularScreen from '../screens/Drawer/Routes/Regular/RegularScreen';
 import RegularScreenChild from '../screens/Drawer/Routes/Regular/RegularScreenChild';
 import ActionableScreen from '../screens/Drawer/Routes/Actionable/ActionableScreen';
 import ActionableScreenChild from '../screens/Drawer/Routes/Actionable/ActionableScreenChild';
-import SpotSampling from '../screens/Drawer/Routes/Spot Sample/SpotSamplingScreen';
+import SpotSampling from '../screens/Drawer/Routes/SpotSample/SpotSamplingScreen';
 import RecordsScreen from '../screens/Drawer/Routes/RecordScreen';
 import Routes from '../screens/Drawer/Routes';
 import DashboardGraph from '../screens/Dashboard/DashboardGraph';
@@ -23,6 +22,7 @@ import NoInternet from '../screens/NoInternet';
 import { NetworkProvider } from 'react-native-offline';
 import NetInfo from "@react-native-community/netinfo";
 import FingerPrint from '../screens/FingerPrint/FingerPrint';
+
 const MainNavigator = () => {
   const [isOnline, setIsOnline] = useState(false);
 
@@ -48,7 +48,6 @@ const MainNavigator = () => {
         <Drawer.Screen name="Spot Sampling" component={SpotSampling} />
         <Drawer.Screen name="Basic Information" component={BasicInfo} />
         <Drawer.Screen name="Records" component={RecordsScreen} />
-        {/* <Drawer.Screen name="RegularField" component={RegularField} /> */}
         <Drawer.Screen name="LogOut" component={LogOut} />
         <Drawer.Screen name="." component={CameraPopup} />
       </Drawer.Navigator>

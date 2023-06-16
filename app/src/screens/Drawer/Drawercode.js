@@ -1,6 +1,6 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import DashboardScreen from '../screens/Dashboard/DashboardScreen';
-import RegularScreen from '../screens/Drawer/Routes/RegularScreen';
+import RegularScreen from '../../screens/Drawer/Routes/Regular/RegularScreen';
 import ActionableScreen from '../screens/Drawer/Routes/ActionableScreen';
 import SpotSampling from '../screens/Drawer/Routes/SpotSamplingScreen';
 import RecordsScreen from '../screens/Drawer/Routes/RecordScreen';

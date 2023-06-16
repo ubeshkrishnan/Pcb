@@ -9,7 +9,7 @@ const DashboardGraph = () => {
   const [unscheduled, setUnscheduled] = useState(0);
 
   useEffect(() => {
-    fetchData();
+    // fetchData();
   }, []);
 
   const fetchData = async () => {

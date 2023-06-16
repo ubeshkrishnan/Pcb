@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
-import { Url } from '../../../../Global_Variable/api_link';
+import { Url } from '../../../../../Global_Variable/api_link';
 import ModalRegularChild from './modalRegularChild';
 
 const RegularScreenChild = ({ navigation }) => {
