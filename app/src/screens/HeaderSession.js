@@ -5,16 +5,24 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const HeaderSession = () => {
   const logoOpacity = useRef(new Animated.Value(0)).current;
   const [userData, setUserData] = useState(null);
+  const [employeeIds, setEmployeeIds] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const storedData = await AsyncStorage.getItem('login');
-      const data = JSON.parse(storedData);
-      setUserData(data);
-    };
+    const fetchData =  () => {
+      const  data = AsyncStorage.getItem("login").then((value) => {
+      setUserData(value.toString().replace(/"/g,''));
+      if (value) {
 
+        // Extract the employee_id from the data
+        // Map the employee_id if it is an array
+        if (Array.isArray(value)) {
+          setEmployeeIds(value);
+        }
+      }
+    })
+  };
     fetchData();
-
+    
     Animated.timing(logoOpacity, {
       toValue: 1,
       duration: 1000,
@@ -22,6 +30,14 @@ const HeaderSession = () => {
     }).start();
   }, []);
 
+  // Render the employee_ids
+  const renderEmployeeIds = () => {
+    return employeeIds.map((id) => (
+      <Text key={id} style={styles.employee_id}>
+        {id}
+      </Text>
+    ));
+  };
   return (
     <View style={styles.header}>
       <View style={styles.leftContainer}>
@@ -39,8 +55,10 @@ const HeaderSession = () => {
           style={styles.profileImage}
           source={require('../assets/profile.png')}
         />
-        <Text style={styles.title}>{userData?.username}</Text>
-      </View>
+        <Text style={styles.title}>{userData}</Text>
+      {/* <Text style={styles.subtitle}>Employee IDs:</Text> */}
+      <View style={styles.employeeIdsContainer}>{renderEmployeeIds()}</View>
+    </View>
     </View>
   );
 };

@@ -16,45 +16,11 @@ const CameraPopup = () => {
   const [cameraPhoto, setCameraPhoto] = useState('');
   const [location, setLocation] = useState(null);
   const navigation = useNavigation();
-const [viewLocation, setViewLocation] = useState([]);
+  const [viewLocation, setViewLocation] = useState([]);
 
-const handleReviewData = () => {
-  navigation.navigate('ReviewData', { viewLocation: viewLocation });
-};
-
-useEffect(() => {
-  const requestLocationPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        Geolocation.getCurrentPosition(
-          position => {
-            setLocation({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-            });
-            setViewLocation([{ ...location }]);
-          },
-          error => {
-            console.log('Error getting geolocation:', error);
-          }
-        );
-      } else {
-        console.log('Location permission denied');
-      }
-    } catch (err) {
-      console.warn(err);
-    }
+  const handleReviewData = () => {
+    navigation.navigate('ReviewData', { viewLocation: viewLocation });
   };
-
-  requestLocationPermission();
-}, []);
-
-  // const handleReviewData = () => {
-  //   navigation.navigate('ReviewData');
-  // };
 
   const openCamera = async () => {
     try {
@@ -85,28 +51,37 @@ useEffect(() => {
     } catch (err) {
       console.warn(err);
     }
-    Geolocation.getCurrentPosition(
-      position => {
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-        setViewLocation([
-          {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          },
-        ]);
-      },
-      error => {
-        console.log('Error getting geolocation:', error);
-      }
-    );
-    setLocationVisible(true);
-    console.log(setViewLocation,"lcoation");
-    console.log('viewLocation:', viewLocation);
-
   };
+
+  useEffect(() => {
+    const requestLocationPermission = async () => {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          Geolocation.getCurrentPosition(
+            position => {
+              setLocation({
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+              });
+              setViewLocation([{ ...location }]);
+            },
+            error => {
+              console.log('Error getting geolocation:', error);
+            }
+          );
+        } else {
+          console.log('Location permission denied');
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    };
+
+    requestLocationPermission();
+  }, []);
 
   const showAppSettings = () => {
     // Logic to navigate to app settings
@@ -121,12 +96,12 @@ useEffect(() => {
         <Image style={styles.imageStyles} source={{ uri: cameraPhoto }} />
       ) : null}
       <Button
-  title="Capture"
-  onPress={handleReviewData}
-  disabled={!cameraPhoto || !location}
->
-  Capture
-</Button>
+        title="Capture"
+        onPress={handleReviewData}
+        disabled={!cameraPhoto || !location}
+      >
+        Capture
+      </Button>
       <Button
         title="Back"
         onPress={() => {
@@ -135,18 +110,18 @@ useEffect(() => {
       />
       {location && (
         <View style={styles.locationContainer}>
-  <Text style={styles.geolocation}>
-    Latitude: {location.latitude.toFixed(6)}
-  </Text>
-  <Text style={styles.geolocation}>
-    Longitude: {location.longitude.toFixed(6)}
-  </Text>
-</View>
-
+          <Text style={styles.geolocation}>
+            Latitude: {location.latitude.toFixed(6)}
+          </Text>
+          <Text style={styles.geolocation}>
+            Longitude: {location.longitude.toFixed(6)}
+          </Text>
+        </View>
       )}
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   imageContainer: {

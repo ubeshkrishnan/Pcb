@@ -37,14 +37,16 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
 
   const handleSave = () => {
     const postData = {
-      serial_no:inputValues.serial_no,
+      serial_no: inputValues.serial_no,
       poc_val: inputValues.point_of_collection ? inputValues.point_of_collection.poc_id : null,
       collection_time_val: inputValues.collection_time,
       latitude_val: inputValues.latitude,
       longitude_val: inputValues.longitude,
     };
-console.log(postData,'post data')
-    fetch(Url + '/modalregular', {
+alert
+    console.log(postData, 'post data');
+
+    fetch(Url + '/modalregular',{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -74,6 +76,7 @@ console.log(postData,'post data')
   useEffect(() => {
     fetchPointOfCollectionOptions();
   }, []);
+
   return (
     <Modal visible={visible} animationType="slide">
       <ScrollView>
@@ -90,10 +93,7 @@ console.log(postData,'post data')
             onSelect={(selectedItem) => handleInputChange('point_of_collection', selectedItem)}
             defaultButtonText="Select Point of Collection"
             buttonTextAfterSelection={(selectedItem) => selectedItem.poc_type}
-            rowTextForSelection={(item, index) => {
-              return item.poc_type
-
-            }}
+            rowTextForSelection={(item, index) => item.poc_type}
             buttonStyle={styles.dropdownButton}
             buttonTextStyle={styles.dropdownButtonText}
             renderDropdownIcon={() => <Text style={styles.dropdownIcon}>▼</Text>}

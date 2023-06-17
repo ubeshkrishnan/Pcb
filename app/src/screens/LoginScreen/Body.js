@@ -11,7 +11,6 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
-
 import { useNavigation } from '@react-navigation/native';
 import Header from './Header';
 import Footer from './Footer';
@@ -22,15 +21,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const LoginScreen = () => {
   const logoOpacity = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
-  const [email, setEmail] = useState('admin@gmail.com');
-  const [password, setPassword] = useState('lims@123');
+  const [empId, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [checkValidEmail, setCheckValidEmail] = useState(false);
   const [checkValidPassword, setCheckValidPassword] = useState(false);
   const [error, setError] = useState('');
 
   // local storage
-  const emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+  // const emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -48,9 +47,9 @@ const LoginScreen = () => {
     }).start();
   }, []);
 
-  const validateEmail = () => {
-    setCheckValidEmail(!emailRegex.test(email));
-  };
+  // const validateEmail = () => {
+  //   setCheckValidEmail(!emailRegex.test(email));
+  // };
 
   const validatePassword = () => {
     setCheckValidPassword(password.length < 6);
@@ -58,7 +57,7 @@ const LoginScreen = () => {
 
   const postData = async () => {
     const data = {
-      email: email,
+      empId: empId,
       password: password,
     };
   
@@ -86,13 +85,11 @@ const LoginScreen = () => {
   
 
   const submit = async () => {
-    const isValidEmail = emailRegex.test(email);
+    // const isValidEmail = emailRegex.test(email);
     const isValidPassword = password.length >= 6;
   
-    if (!isValidEmail) {
-      setCheckValidEmail(true);
-      setError('Please enter a valid email');
-    } else if (!isValidPassword) {
+    
+     if (!isValidPassword) {
       setCheckValidPassword(true);
       setError('Please enter a valid password (minimum 6 characters)');
     } else {
@@ -100,16 +97,18 @@ const LoginScreen = () => {
       setError('');
   
       try {
-        const response = await axios.post(Url + '/auth', { email, password });
+        // alert(email+password)
+        const response = await axios.post(Url + '/auth', { empId, password });
   
         if (response.data.success) {
           // Successful login
     
-          AsyncStorage.setItem('login', JSON.stringify(response.data));
+          AsyncStorage.setItem('login', JSON.stringify(empId));
+      
+
           // alert(AsyncStorage.getItem('login'))
-          AsyncStorage.getItem("login").then((value) => {
-            alert("checking the local storage value"+value)
-         })
+
+         
           handleNavigateToDashboard();
         } else {
           // Login error
@@ -117,8 +116,9 @@ const LoginScreen = () => {
         }
       } catch (error) {
         // Error during login
+        alert(JSON.stringify(error))
         setError('An error occurred during login FRONT');
-        alert('Error')
+        // alert('Error')
       }
     }
   };
@@ -154,18 +154,18 @@ const LoginScreen = () => {
           <TextInput
             style={[
               styles.input,
-              checkValidEmail && styles.inputError,
+              styles.inputError,
             ]}
-            placeholder="@gmail.com"
+            placeholder="username"
             placeholderTextColor="#CCCCCC"
-            value={email}
+            value={empId}
             onChangeText={setEmail}
-            onBlur={validateEmail}
+            // onBlur={validateEmail}
           />
 
-          {checkValidEmail && (
+          {/* {checkValidEmail && (
             <Text style={styles.errorText}>Please enter a valid email</Text>
-          )}
+          )} */}
 
           <View style={styles.passwordContainer}>
             <Text style={styles.label}>Password</Text>

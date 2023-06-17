@@ -6,7 +6,7 @@ import Actionable from './Actionable/ActionableScreen';
 import SpotSampling from './SpotSample/SpotSamplingScreen';
 import Basicinfo from './BasicInformationScreen';
 import ReviewData from "./ReviewData";
-import Logout from "./LogOut";
+import LogOut from "./LogOut";
 const Drawer = () => {
   return (
     <View style={styles.container}>
@@ -16,7 +16,7 @@ const Drawer = () => {
       <SpotSampling />
       <Basicinfo />
       <ReviewData />
-      <Logout />
+      <LogOut />
     </View>
 
   )

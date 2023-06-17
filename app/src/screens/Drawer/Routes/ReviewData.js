@@ -5,7 +5,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Url } from '../../../../Global_Variable/api_link';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateLocation } from '../../../store/Reviewstore';
-
+import SelectDropdown from 'react-native-select-dropdown';
 const ReviewData = ({ route, navigation }) => {
 
   const store = useSelector(store => store.counter)
@@ -14,6 +14,7 @@ const ReviewData = ({ route, navigation }) => {
   
   const [selectedSampleType, setSelectedSampleType] = useState('');
   const [selectedContainerType, setSelectedContainerType] = useState('');
+  const [selectedTreatmentType, setSelectedTreatmentType] = useState('');
   const [users, setUsers] = useState([]);
   const { data } = route.params;
   const [dropdownData, setDropdownData] = useState([]);
@@ -43,7 +44,7 @@ const ReviewData = ({ route, navigation }) => {
   };
 
   const fetchDropdownData = () => {
-    fetch(Url + 'reviewdataview')
+    fetch(Url + 'reviewdata')
       .then(response => response.json())
       .then(data => setDropdownData(data))
       .catch(error => console.log('Error fetching dropdown data:', error));
@@ -81,18 +82,21 @@ const ReviewData = ({ route, navigation }) => {
               <TextInput style={styles.input} value={data?.sampleType} onChangeText={(text) => setData({ ...data, sampleType: text })} />
             </View>
 
-            <View style={styles.inputColumn}>
-              <Text style={styles.label}>Sample Type</Text>
-              <Picker
-                selectedValue={selectedSampleType}
-                onValueChange={(itemValue) => setSelectedSampleType(itemValue)}
-                style={styles.picker}
-              >
-                <Picker.Item label="Option 1" value="option1" />
-                <Picker.Item label="Option 2" value="option2" />
-                <Picker.Item label="Option 3" value="option3" />
-              </Picker>
-            </View>
+        <View style={styles.inputColumn}>
+  <Text style={styles.label}>Sample Type</Text>
+  <SelectDropdown
+    data={dropdownData.map(item => ({ value: item, label: item }))}
+    defaultValue={selectedSampleType}
+    onSelect={(selectedItem) => setSelectedSampleType(selectedItem.value)}
+    buttonStyle={styles.dropdownButton}
+    buttonTextStyle={styles.dropdownButtonText}
+    renderDropdownIcon={() => <Text style={styles.dropdownIcon}>▼</Text>}
+    dropdownStyle={styles.dropdownContainer}
+    rowStyle={styles.dropdownRow}
+    rowTextStyle={styles.dropdownRowText}
+  />
+</View>
+
           </View>
           <View style={styles.inputRow}>
             <View style={styles.inputColumn}>
@@ -110,17 +114,19 @@ const ReviewData = ({ route, navigation }) => {
               <TextInput style={styles.input} />
             </View>
             <View style={styles.inputColumn}>
-              <Text style={styles.label}>container</Text>
-              <Picker
-                selectedValue={selectedSampleType}
-                onValueChange={(itemValue) => setSelectedSampleType(itemValue)}
-                style={styles.picker}
-              >
-                <Picker.Item label="Option 1" value="option1" />
-                <Picker.Item label="Option 2" value="option2" />
-                <Picker.Item label="Option 3" value="option3" />
-              </Picker>
-            </View>
+  <Text style={styles.label}>Container</Text>
+  <SelectDropdown
+    data={['Option 1', 'Option 2', 'Option 3']}
+    defaultValue={selectedContainerType}
+    onSelect={(selectedItem) => setSelectedContainerType(selectedItem)}
+    buttonStyle={styles.dropdownButton}
+    renderDropdownIcon={() => <Text style={styles.dropdownIcon}>▼</Text>}
+    buttonTextStyle={styles.dropdownButtonText}
+    dropdownStyle={styles.dropdownContainer}
+    rowStyle={styles.dropdownRow}
+    rowTextStyle={styles.dropdownRowText}
+  />
+</View>
           </View>
           <View style={styles.inputRow}>
             <View style={styles.inputColumn}>
@@ -150,17 +156,19 @@ const ReviewData = ({ route, navigation }) => {
             </View>
 
             <View style={styles.inputColumn}>
-              <Text style={styles.label}>Treatment Type</Text>
-              <Picker
-                selectedValue={selectedSampleType}
-                onValueChange={(itemValue) => setSelectedSampleType(itemValue)}
-                style={styles.picker}
-              >
-                <Picker.Item label="Option 1" value="option1" />
-                <Picker.Item label="Option 2" value="option2" />
-                <Picker.Item label="Option 3" value="option3" />
-              </Picker>
-            </View>
+  <Text style={styles.label}>Treatment Type</Text>
+  <SelectDropdown
+    data={['Option 1', 'Option 2', 'Option 3']}
+    defaultValue={selectedTreatmentType}
+    onSelect={(selectedItem) => setSelectedTreatmentType(selectedItem)}
+    buttonStyle={styles.dropdownButton}
+    buttonTextStyle={styles.dropdownButtonText}
+    renderDropdownIcon={() => <Text style={styles.dropdownIcon}>▼</Text>}
+    dropdownStyle={styles.dropdownContainer}
+    rowStyle={styles.dropdownRow}
+    rowTextStyle={styles.dropdownRowText}
+  />
+</View>
           </View>
         </View>
 
@@ -250,5 +258,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
     height: 10,
   },
+  dropdownIcon:{
+    color:'black',
+  },
+  // dropdownButton:{
+  //   width:20,
+  // }
 });
 export default ReviewData;

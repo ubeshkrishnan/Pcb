@@ -28,23 +28,27 @@ const SpotSampling = () => {
   }, []);
  
   const handleSave = () => {
+    const formattedCollectionTime = new Date(collectionTime).toISOString(); // Convert to ISO string format
+    // ...
     const data = {
       sample_id: sampleId,
       poc_id: pointOfCollection,
-      collection_time: collectionTime,
+      collection_time: formattedCollectionTime,
       latitude: latitude,
       longitude: longitude,
     };
 
     axios
-      .get(Url + '/spotpointofcollection/update', { params: data }) // Use GET request instead of POST
-      .then(response => {
-        console.log('GET request successful', response.data);
-      })
-      .catch(error => {
-        console.error('Error making GET request', error);
-      });
-  };
+    .post(Url + '/spotpointofcollection', data) // Use POST request instead of GET
+    .then(response => {
+      console.log('POST request successful', response.data);
+      
+    })
+    .catch(error => {
+      console.error('Error making POST request', error);
+      
+    });
+};
 
   const incrementSerialNo = () => {
     setSerialNoCounter(prevCounter => prevCounter + 1);
