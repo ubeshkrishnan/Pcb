@@ -119,10 +119,12 @@ const RegularScreen = () => {
         <View style={styles.RegularCardMain}>
           {isModalVisible && <ModalRegular visible={isModalVisible} item={cards} setcards={setCards} />}
           <TouchableOpacity onPress={navigateToRegularScreenChild}>
-            <Text style={styles.CardSerialNo}>
-              11000
-              <Text style={styles.CardDetailRight}>{item.company_name}</Text>
-            </Text>
+          <Text style={styles.CardSerialNo}>
+  <Text style={styles.SerialNoText}>11000</Text>{" "}
+  
+  <Text style={styles.CardDetailRight}>{item.company_name}</Text>
+</Text>
+
             <View style={styles.row}>
               <View style={styles.column}>
                 <Text style={styles.CardDetail}>
@@ -240,6 +242,13 @@ const styles = {
     borderBottomColor: 'black',
     borderBottomWidth: 1,
   },
+  SerialNoText: {
+    fontWeight: 'bold',
+    color: 'red',
+    marginRight:20,
+    textDecorationLine: 'underline',
+
+  },
   rowContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -318,45 +327,54 @@ const styles = {
     marginRight: 15,
   },
 
-
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+
   column: {
     flex: 1,
   },
+
   CardSerialNo: {
     backgroundColor: '#CCCCCC',
-    height: 37,
     color: 'black',
     fontSize: 15,
     fontWeight: 'bold',
-    paddingLeft: 9,
+    paddingLeft: 30,
+    height: "auto",
+    padding: 10,
+    borderBottomLeftRadius: 50,  
   },
+  
+  
   CardDetail: {
     marginTop: 5,
     paddingLeft: 9,
     fontWeight: 'bold',
     color: 'black',
   },
+
   CardDetailRight: {
     color: 'blue',
     textAlign: 'right',
     paddingRight: 200,
   },
+
   CardMap: {
     marginLeft: 15,
     fontWeight: '400',
     paddingLeft: 10,
     color: 'black',
   },
+
   SearchIcon: {
     marginTop: 30,
     marginLeft: 20,
     paddingRight: 20,
 
   },
+
   CardEndText: {
     color: 'red',
     backgroundColor: 'white',

@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Header from './Header';
-import Footer from './Footer';
+// import Footer from './Footer';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Url} from "../../../Global_Variable/api_link";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -21,8 +21,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const LoginScreen = () => {
   const logoOpacity = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
-  const [empId, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [empId, setEmail] = useState('EN2022');
+  const [password, setPassword] = useState('lims@123');
   const [showPassword, setShowPassword] = useState(false);
   const [checkValidEmail, setCheckValidEmail] = useState(false);
   const [checkValidPassword, setCheckValidPassword] = useState(false);
@@ -67,14 +67,11 @@ const LoginScreen = () => {
       if (response.data.success) {
         // Successful login
          AsyncStorage.setItem('login', JSON.stringify(response.data));
-        const storedData = AsyncStorage.getItem('login');
-        const data = JSON.parse(storedData);
         // console.log(AsyncStorage.getItem('login'))
-        alert(AsyncStorage.getItem('login'))
+        // alert(AsyncStorage.getItem('login'))
         // handleNavigateToDashboard();
         // return;
       }
-  
       // Login error
       setError('Invalid email or password');
     } catch (error) {
@@ -83,7 +80,6 @@ const LoginScreen = () => {
     }
   };
   
-
   const submit = async () => {
     // const isValidEmail = emailRegex.test(email);
     const isValidPassword = password.length >= 6;
@@ -116,7 +112,6 @@ const LoginScreen = () => {
         }
       } catch (error) {
         // Error during login
-        alert(JSON.stringify(error))
         setError('An error occurred during login FRONT');
         // alert('Error')
       }
@@ -207,7 +202,7 @@ const LoginScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <Footer />
+      {/* <Footer /> */}
     </ScrollView>
   );
 };
@@ -223,7 +218,7 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     flex: 1,
-    height: 440,
+    height: 480,
     paddingHorizontal: 5,
     paddingTop: 40,
     marginTop: 20,

@@ -38,12 +38,13 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
   const handleSave = () => {
     const postData = {
       serial_no: inputValues.serial_no,
+      created_by: 1,
       poc_val: inputValues.point_of_collection ? inputValues.point_of_collection.poc_id : null,
       collection_time_val: inputValues.collection_time,
       latitude_val: inputValues.latitude,
       longitude_val: inputValues.longitude,
     };
-alert
+
     console.log(postData, 'post data');
 
     fetch(Url + '/modalregular',{

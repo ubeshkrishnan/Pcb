@@ -50,7 +50,7 @@ const RegularScreenChild = ({ navigation }) => {
       <Text style={styles.CardSerialNo}>
         11000 - Sivajothi Blue Metal
         <TouchableOpacity onPress={openModal} style={styles.addButton}>
-          <MaterialIcons name="add" size={20} />
+          {/* <MaterialIcons name="add" size={20} /> */}
           <Text style={styles.addButtonLabel}>Add</Text>
         </TouchableOpacity>
       </Text>
@@ -148,7 +148,5 @@ const styles = {
     fontWeight: 'bold',
     marginLeft:40,
     color:'red',
-  },
-  
-  
+  }, 
 };

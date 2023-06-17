@@ -37,7 +37,7 @@ const SpotSampling = () => {
       latitude: latitude,
       longitude: longitude,
     };
-
+    console.log(data, 'post data');
     axios
     .post(Url + '/spotpointofcollection', data) // Use POST request instead of GET
     .then(response => {
@@ -49,11 +49,10 @@ const SpotSampling = () => {
       
     });
 };
-
   const incrementSerialNo = () => {
     setSerialNoCounter(prevCounter => prevCounter + 1);
   };
-
+  
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: 'white' }}>
       <View style={styles.container}>
@@ -172,6 +171,5 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 5,
     color: 'red',
-
   },
 });
