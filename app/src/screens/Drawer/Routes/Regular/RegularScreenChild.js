@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
+import { Text, View, TouchableOpacity, Modal, ActivityIndicator,ScrollView } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import { Url } from '../../../../../Global_Variable/api_link';
@@ -47,45 +47,50 @@ const RegularScreenChild = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>11000 - Sivajothi Blue Metal</Text>
-        <TouchableOpacity onPress={openModal} style={styles.addButton}>
-          <MaterialIcons name="add" size={20} style={styles.addButtonIcon} />
-          <Text style={styles.addButtonLabel}>Add</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.horizontalLine}></View>
-
-      {data.map((item) => (
-        <View style={styles.RegularCard} key={item.id}>
-          <TouchableOpacity onPress={() => navigateToReviewData(item)}>
-            <Text style={styles.CardSerialNo}>
-              {item.serialNo}
-              <Text style={styles.CardDetailRight}>11001-01</Text>
-            </Text>
-
-            <ModalRegularChild visible={modalVisible} item={data} setcards={setData} onClose={closeModal} />
-
-            <Text style={styles.CardDetail}>
-              Point of Collection:
-              <Text style={styles.CardMap}> {item.poc_type}</Text>
-            </Text>
-            <Text style={styles.CardDetail}>
-              Collection Time Stamp:
-              <Text style={styles.CardMap}> {item.collectionTimeStamp}</Text>
-            </Text>
-            <Text style={styles.CardDetail}>
-              Latitude:<Text style={styles.CardMap}> {item.latitude}</Text>
-            </Text>
-            <Text style={styles.CardDetail}>
-              Longitude:<Text style={styles.CardMap}> {item.longitude}</Text>
-            </Text>
-          </TouchableOpacity>
-        </View>
-      ))}
+    <View style={styles.header}>
+      <Text style={styles.title}>11000 - Sivajothi Blue Metal</Text>
+      <TouchableOpacity onPress={openModal} style={styles.addButton}>
+        <MaterialIcons name="add" size={20} style={styles.addButtonIcon} />
+        <Text style={styles.addButtonLabel}>Add</Text>
+      </TouchableOpacity>
     </View>
-  );
+
+    <View style={styles.horizontalLine}></View>
+
+    <ScrollView>
+      <View style={{ paddingBottom: 20 }}>
+        {data.map((item) => (
+          <View style={styles.RegularCard} key={item.id}>
+            <TouchableOpacity onPress={() => navigateToReviewData(item)}>
+              <Text style={styles.CardSerialNo}>
+                {item.serialNo}
+                <Text style={styles.CardDetailRight}>11001-01</Text>
+              </Text>
+
+              <ModalRegularChild visible={modalVisible} item={data} setcards={setData} onClose={closeModal} />
+
+              <Text style={styles.CardDetail}>
+                Point of Collection:
+                <Text style={styles.CardMap}> {item.poc_type}</Text>
+              </Text>
+              <Text style={styles.CardDetail}>
+                Collection Time Stamp:
+                <Text style={styles.CardMap}> {item.collectionTimeStamp}</Text>
+              </Text>
+              <Text style={styles.CardDetail}>
+                Latitude:<Text style={styles.CardMap}> {item.latitude}</Text>
+              </Text>
+              <Text style={styles.CardDetail}>
+                Longitude:<Text style={styles.CardMap}> {item.longitude}</Text>
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
+    </ScrollView>
+    
+  </View>
+);
 };
 
 export default RegularScreenChild;
