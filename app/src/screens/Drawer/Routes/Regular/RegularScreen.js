@@ -298,7 +298,7 @@ const styles = {
 
   cardContent: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   modalContainer: {
@@ -338,7 +338,7 @@ const styles = {
   CardSerialNo: {
     backgroundColor: '#CCCCCC',
     color: 'black',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
     paddingLeft: 30,
     height: "auto",
@@ -382,7 +382,7 @@ const styles = {
     fontWeight: 'bold',
     marginTop: 20,
     paddingTop:4,
-    fontSize: 18,
+    fontSize: 15,
   },
   LoadingData:{
 color:'red',

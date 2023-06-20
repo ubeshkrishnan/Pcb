@@ -104,16 +104,17 @@ const styles = {
     
   },
   title: {
-    fontSize: 22,
+    fontSize: 15,
     fontWeight: 'bold',
     textDecorationLine: 'underline',
     marginLeft: 10,
+    color:'black',
     
   },
   CardSerialNo: {
     backgroundColor: '#CCCCCC',
     color: 'black',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
     paddingLeft: 30,
     height: "auto",
