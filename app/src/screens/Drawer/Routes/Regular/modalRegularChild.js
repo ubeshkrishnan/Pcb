@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TextInput, TouchableOpacity, Modal, ScrollView } from 'react-native';
+import { Text, View, TextInput, TouchableOpacity, Modal, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Url } from '../../../../../Global_Variable/api_link';
 import SelectDropdown from 'react-native-select-dropdown';
 
 const ModalRegularChild = ({ visible, item, setcards }) => {
+  // State for input values
   const [inputValues, setInputValues] = useState({
     serial_no: '',
     point_of_collection: null,
@@ -13,10 +14,13 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
     longitude: '',
   });
 
+  // State for point of collection options
   const [pointOfCollectionOptions, setPointOfCollectionOptions] = useState([]);
 
+  // Navigation hook
   const navigation = useNavigation();
 
+  // Handle input change
   const handleInputChange = (title, value) => {
     setInputValues((prev) => ({
       ...prev,
@@ -24,6 +28,7 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
     }));
   };
 
+  // Handle cancel button press
   const handleCancel = () => {
     setInputValues({
       serial_no: '',
@@ -35,7 +40,9 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
     navigation.goBack();
   };
 
+  // Handle save button press
   const handleSave = () => {
+    // Prepare data for POST request
     const postData = {
       serial_no: inputValues.serial_no,
       created_by: 1,
@@ -47,7 +54,8 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
 
     console.log(postData, 'post data');
 
-    fetch(Url + '/modalregular',{
+    // Send POST request
+    fetch(Url + '/modalregular', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -64,6 +72,7 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
       });
   };
 
+  // Fetch point of collection options
   const fetchPointOfCollectionOptions = async () => {
     try {
       const response = await fetch(Url + '/pointofcollectionoptions');
@@ -74,10 +83,14 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
     }
   };
 
+  // Fetch options on component mount
   useEffect(() => {
     fetchPointOfCollectionOptions();
   }, []);
 
+  // Get the screen dimensions
+  const { width, height } = Dimensions.get('window');
+  // Render the modal component
   return (
     <Modal visible={visible} animationType="slide">
       <ScrollView>
@@ -93,7 +106,8 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
             data={pointOfCollectionOptions}
             onSelect={(selectedItem) => handleInputChange('point_of_collection', selectedItem)}
             defaultButtonText="Select Point of Collection"
-            buttonTextAfterSelection={(selectedItem) => selectedItem.poc_type}
+            buttonTextAfterSelection={(selectedItem) =>
+              selectedItem.poc_type}
             rowTextForSelection={(item, index) => item.poc_type}
             buttonStyle={styles.dropdownButton}
             buttonTextStyle={styles.dropdownButtonText}
@@ -121,30 +135,33 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
             value={inputValues.longitude}
             onChangeText={(value) => handleInputChange('longitude', value)}
             placeholder="Longitude"
-            placeholderTextColor="black" />
+            placeholderTextColor="black"
+          />
 
-          <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-            <Text style={styles.buttonLabelSave}>Save</Text>
-          </TouchableOpacity>
+<View style={styles.buttonContainer}>
+  <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+    <Text style={styles.buttonLabel}>Save</Text>
+  </TouchableOpacity>
 
-          <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
-            <Text style={styles.buttonLabelCancel}>Cancel</Text>
-          </TouchableOpacity>
+  <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+    <Text style={styles.buttonLabel}>Cancel</Text>
+  </TouchableOpacity>
+</View>
+
         </View>
       </ScrollView>
     </Modal>
   );
 };
-
 export default ModalRegularChild;
 
 
-const styles = {
+const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 120,
+    marginTop: 160,
   },
   inputField: {
     color: 'black',
@@ -153,70 +170,70 @@ const styles = {
     borderRadius: 5,
     padding: 10,
     marginVertical: 10,
-    width: 200,
+    width: 220,
+    fontSize: 18,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    marginTop: 20,
+    justifyContent: 'space-evenly',
+    width: '50%',
   },
   saveButton: {
     backgroundColor: 'green',
     borderRadius: 10,
-    marginTop: 10,
-    paddingLeft: 7,
-    width: 55,
-    height: 20,
-  },
-  dropdownIcon: {
-    color: 'black',
-    fontSize: 20,
-  },
-  buttonLabelSave: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    flex: 1,
+    marginRight: 10,
   },
   cancelButton: {
     backgroundColor: 'red',
     borderRadius: 10,
-    marginTop: 10,
-    width: 54,
-    height: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    flex: 1,
+    marginLeft: 10,
   },
-  buttonLabelCancel: {
+  buttonLabel: {
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  // Dropdowns
-  dropdownOption: {
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    backgroundColor: 'grey',
-  },
-  dropdownOptionLabel: {
-    fontSize: 16,
-
-  },
-  dropdownContainer: {
-    color: 'black',
+  dropdownButton: {
     borderWidth: 1,
     borderColor: 'black',
     borderRadius: 5,
     padding: 10,
     marginVertical: 10,
-    width: 200,
+    width: 220,
     height: 50,
-
+    backgroundColor: 'white',
   },
-  dropdownValue: {
-    color: 'gray',
-
-  },
-  dropdownOption: {
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    backgroundColor: 'grey',
-  },
-  dropdownOptionLabel: {
+  dropdownButtonText: {
     fontSize: 16,
+    color: 'black',
+    textAlign: 'center',
   },
-};
+  dropdownIcon: {
+    color: 'black',
+    fontSize: 20,
+  },
+  dropdown: {
+    marginTop: 2,
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 5,
+    width: 220,
+    backgroundColor: 'white',
+  },
+  dropdownText: {
+    fontSize: 16,
+    color: 'black',
+    textAlign: 'center',
+    paddingVertical: 8,
+  },
+});
+
 
 

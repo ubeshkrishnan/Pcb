@@ -120,7 +120,7 @@ const RegularScreen = () => {
           {isModalVisible && <ModalRegular visible={isModalVisible} item={cards} setcards={setCards} />}
           <TouchableOpacity onPress={navigateToRegularScreenChild}>
           <Text style={styles.CardSerialNo}>
-  <Text style={styles.SerialNoText}>11000</Text>{" "}
+  <Text style={styles.SerialNoText}>11000 </Text>- {" "}
   
   <Text style={styles.CardDetailRight}>{item.company_name}</Text>
 </Text>
@@ -173,6 +173,14 @@ const RegularScreen = () => {
     );
   };
 
+
+  const renderEndData = () => {
+    if (isLoading) {
+      return <Text style={styles.LoadingData}>LOADING DATA...</Text>;
+    } else {
+      return <Text style={styles.CardEndText}>END DATA</Text>;
+    }
+  };
   const renderNoRecords = () => {
     return (
       <View style={styles.noRecordsContainer}>
@@ -180,15 +188,6 @@ const RegularScreen = () => {
       </View>
     );
   };
-
-  const renderEndData = () => {
-    if (isLoading) {
-      return <Text >Loading...</Text>;
-    } else {
-      return <Text style={styles.CardEndText}>END DATA</Text>;
-    }
-  };
-
   return (
     <View>
       <View style={styles.horizontalLine}></View>
@@ -339,7 +338,7 @@ const styles = {
   CardSerialNo: {
     backgroundColor: '#CCCCCC',
     color: 'black',
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: 'bold',
     paddingLeft: 30,
     height: "auto",
@@ -376,12 +375,19 @@ const styles = {
   },
 
   CardEndText: {
-    color: 'red',
-    backgroundColor: 'white',
+    color: 'white',
+    backgroundColor: 'black',
     height: 27,
     textAlign: 'center',
     fontWeight: 'bold',
     marginTop: 20,
-    fontSize: 15,
+    paddingTop:4,
+    fontSize: 18,
+  },
+  LoadingData:{
+color:'red',
+fontSize:20,
+textAlign:'center',
+marginTop:60,
   }
 };

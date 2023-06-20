@@ -218,9 +218,9 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     flex: 1,
-    height: 480,
+    height: 550,
     paddingHorizontal: 5,
-    paddingTop: 40,
+    paddingTop: 50,
     marginTop: 20,
     backgroundColor: 'white',
     borderTopLeftRadius: 50,

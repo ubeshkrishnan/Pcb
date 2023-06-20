@@ -13,11 +13,11 @@ const RegularScreenChild = ({ navigation }) => {
   const openModal = () => {
     setModalVisible(true);
   };
-  
+
   const closeModal = () => {
     setModalVisible(false);
   };
-  
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -46,14 +46,14 @@ const RegularScreenChild = ({ navigation }) => {
   }
 
   return (
-    <View>
-      <Text style={styles.CardSerialNo}>
-        11000 - Sivajothi Blue Metal
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>11000 - Sivajothi Blue Metal</Text>
         <TouchableOpacity onPress={openModal} style={styles.addButton}>
-          {/* <MaterialIcons name="add" size={20} /> */}
+          <MaterialIcons name="add" size={20} style={styles.addButtonIcon} />
           <Text style={styles.addButtonLabel}>Add</Text>
         </TouchableOpacity>
-      </Text>
+      </View>
 
       <View style={styles.horizontalLine}></View>
 
@@ -90,23 +90,42 @@ const RegularScreenChild = ({ navigation }) => {
 
 export default RegularScreenChild;
 
-
 const styles = {
+  container: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    marginTop: 20,
+    
+    
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+    marginLeft: 10,
+    
+  },
   CardSerialNo: {
     backgroundColor: '#CCCCCC',
-    height: 27,
     color: 'black',
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: 'bold',
-    paddingLeft: 9,
-    textDecorationLine: 'underline',
+    paddingLeft: 30,
+    height: "auto",
+    padding: 10,
+    borderBottomLeftRadius: 50,  
   },
+  
   CardDetail: {
     marginTop: 5,
     paddingLeft: 9,
     fontWeight: 'bold',
     color: 'black',
-    
     flexDirection: 'row',
     justifyContent: 'space-between',
     
@@ -125,28 +144,32 @@ const styles = {
   RegularCard: {
     backgroundColor: '#D0E3F1',
     marginTop: 20,
-    height: 125,
-    marginLeft:20,
-    marginRight:20,
-    // width: 325,
+    height: 'auto',
+    marginLeft: 20,
+    marginRight: 20,
+    borderRadius: 20,
+    padding: 10,
   },
   horizontalLine: {
     borderBottomColor: 'black',
     borderBottomWidth: 1,
+    marginVertical: 10,
   },
   addButton: {
+    backgroundColor: 'green',
+    padding: 10,
+    borderRadius: 10,
     flexDirection: 'row',
-    marginLeft:50,
+    alignItems: 'center',
+    borderBottomLeftRadius: 50,  
   },
-  
-  
   addButtonIcon: {
-    marginLeft:40,
+    color: 'white',
+    marginRight: 5,
   },
   addButtonLabel: {
-    fontSize: 16,
+    color: 'white',
     fontWeight: 'bold',
-    marginLeft:40,
-    color:'red',
-  }, 
+  },
 };
+

@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TextInput, Button, ScrollView, StyleSheet } from 'react-native';
+import { Text, View, TextInput, Button, ScrollView, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
 import { Url } from '../../../../../Global_Variable/api_link';
-import { Picker } from '@react-native-picker/picker';
+import SelectDropdown from 'react-native-select-dropdown';
+import { useNavigation } from '@react-navigation/native';
 
 const SpotSampling = () => {
-  const [serialNoCounter, setSerialNoCounter] = useState(1);
-  const [pointOfCollection, setPointOfCollection] = useState('');
-  const [collectionTime, setCollectionTime] = useState('');
+  const [serial_no, setSerial_No] = useState(674);
+  const [point_of_collection, setPointOfCollection] = useState(null);
+  const [collection_time, setCollectionTime] = useState('');
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
-  const [selectedValue, setSelectedValue] = useState('');
   const [dropdownData, setDropdownData] = useState([]);
-  const [sampleId, setSampleId] = useState('');
+  const navigation = useNavigation();
 
   const fetchPointOfCollectionOptions = async () => {
     try {
@@ -26,33 +26,49 @@ const SpotSampling = () => {
   useEffect(() => {
     fetchPointOfCollectionOptions();
   }, []);
- 
+
   const handleSave = () => {
-    const formattedCollectionTime = new Date(collectionTime).toISOString(); // Convert to ISO string format
-    // ...
     const data = {
-      sample_id: sampleId,
-      poc_id: pointOfCollection,
-      collection_time: formattedCollectionTime,
-      latitude: latitude,
-      longitude: longitude,
+      serial_no: serial_no.toString(),
+      created_by: 1,
+      poc_val: point_of_collection ? point_of_collection.poc_id : null,
+      collection_time_val: collection_time,
+      latitude_val: latitude,
+      longitude_val: longitude,
     };
+
     console.log(data, 'post data');
+
     axios
-    .post(Url + '/spotpointofcollection', data) // Use POST request instead of GET
-    .then(response => {
-      console.log('POST request successful', response.data);
-      
-    })
-    .catch(error => {
-      console.error('Error making POST request', error);
-      
-    });
-};
-  const incrementSerialNo = () => {
-    setSerialNoCounter(prevCounter => prevCounter + 1);
+      .post(Url + '/spotpostpoc', data)
+      .then(response => {
+        console.log('POST request successful', response.data);
+        showAlert('Success', 'Saved successfully.');
+      })
+      .catch(error => {
+        console.error('Error making POST request', error);
+        showAlert('Error', 'An error occurred while saving the data.');
+      });
   };
-  
+
+  const handleCancel = () => {
+    setSerial_No(674);
+    setPointOfCollection();
+    setCollectionTime('');
+    setLatitude('');
+    setLongitude('');
+
+    navigation.goBack();
+  };
+
+  const showAlert = (title, message) => {
+    Alert.alert(title, message);
+  };
+
+  const incrementSerialNo = () => {
+    setSerial_No(prevCounter => prevCounter + 1);
+  };
+
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: 'white' }}>
       <View style={styles.container}>
@@ -61,39 +77,34 @@ const SpotSampling = () => {
           style={styles.input}
           placeholder="Serial No"
           placeholderTextColor="#CCCCCC"
-          value={serialNoCounter.toString()}
-          onChangeText={() => {}}
+          value={serial_no.toString()}
+          onChangeText={() => { }}
           editable={false}
         />
 
         <Text style={styles.label}>Point Of Collection</Text>
-
         <View style={styles.picker}>
-          <Picker
-            selectedValue={pointOfCollection}
-            style={{ height: 50, width: 150 }}
-            onValueChange={(itemValue, itemIndex) => {
-              setPointOfCollection(itemValue);
-              setSampleId(dropdownData[itemIndex].sample_id);
-            }}
-          >
-            {dropdownData.map(item => (
-              <Picker.Item
-                key={item.poc_type}
-                label={item.label}
-                value={item.poc_type}
-                color="red"
-              />
-            ))}
-          </Picker>
+          <SelectDropdown
+            data={dropdownData.map(item => item.poc_type)}
+            defaultButtonText="Select Point of Collection"
+            onSelect={(selectedItem, index) => setPointOfCollection(dropdownData[index])}
+            buttonTextAfterSelection={(selectedItem, index) => selectedItem}
+            rowTextForSelection={(item, index) => item}
+            buttonStyle={styles.dropdownButton}
+            buttonTextStyle={styles.dropdownButtonText}
+            dropdownStyle={styles.dropdown}
+            rowStyle={styles.dropdownRow}
+            rowTextStyle={styles.dropdownRowText}
+          />
         </View>
+
 
         <Text style={styles.label}>Collection Time Stamp</Text>
         <TextInput
           style={styles.input}
           placeholder="Collection Time Stamp"
           placeholderTextColor="#CCCCCC"
-          value={collectionTime}
+          value={collection_time}
           onChangeText={text => setCollectionTime(text)}
         />
 
@@ -105,7 +116,8 @@ const SpotSampling = () => {
           value={latitude}
           onChangeText={text => setLatitude(text)}
         />
-  <Text style={styles.label}>Longitude</Text>
+
+        <Text style={styles.label}>Longitude</Text>
         <TextInput
           style={styles.input}
           placeholder="Longitude"
@@ -117,15 +129,15 @@ const SpotSampling = () => {
         <View style={styles.buttonContainer}>
           <Button title="Save" onPress={handleSave} />
           <View style={styles.buttonSpacer} />
-          <Button title="Cancel" onPress={() => console.log('Cancel pressed')} />
+          <Button title="Cancel" onPress={handleCancel} />
         </View>
       </View>
     </ScrollView>
   );
 };
-       
 
 export default SpotSampling;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -145,11 +157,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 5,
     color: 'black',
+   
   },
   label: {
-    marginBottom: 5,
+    marginBottom: 8,
     fontWeight: 'bold',
     color: 'black',
+    fontSize:18,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -157,7 +171,8 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   buttonSpacer: {
-    width: 10,
+    width: 20,
+    marginTop:10,
   },
   picker: {
     marginBottom: 10,
@@ -171,5 +186,44 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 5,
     color: 'red',
+  },
+  dropdownContainer: {
+    marginBottom: 10,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    width: 200,
+    height: 40,
+    borderColor: 'black',
+    borderRadius: 5,
+    padding: 5,
+  },
+  dropdownButton: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 5,
+    backgroundColor: 'transparent',
+  },
+  dropdownButtonText: {
+    color: 'black',
+    fontSize: 16,
+  },
+  dropdown: {
+    width: 200,
+    maxHeight: 200,
+    marginTop: 10,
+    borderRadius: 5,
+    backgroundColor: '#f5f5f5',
+  },
+  dropdownRow: {
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  dropdownRowText: {
+    fontSize: 16,
+    color: 'black',
   },
 });
