@@ -13,9 +13,9 @@ app.get("/regular", (req, res) => {
 });
 
 // Endpoint to retrieve regular card details
-app.get('/reviewpoc', (req, res) => {
+app.get('/reviewsample_typ', (req, res) => {
   // Retrieve data from the database using a query
-  db.query('SELECT poc_id, poc_type FROM m_point_of_collection', (error, result) => {
+  db.query('SELECT sample_type_id, sample_type FROM sample_types', (error, result) => {
     if (error) {
       console.error('Error executing query:', error);
       res.status(500).json({ error: 'Internal server error' });
@@ -40,6 +40,21 @@ app.get('/reviewtreatment', (req, res) => {
     }
   });
 });
+
+// Endpoint to retrieve regular card details
+app.get('/reviewtreatment', (req, res) => {
+  // Retrieve data from the database using a query
+  db.query('SELECT treatment_type_id, treatment_type FROM m_treatment_type', (error, result) => {
+    if (error) {
+      console.error('Error executing query:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    } else {
+      const data = result.rows;
+      res.json(data);
+    }
+  });
+});
+
 
 app.post('/reviewsampledetails', (req, res) => {
   // Retrieve data from the database using a query with JOIN

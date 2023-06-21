@@ -324,6 +324,7 @@ const styles = {
     borderRadius: 20,
     marginLeft: 15,
     marginRight: 15,
+    flex:1,
   },
 
   row: {

@@ -6,7 +6,7 @@ import SelectDropdown from 'react-native-select-dropdown';
 import { useNavigation } from '@react-navigation/native';
 
 const SpotSampling = () => {
-  const [serial_no, setSerial_No] = useState(674);
+  const [serial_no, setSerial_No] = useState(771);
   const [point_of_collection, setPointOfCollection] = useState(null);
   const [collection_time, setCollectionTime] = useState('');
   const [latitude, setLatitude] = useState('');
@@ -29,16 +29,16 @@ const SpotSampling = () => {
 
   const handleSave = () => {
     const data = {
-      serial_no: serial_no.toString(),
-      created_by: 1,
       poc_val: point_of_collection ? point_of_collection.poc_id : null,
       collection_time_val: collection_time,
       latitude_val: latitude,
       longitude_val: longitude,
+      serial_no: serial_no,
+      created_by: 1,
     };
-
+  
     console.log(data, 'post data');
-
+  
     axios
       .post(Url + '/spotpostpoc', data)
       .then(response => {
@@ -46,13 +46,14 @@ const SpotSampling = () => {
         showAlert('Success', 'Saved successfully.');
       })
       .catch(error => {
-        console.error('Error making POST request', error);
+        console.error('Error making POST request'+ error);
         showAlert('Error', 'An error occurred while saving the data.');
       });
   };
+  
 
   const handleCancel = () => {
-    setSerial_No(674);
+    setSerial_No(771);
     setPointOfCollection();
     setCollectionTime('');
     setLatitude('');
@@ -162,7 +163,8 @@ const styles = StyleSheet.create({
   label: {
     marginBottom: 8,
     fontWeight: 'bold',
-    color: 'black',
+    // color: 'black',
+    color: '#888',
     fontSize:18,
   },
   buttonContainer: {

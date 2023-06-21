@@ -5,7 +5,7 @@ import { Url } from '../../../../Global_Variable/api_link';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateLocation } from '../../../store/Reviewstore';
 import SelectDropdown from 'react-native-select-dropdown';
-
+import axios  from 'axios';
 const ReviewData = ({ route, navigation }) => {
 
   const store = useSelector(store => store.counter)
@@ -45,7 +45,6 @@ const ReviewData = ({ route, navigation }) => {
     // Perform save logic here
     console.log('Save button clicked');
     console.log('Data:', data);
-  };
 
 
     // Create the payload to send in the POST request
@@ -81,13 +80,19 @@ const ReviewData = ({ route, navigation }) => {
         console.log('Error inserting data:', error);
         // Handle the error
       });
+    };
 
-  const fetchReviewPocData = () => {
-    fetch(Url + 'reviewpoc')
-      .then(response => response.json())
-      .then(data => setDropdownPoc(data))
-      .catch(error => console.log('Error fetching dropdown data:', error));
-  };
+  const fetchReviewPocData = async() => {
+    try {
+       await axios.get(Url + '/reviewpoc')
+       .then((res)=>{ console.log(res.data)
+        setDropdownPoc(res.data) })
+
+      // setDropdownData(response.data);
+    } catch (error) {
+      console.error('Error fetching point of collection options', error);
+    }
+  }
   useEffect(() => {
     fetchReviewPocData();
 
@@ -106,6 +111,8 @@ const ReviewData = ({ route, navigation }) => {
       }));
     }
   }, [store.location])
+  
+  console.log(dropdownPoc?.map(item => { return { value: item.poc_id, label: item.poc_type }}),"poc")
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -126,7 +133,8 @@ const ReviewData = ({ route, navigation }) => {
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Sample Type</Text>
               <SelectDropdown
-                data={dropdownPoc.map(item => ({ value: item, label: item }))}
+            //  data={dropdownPoc?.map(item => { return { value: item.poc_id, label: item.poc_type }})}
+            data={dropdownPoc.map(item => item.poc_type)}
                 defaultValue={selectedSampleType}
                 onSelect={(selectedItem) => setSelectedSampleType(selectedItem.value)}
                 buttonStyle={styles.dropdownButton}

@@ -39,13 +39,13 @@ app.get('/spotpointofcollection', (req, res) => {
 
 app.post('/spotpostpoc', (req, res) => {
   const { poc_val, collection_time_val, latitude_val, longitude_val, serial_no,created_by } = req.body;
-  const sampleCollectionId = db.query('SELECT sample_coll_id FROM sample_collection WHERE ref_id = $1 ORDER BY sample_coll_id DESC LIMIT 1', [serial_no], (error, result) => {
+db.query('SELECT sample_coll_id FROM sample_collection WHERE ref_id = $1 ORDER BY sample_coll_id DESC LIMIT 1', [serial_no], (error, result) => {
 
     if (error) {
       console.error('Error executing query', error);
       res.status(500).json({ error: 'An error occurred while updating the data' });
     } else {
-    //  console.log(result.rows[0].sample_coll_id)
+     console.log("USER TRY",result.rows)
       if (result.rows.length !==0) {
        
          const query2 = `INSERT into sample_details(collection_time,latitude,longitude,poc_id,serial_no,sample_coll_id,created_by,created_date)values( $1,$2,$3,$4,$5,$6,$7,$8)`;

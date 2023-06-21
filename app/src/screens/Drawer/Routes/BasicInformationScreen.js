@@ -9,8 +9,8 @@ const UserProfile = () => {
           source={require('../../../assets/profile.png')}
           style={styles.profilePicture}
         />
-        <Text style={styles.name}>John Doe</Text>
-        <Text style={styles.email}>johndoe@example.com</Text>
+        <Text style={styles.name}>ENOVA EMP </Text>
+        <Text style={styles.email}>enovasolutions.com</Text>
       </View>
       <View style={styles.body}>
         <View style={styles.card}>

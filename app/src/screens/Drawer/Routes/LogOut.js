@@ -23,7 +23,7 @@ const LogOut = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Logout</Text>
       <TouchableOpacity style={styles.button} onPress={logout}>
-        <Text style={styles.buttonText}>Logout</Text>
+        {/* <Text style={styles.buttonText}>Logout</Text> */}
       </TouchableOpacity>
     </View>
   );

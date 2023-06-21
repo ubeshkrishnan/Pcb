@@ -39,7 +39,9 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
     });
     navigation.goBack();
   };
-
+  const showAlert = (title, message) => {
+    Alert.alert(title, message);
+  };
   // Handle save button press
   const handleSave = () => {
     // Prepare data for POST request
@@ -66,9 +68,11 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
       .then((data) => {
         item.push(inputValues);
         setcards(item);
+        showAlert('Success', 'Saved successfully.');
       })
       .catch((error) => {
         console.error(error);
+        showAlert('Error', 'An error occurred while saving the data.');
       });
   };
 
@@ -177,7 +181,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 20,
     justifyContent: 'space-evenly',
-    width: '50%',
+    width: '60%',
   },
   saveButton: {
     backgroundColor: 'green',
@@ -217,7 +221,7 @@ const styles = StyleSheet.create({
   },
   dropdownIcon: {
     color: 'black',
-    fontSize: 20,
+    fontSize: 18,
   },
   dropdown: {
     marginTop: 2,
@@ -228,7 +232,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   dropdownText: {
-    fontSize: 16,
+    // fontSize: 16,
     color: 'black',
     textAlign: 'center',
     paddingVertical: 8,

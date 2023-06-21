@@ -1,18 +1,10 @@
-import { Text, View, Button } from 'react-native';
-import React, { Component } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text } from 'react-native'
+import React from 'react'
 
-export default function Records() {
-  const navigation = useNavigation();
-
-  const handleButtonPress = () => {
-    navigation.navigate('NoInternet');
-  };
-
+export default function RecordScreen() {
   return (
     <View>
-      <Text>Records</Text>
-      <Button title="Go to NoInternet" onPress={handleButtonPress} />
+      <Text style={{color:'black',textAlign:'center'}}>RecordScreen</Text>
     </View>
-  );
+  )
 }
