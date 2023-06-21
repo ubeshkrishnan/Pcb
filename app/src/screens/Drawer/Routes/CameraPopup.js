@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   captureButton: {
     backgroundColor: 'grey',
     borderRadius: 25,
-    color: 'blue',
+    color: 'black',
     justifyContent: 'center',
     alignItems: 'center',
     width: 50,

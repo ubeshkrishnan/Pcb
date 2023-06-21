@@ -111,7 +111,9 @@ const RegularScreen = () => {
 
   const clearSearch = () => {
     setSearchValue('');
+    setFilteredCards(cards); // Reset filtered data to the original data
   };
+  
 
   const renderItem = ({ item }) => {
     return (
@@ -119,11 +121,11 @@ const RegularScreen = () => {
         <View style={styles.RegularCardMain}>
           {isModalVisible && <ModalRegular visible={isModalVisible} item={cards} setcards={setCards} />}
           <TouchableOpacity onPress={navigateToRegularScreenChild}>
-          <Text style={styles.CardSerialNo}>
-  <Text style={styles.SerialNoText}>11000 </Text>- {" "}
-  
-  <Text style={styles.CardDetailRight}>{item.company_name}</Text>
-</Text>
+            <Text style={styles.CardSerialNo}>
+              <Text style={styles.SerialNoText}>11000 </Text>- {" "}
+
+              <Text style={styles.CardDetailRight}>{item.company_name}</Text>
+            </Text>
 
             <View style={styles.row}>
               <View style={styles.column}>
@@ -204,13 +206,16 @@ const RegularScreen = () => {
           autoFocus
           clearButtonMode="while-editing"
         />
-        <TouchableOpacity
-          style={styles.searchIconContainer}
-          onPress={handleSearch}
-        >
+        {searchValue !== '' && (
+          <TouchableOpacity style={styles.clearIconContainer} onPress={clearSearch}>
+            <MaterialIcons name="clear" size={20} color="gray" />
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity style={styles.searchIconContainer} onPress={handleSearch}>
           <MaterialIcons name="search" size={20} color="gray" />
         </TouchableOpacity>
       </View>
+
       <FlatList
         data={filteredCards}
         renderItem={renderItem}
@@ -244,7 +249,7 @@ const styles = {
   SerialNoText: {
     fontWeight: 'bold',
     color: 'red',
-    marginRight:20,
+    marginRight: 20,
     textDecorationLine: 'underline',
 
   },
@@ -255,7 +260,15 @@ const styles = {
     marginTop: 20,
     borderRadius: 20,
     borderColor: 'black',
+    position: 'relative',
   },
+
+  clearIconContainer: {
+    // position: 'absolute',
+    right: 30,
+    paddingBottom: 10,
+  },
+
   searchIconContainer: {
     position: 'absolute',
     paddingLeft: 5,
@@ -291,10 +304,11 @@ const styles = {
     height: 40,
     width: 180,
     borderRadius: 7,
-    paddingLeft: 27, // Adjust this value to align the placeholder text
-    paddingRight: 10,
+    paddingLeft: 27,
+    paddingRight: 40,
     marginBottom: 14,
   },
+
 
   cardContent: {
     color: 'white',
@@ -324,7 +338,7 @@ const styles = {
     borderRadius: 20,
     marginLeft: 15,
     marginRight: 15,
-    flex:1,
+    flex: 1,
   },
 
   row: {
@@ -344,10 +358,10 @@ const styles = {
     paddingLeft: 30,
     height: "auto",
     padding: 10,
-    borderBottomLeftRadius: 50,  
+    borderBottomLeftRadius: 50,
   },
-  
-  
+
+
   CardDetail: {
     marginTop: 5,
     paddingLeft: 9,
@@ -382,13 +396,13 @@ const styles = {
     textAlign: 'center',
     fontWeight: 'bold',
     marginTop: 20,
-    paddingTop:4,
+    paddingTop: 4,
     fontSize: 15,
   },
-  LoadingData:{
-color:'red',
-fontSize:20,
-textAlign:'center',
-marginTop:60,
+  LoadingData: {
+    color: 'red',
+    fontSize: 20,
+    textAlign: 'center',
+    marginTop: 60,
   }
 };

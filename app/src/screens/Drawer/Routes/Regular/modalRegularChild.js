@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TextInput, TouchableOpacity, Modal, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import { Text, View, TextInput, TouchableOpacity, Modal, ScrollView, StyleSheet, Alert, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Url } from '../../../../../Global_Variable/api_link';
 import SelectDropdown from 'react-native-select-dropdown';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const ModalRegularChild = ({ visible, item, setcards }) => {
   // State for input values
@@ -75,6 +76,11 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
         showAlert('Error', 'An error occurred while saving the data.');
       });
   };
+  // camera
+  const handleImageClick = () => {
+    navigation.navigate('CameraPopup');
+    console.log('CameraPopup');
+  };
 
   // Fetch point of collection options
   const fetchPointOfCollectionOptions = async () => {
@@ -97,6 +103,12 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
   // Render the modal component
   return (
     <Modal visible={visible} animationType="slide">
+      <View style={styles.imageContainer}>
+        <TouchableOpacity style={styles.captureButtonBg} onPress={handleImageClick}>
+          <MaterialIcons style={styles.captureButton} name="photo-camera" size={32} color="black" />
+        </TouchableOpacity>
+        <Text style={{ color: '#888' }}>Capture Picture</Text>
+      </View>
       <ScrollView>
         <View style={styles.modalContainer}>
           <TextInput
@@ -142,15 +154,15 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
             placeholderTextColor="black"
           />
 
-<View style={styles.buttonContainer}>
-  <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-    <Text style={styles.buttonLabel}>Save</Text>
-  </TouchableOpacity>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+              <Text style={styles.buttonLabel}>Save</Text>
+            </TouchableOpacity>
 
-  <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
-    <Text style={styles.buttonLabel}>Cancel</Text>
-  </TouchableOpacity>
-</View>
+            <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+              <Text style={styles.buttonLabel}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
 
         </View>
       </ScrollView>
@@ -165,7 +177,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 160,
+    // marginTop: 50,
   },
   inputField: {
     color: 'black',
@@ -173,9 +185,11 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderRadius: 5,
     padding: 10,
-    marginVertical: 10,
-    width: 220,
+    marginVertical: 30,
+    width: '80%',
     fontSize: 18,
+    textAlign: 'center',
+    backgroundColor: '#EEEEEE'
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -213,6 +227,7 @@ const styles = StyleSheet.create({
     width: 220,
     height: 50,
     backgroundColor: 'white',
+    width: '80%',
   },
   dropdownButtonText: {
     fontSize: 16,
@@ -222,6 +237,7 @@ const styles = StyleSheet.create({
   dropdownIcon: {
     color: 'black',
     fontSize: 18,
+    textAlign: 'center',
   },
   dropdown: {
     marginTop: 2,
@@ -230,12 +246,33 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: 220,
     backgroundColor: 'white',
+    textAlign: 'center',
   },
   dropdownText: {
     // fontSize: 16,
     color: 'black',
     textAlign: 'center',
     paddingVertical: 8,
+  },
+  // camera
+  captureButtonBg: {
+    backgroundColor: 'grey',
+    height: 100,
+    width: 200,
+    marginTop: 30,
+    borderRadius: 20,
+  },
+  captureButton: {
+    // backgroundColor: 'grey',
+    borderRadius: 25,
+    color: 'black',
+    textAlign: "center",
+    paddingTop: 30,
+    borderRadius: 10,
+  },
+  imageContainer: {
+    alignItems: 'center',
+    marginBottom: 8,
   },
 });
 

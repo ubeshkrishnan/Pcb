@@ -112,7 +112,7 @@ const ReviewData = ({ route, navigation }) => {
     }
   }, [store.location])
   
-  console.log(dropdownPoc?.map(item => { return { value: item.poc_id, label: item.poc_type }}),"poc")
+  // console.log(dropdownPoc?.map(item => { return { value: item.poc_id, label: item.poc_type }}),"poc")
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -120,7 +120,9 @@ const ReviewData = ({ route, navigation }) => {
         <View style={styles.imageContainer}>
           <TouchableOpacity style={styles.captureButtonBg} onPress={handleImageClick}>
             <MaterialIcons style={styles.captureButton} name="photo-camera" size={32} color="black" />
+           
           </TouchableOpacity>
+       
         </View>
 
         <View style={styles.inputContainer}>
@@ -257,7 +259,7 @@ const styles = StyleSheet.create({
 
   },
   container: {
-    // flex: 1,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
@@ -269,6 +271,7 @@ const styles = StyleSheet.create({
   image: {
     width: 220,
     height: 120,
+    
   },
   inputContainer: {
     width: '80%',
@@ -298,13 +301,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
     height: 100,
     width: 200,
+    marginTop: 30,
+    borderRadius: 20,
   },
-
   captureButton: {
-    backgroundColor: 'grey',
+    // backgroundColor: 'grey',
     borderRadius: 25,
-    color: 'blue',
-
+    color: 'black',
+    textAlign: "center",
+    paddingTop: 30,
+    borderRadius: 10,
+  },
+  imageContainer: {
+    alignItems: 'center',
+    marginBottom: 8,
   },
   picker: {
     borderColor: 'black',
