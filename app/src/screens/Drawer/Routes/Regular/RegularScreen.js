@@ -116,7 +116,7 @@ const RegularScreen = () => {
           {isModalVisible && <ModalRegular visible={isModalVisible} item={cards} setcards={setCards} />}
           <TouchableOpacity onPress={navigateToRegularScreenChild}>
             <Text style={styles.CardSerialNo}>
-              <Text style={styles.SerialNoText}>11000 </Text>- {" "}
+              <Text style={styles.SerialNoText}>{item.ref_id} </Text>- {" "}
               <Text style={styles.CardDetailRight}>{item.company_name}</Text>
             </Text>
 

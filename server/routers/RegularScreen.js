@@ -26,9 +26,10 @@ app.get("/regular", (req, res) => {
 //   });
 // });
 
+// Endpoint to retrieve regular card details
 app.get('/regularcarddetail', (req, res) => {
   db.query(`
-    SELECT IL.company_name, IL.industry_location AS region, IL.category, IL.village,
+    SELECT SC.ref_id,IL.company_name, IL.industry_location AS region, IL.category, IL.village,
       ST.schedule_type, COUNT(sample_id) AS no_of_samples, STP.sample_type
     FROM sample_collection AS SC
     JOIN industry_list AS IL ON SC.industry_id = IL.industry_id
