@@ -11,7 +11,6 @@ import { increment } from '../../../../store/Reviewstore'
 
 const RegularScreen = () => {
   const store = useSelector(store => store.counter);
-  // console.log(store,"store")
   const dispatch = useDispatch();
 
   const [regularscheduletype, setRegularScheduleType] = useState([]);
@@ -21,81 +20,56 @@ const RegularScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [filteredCards, setFilteredCards] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // New state variable for loading status
+  const [isLoading, setIsLoading] = useState(true);
 
-  // for navigation
   const navigation = useNavigation();
 
   useEffect(() => {
-    RegularDetail()
-    console.log(Url, "Url");
+    fetchData();
   }, []);
 
-  const RegularDetail = async () => {
+  const fetchData = async () => {
     try {
-      const response = await axios.get(Url + '/regularcarddetail');
-      if (response && response.data) {
-        const data = response.data;
-        setCards(data);
-        setFilteredCards(data);
-        setIsLoading(false); // Set loading status to false after data is fetched
+      const [cardResponse, scheduleTypeResponse, sampleTypeResponse] = await axios.all([
+        axios.get(Url + '/regularcarddetail'),
+        axios.get(Url + '/regularscheduletype'),
+        axios.get(Url + '/sampletypes')
+      ]);
+
+      if (cardResponse && cardResponse.data) {
+        setCards(cardResponse.data);
+        setFilteredCards(cardResponse.data);
+        setIsLoading(false);
       } else {
-        console.log('Error fetching Regular card details:', response);
+        console.log('Error fetching Regular card details:', cardResponse);
+      }
+
+      if (scheduleTypeResponse && scheduleTypeResponse.data) {
+        setRegularScheduleType(scheduleTypeResponse.data);
+      }
+
+      if (sampleTypeResponse && sampleTypeResponse.data) {
+        setSampleType(sampleTypeResponse.data);
       }
     } catch (error) {
-      console.log('Error fetching Regular card details:', error);
+      console.log('Error fetching data:', error);
     }
   };
 
-  useEffect(() => {
-    fetchRegularScheduleType();
-    fetchSampleType();
-  }, []);
-
-  const fetchRegularScheduleType = async () => {
-    try {
-      const response = await fetch(Url + '/regularscheduletype');
-      const jsonData = await response.json();
-      setRegularScheduleType(jsonData);
-    } catch (error) {
-      console.error(error);
+  const filterCards = (text) => {
+    if (text === '') {
+      return cards;
     }
-  };
 
-  const fetchSampleType = async () => {
-    try {
-      const response = await fetch(Url + '/sampletypes');
-      const jsonData = await response.json();
-      setSampleType(jsonData);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const navigateToRegularScreenChild = () => {
-    navigation.navigate('RegularScreenChild'); // Replace 'RegularScreenChild' with the actual name of your route
-  }
-
-  const placeholders = [
-    'Number',
-    'Scheme',
-    'Category',
-    'Region/Taluk',
-    'Scheduled Type',
-    'Village',
-    'No.of Samples',
-    'Sample Type',
-  ];
-
-  const handleSearch = (text) => {
-    const filteredCards = cards.filter((card) => {
-      const companyName = (card.company_name || "").toLowerCase();
-      const taluk = (card.taluk || "").toLowerCase();
-      const village = (card.village || "").toLowerCase();
-      const category = (card.category || "").toLowerCase();
-      const scheduleTypes = regularscheduletype?.map((item) => (item.schedule_type || "").toLowerCase()) || [];
-      const sampleTypes = sampletype?.map((item) => (item.sample_type || "").toLowerCase()) || [];
-      const searchValueLower = text.toLowerCase();
+    const searchValueLower = text.toLowerCase();
+    return cards.filter((card) => {
+      const companyName = (card.company_name || '').toLowerCase();
+      const taluk = (card.taluk || '').toLowerCase();
+      const village = (card.village || '').toLowerCase();
+      const category = (card.category || '').toLowerCase();
+      const scheduleTypes =
+        regularscheduletype?.map((item) => (item.schedule_type || '').toLowerCase()) || [];
+      const sampleTypes = sampletype?.map((item) => (item.sample_type || '').toLowerCase()) || [];
 
       return (
         companyName.includes(searchValueLower) ||
@@ -106,14 +80,34 @@ const RegularScreen = () => {
         sampleTypes.includes(searchValueLower)
       );
     });
+  };
+
+  const handleSearchChange = (text) => {
+    setSearchValue(text);
+    const filteredCards = filterCards(text);
     setFilteredCards(filteredCards);
   };
 
   const clearSearch = () => {
     setSearchValue('');
-    setFilteredCards(cards); // Reset filtered data to the original data
+    setFilteredCards(cards);
   };
-  
+
+  const navigateToRegularScreenChild = () => {
+    navigation.navigate('RegularScreenChild');
+  }
+
+  const placeholders = [
+    'Number',
+    'Scheme',
+    'Category',
+    'Region/Taluk',
+    'Scheduled',
+    'Type',
+    'Village',
+    'No.of Samples',
+    'Sample Type',
+  ];
 
   const renderItem = ({ item }) => {
     return (
@@ -123,7 +117,6 @@ const RegularScreen = () => {
           <TouchableOpacity onPress={navigateToRegularScreenChild}>
             <Text style={styles.CardSerialNo}>
               <Text style={styles.SerialNoText}>11000 </Text>- {" "}
-
               <Text style={styles.CardDetailRight}>{item.company_name}</Text>
             </Text>
 
@@ -169,12 +162,9 @@ const RegularScreen = () => {
 
           </TouchableOpacity>
         </View>
-
       </ScrollView>
-
     );
   };
-
 
   const renderEndData = () => {
     if (isLoading) {
@@ -183,6 +173,7 @@ const RegularScreen = () => {
       return <Text style={styles.CardEndText}>END DATA</Text>;
     }
   };
+
   const renderNoRecords = () => {
     return (
       <View style={styles.noRecordsContainer}>
@@ -190,6 +181,7 @@ const RegularScreen = () => {
       </View>
     );
   };
+
   return (
     <View>
       <View style={styles.horizontalLine}></View>
@@ -199,10 +191,7 @@ const RegularScreen = () => {
           placeholder="Search"
           placeholderTextColor="gray"
           value={searchValue}
-          onChangeText={(text) => {
-            setSearchValue(text);
-            handleSearch(text);
-          }}
+          onChangeText={handleSearchChange}
           autoFocus
           clearButtonMode="while-editing"
         />
@@ -211,7 +200,7 @@ const RegularScreen = () => {
             <MaterialIcons name="clear" size={20} color="gray" />
           </TouchableOpacity>
         )}
-        <TouchableOpacity style={styles.searchIconContainer} onPress={handleSearch}>
+        <TouchableOpacity style={styles.searchIconContainer} onPress={() => handleSearchChange(searchValue)}>
           <MaterialIcons name="search" size={20} color="gray" />
         </TouchableOpacity>
       </View>
@@ -222,12 +211,14 @@ const RegularScreen = () => {
         keyExtractor={(item) => item.id}
         ListEmptyComponent={renderNoRecords}
       />
+
       {renderEndData()}
     </View>
   );
 };
 
 export default RegularScreen;
+
 
 
 const styles = {

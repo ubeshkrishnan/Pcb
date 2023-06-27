@@ -28,9 +28,9 @@ app.get('/reviewsample_typ', (req, res) => {
 
 
 // Endpoint to retrieve regular card details
-app.get('/reviewtreatment', (req, res) => {
+app.get('/reviewcontainer', (req, res) => {
   // Retrieve data from the database using a query
-  db.query('SELECT treatment_type_id, treatment_type FROM m_treatment_type', (error, result) => {
+  db.query('SELECT  container_type_id, container_type FROM m_container_type', (error, result) => {
     if (error) {
       console.error('Error executing query:', error);
       res.status(500).json({ error: 'Internal server error' });

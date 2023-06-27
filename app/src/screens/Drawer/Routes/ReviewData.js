@@ -1,28 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TextInput, Button, ScrollView, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TextInput,
+  Button,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Url } from '../../../../Global_Variable/api_link';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateLocation } from '../../../store/Reviewstore';
 import SelectDropdown from 'react-native-select-dropdown';
-import axios  from 'axios';
+import axios from 'axios';
+
 const ReviewData = ({ route, navigation }) => {
-
-  const store = useSelector(store => store.counter)
+  const store = useSelector((store) => store.counter);
   const dispatch = useDispatch();
-
-  // console.log(store.location, "reviewdata check")
 
   const [selectedSampleType, setSelectedSampleType] = useState('');
   const [selectedContainerType, setSelectedContainerType] = useState('');
-  const [selectedTreatmentType, setSelectedTreatmentType] = useState('');
+  const [selectedTreatmentType, setSelectedTreatmentType] = useState(null);
   const [users, setUsers] = useState([]);
   const { data } = route.params;
   const [dropdownPoc, setDropdownPoc] = useState([]);
   const [dropdownTreatment, setDropdownTreatment] = useState([]);
+  const [dropdownContainer, setDropdownContainer] = useState([]);
 
   const [datas, setData] = useState({
-
     sample_type: '',
     longitude: '',
     latitude: '',
@@ -42,12 +49,9 @@ const ReviewData = ({ route, navigation }) => {
   };
 
   const handleSave = () => {
-    // Perform save logic here
     console.log('Save button clicked');
     console.log('Data:', data);
 
-
-    // Create the payload to send in the POST request
     const payload = {
       schedule_type: data.schedule_type,
       longitude: data.longitude,
@@ -62,7 +66,6 @@ const ReviewData = ({ route, navigation }) => {
       treatment_type: selectedTreatmentType,
     };
 
-    // Send the POST request
     fetch(Url + 'reviewdata', {
       method: 'POST',
       headers: {
@@ -70,49 +73,83 @@ const ReviewData = ({ route, navigation }) => {
       },
       body: JSON.stringify(payload),
     })
-      .then(response => response.json())
-      .then(result => {
-        // Handle the response from the server
+      .then((response) => response.json())
+      .then((result) => {
         console.log('Response:', result);
-        // Perform any necessary actions after successful insertion
       })
-      .catch(error => {
+      .catch((error) => {
         console.log('Error inserting data:', error);
-        // Handle the error
       });
-    };
+  };
 
-  const fetchReviewPocData = async() => {
+  const fetchReviewPocData = async () => {
     try {
-       await axios.get(Url + '/reviewpoc')
-       .then((res)=>{ console.log(res.data)
-        setDropdownPoc(res.data) })
-
-      // setDropdownData(response.data);
+      const res = await axios.get(Url + '/reviewpoc');
+      // console.log(res.data);
+      setDropdownPoc(res.data);
     } catch (error) {
       console.error('Error fetching point of collection options', error);
     }
-  }
+  };
+  const fetchReviewContainerData = async () => {
+    try {
+      const res = await axios.get(Url + '/reviewcontainer');
+      // console.log(res.data);
+      setDropdownContainer(res.data);
+    } catch (error) {
+      console.error('Error fetching point of collection options', error);
+    }
+  };
+
+  const fetchReviewTreatmentData = async () => {
+    try {
+      const res = await axios.get(Url + '/reviewtreatment');
+      // console.log(res.data);
+      setDropdownTreatment(res.data);
+    } catch (error) {
+      console.error('Error fetching review treatment data', error);
+    }
+  };
+
   useEffect(() => {
     fetchReviewPocData();
-
+    fetchReviewTreatmentData();
+    fetchReviewContainerData();
   }, []);
-  
- 
 
   useEffect(() => {
-    setData({ ...datas, longitude: store.location.longitude, latitude: store.location.latitude })
+    setData((prevData) => ({
+      ...prevData,
+      longitude: store.location.longitude,
+      latitude: store.location.latitude,
+    }));
+  }, [store.location]); // Add store.location as a dependency
+
+
+  useEffect(() => {
     return () => {
-      // console.log("lat long")
-      setData({ ...datas, longitude: '', latitude: '' })
-      dispatch(updateLocation({
-        latitude: '',
+      setData({
+        sample_type: '',
         longitude: '',
-      }));
-    }
-  }, [store.location])
-  
-  // console.log(dropdownPoc?.map(item => { return { value: item.poc_id, label: item.poc_type }}),"poc")
+        latitude: '',
+        turbidity: '',
+        serial_no: '',
+        point_of_collection: '',
+        collection_time: '',
+        container: '',
+        sampled_by: '',
+        color: '',
+        treatment_type: '',
+      });
+
+      dispatch(
+        updateLocation({
+          latitude: '',
+          longitude: '',
+        })
+      );
+    };
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -120,11 +157,8 @@ const ReviewData = ({ route, navigation }) => {
         <View style={styles.imageContainer}>
           <TouchableOpacity style={styles.captureButtonBg} onPress={handleImageClick}>
             <MaterialIcons style={styles.captureButton} name="photo-camera" size={32} color="black" />
-           
           </TouchableOpacity>
-       
         </View>
-
         <View style={styles.inputContainer}>
           <View style={styles.inputRow}>
             <View style={styles.inputColumn}>
@@ -135,13 +169,11 @@ const ReviewData = ({ route, navigation }) => {
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Sample Type</Text>
               <SelectDropdown
-            //  data={dropdownPoc?.map(item => { return { value: item.poc_id, label: item.poc_type }})}
-            data={dropdownPoc.map(item => item.poc_type)}
+                data={dropdownPoc.map((item) => item.poc_type)}
                 defaultValue={selectedSampleType}
-                onSelect={(selectedItem) => setSelectedSampleType(selectedItem.value)}
+                onSelect={(selectedItem) => setSelectedSampleType(selectedItem)}
                 buttonStyle={styles.dropdownButton}
-                buttonTextAfterSelection={(selectedItem) =>
-              selectedItem.poc_}
+                buttonTextAfterSelection={(selectedItem) => selectedItem}
                 buttonTextStyle={styles.dropdownButtonText}
                 renderDropdownIcon={() => <Text style={styles.dropdownIcon}>▼</Text>}
                 dropdownStyle={styles.dropdownContainer}
@@ -149,7 +181,6 @@ const ReviewData = ({ route, navigation }) => {
                 rowTextStyle={styles.dropdownRowText}
               />
             </View>
-
           </View>
           <View style={styles.inputRow}>
             <View style={styles.inputColumn}>
@@ -163,15 +194,13 @@ const ReviewData = ({ route, navigation }) => {
           </View>
           <View style={styles.inputRow}>
             <View style={styles.inputColumn}>
-              <Text style={styles.label}>Collection Time </Text>
+              <Text style={styles.label}>Collection Time</Text>
               <TextInput style={styles.input} />
             </View>
             <View style={styles.inputColumn}>
-
               <Text style={styles.label}>Container</Text>
-
               <SelectDropdown
-                data={['Option 1', 'Option 2', 'Option 3']}
+                data={dropdownContainer.map((item) => item. container_type)}
                 defaultValue={selectedContainerType}
                 onSelect={(selectedItem) => setSelectedContainerType(selectedItem)}
                 buttonStyle={styles.dropdownButton}
@@ -203,20 +232,22 @@ const ReviewData = ({ route, navigation }) => {
               <TextInput style={styles.input} value={datas?.turbidity} onChangeText={(text) => setData({ ...data, turbidity: text })} />
             </View>
           </View>
-
           <View style={styles.inputRow}>
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Longitude</Text>
               <TextInput style={styles.input} value={datas?.longitude?.toString()} onChangeText={(text) => setData({ ...data, longitude: text })} />
             </View>
-
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Treatment Type</Text>
               <SelectDropdown
-                data={dropdownTreatment.map(item => ({ value: item, label: item }))}
+                data={dropdownTreatment.map((item) => item.treatment_type)}
                 defaultValue={selectedTreatmentType}
+
                 onSelect={(selectedItem) => setSelectedTreatmentType(selectedItem)}
+
                 buttonStyle={styles.dropdownButton}
+                buttonTextAfterSelection={(selectedItem) => selectedItem}
+
                 buttonTextStyle={styles.dropdownButtonText}
                 renderDropdownIcon={() => <Text style={styles.dropdownIcon}>▼</Text>}
                 dropdownStyle={styles.dropdownContainer}
@@ -228,8 +259,8 @@ const ReviewData = ({ route, navigation }) => {
         </View>
 
         <View style={styles.buttonRow}>
-          <Button title="Drafts" onPress={() => console.log('Drafts')} color="black" />
-          <Button title="Save" onPress={handleSave} color="green" />
+          <Button title="Draft" onPress={() => console.log('Drafts')} color="black" />
+          <Button title="Submit" onPress={handleSave} color="green" />
           <Button title="Cancel" onPress={() => navigation.goBack()} color="red" />
         </View>
       </View>
@@ -237,12 +268,11 @@ const ReviewData = ({ route, navigation }) => {
   );
 };
 
-
 const styles = StyleSheet.create({
   inputRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    color: 'black'
+    color: 'black',
   },
   inputColumn: {
     flex: 1,
@@ -250,13 +280,12 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    color: 'black'
+    color: 'black',
   },
   input: {
     borderColor: 'gray',
     borderWidth: 1,
     color: 'black',
-
   },
   container: {
     flex: 1,
@@ -267,11 +296,6 @@ const styles = StyleSheet.create({
   imageContainer: {
     alignItems: 'center',
     marginBottom: 8,
-  },
-  image: {
-    width: 220,
-    height: 120,
-    
   },
   inputContainer: {
     width: '80%',
@@ -295,7 +319,7 @@ const styles = StyleSheet.create({
     width: '65%',
   },
   draft: {
-    Color: 'black'
+    color: 'black',
   },
   captureButtonBg: {
     backgroundColor: 'grey',
@@ -305,10 +329,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   captureButton: {
-    // backgroundColor: 'grey',
     borderRadius: 25,
     color: 'black',
-    textAlign: "center",
+    textAlign: 'center',
     paddingTop: 30,
     borderRadius: 10,
   },
@@ -324,8 +347,6 @@ const styles = StyleSheet.create({
   dropdownIcon: {
     color: 'black',
   },
-  // dropdownButton:{
-  //   width:20,
-  // }
 });
+
 export default ReviewData;

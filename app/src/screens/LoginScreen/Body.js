@@ -1,5 +1,4 @@
-import axios, { Axios } from 'axios';
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,14 +8,13 @@ import {
   Animated,
   ScrollView,
   StyleSheet,
-  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Header from './Header';
-// import Footer from './Footer';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {Url} from "../../../Global_Variable/api_link";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { Url } from '../../../Global_Variable/api_link';
+import Header from './Header';
 
 const LoginScreen = () => {
   const logoOpacity = useRef(new Animated.Value(0)).current;
@@ -24,19 +22,15 @@ const LoginScreen = () => {
   const [empId, setEmail] = useState('EN2022');
   const [password, setPassword] = useState('lims@123');
   const [showPassword, setShowPassword] = useState(false);
-  const [checkValidEmail, setCheckValidEmail] = useState(false);
   const [checkValidPassword, setCheckValidPassword] = useState(false);
   const [error, setError] = useState('');
-
-  // local storage
-  // const emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   const handleNavigateToDashboard = () => {
-    navigation.navigate('Dashboard'); // Navigate to the Dashboard screen
+    navigation.navigate('Dashboard');
   };
 
   useEffect(() => {
@@ -47,86 +41,40 @@ const LoginScreen = () => {
     }).start();
   }, []);
 
-  // const validateEmail = () => {
-  //   setCheckValidEmail(!emailRegex.test(email));
-  // };
-
   const validatePassword = () => {
     setCheckValidPassword(password.length < 6);
   };
 
-  const postData = async () => {
-    const data = {
-      empId: empId,
-      password: password,
-    };
-  
-    try {
-      const response = await axios.post(Url + '/auth', data);
-  
-      if (response.data.success) {
-        // Successful login
-         AsyncStorage.setItem('login', JSON.stringify(response.data));
-        // console.log(AsyncStorage.getItem('login'))
-        // alert(AsyncStorage.getItem('login'))
-        // handleNavigateToDashboard();
-        // return;
-      }
-      // Login error
-      setError('Invalid email or password');
-    } catch (error) {
-      // Error during login
-      setError('An error occurred during login FRONT: ' + error.message);
-    }
-  };
-  
   const submit = async () => {
-    // const isValidEmail = emailRegex.test(email);
     const isValidPassword = password.length >= 6;
-  
-    
-     if (!isValidPassword) {
+
+    if (!isValidPassword) {
       setCheckValidPassword(true);
       setError('Please enter a valid password (minimum 6 characters)');
     } else {
-      // Both email and password are valid, perform login action
       setError('');
-  
+
       try {
-        // alert(email+password)
         const response = await axios.post(Url + '/auth', { empId, password });
-  
+
         if (response.data.success) {
-          // Successful login
-    
           AsyncStorage.setItem('login', JSON.stringify(empId));
-      
-
-          // alert(AsyncStorage.getItem('login'))
-
-         
           handleNavigateToDashboard();
         } else {
-          // Login error
           setError('Invalid email or password');
         }
       } catch (error) {
-        // Error during login
         setError('An error occurred during login FRONT');
-        // alert('Error')
       }
     }
   };
-  
-
-
 
   return (
     <ScrollView style={{ backgroundColor: '#D0E3F1', height: '100%' }}>
       <Header />
       <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center' }}>
         <Animated.Image
-          source={require('../../assets/tlogo.png')}
+                 source={require('../../assets/tlogo.png')}
           style={{
             width: 120,
             height: 120,
@@ -140,36 +88,25 @@ const LoginScreen = () => {
       </SafeAreaView>
 
       <View style={styles.formContainer}>
-        <Text style={styles.loginContainer        }>Log In</Text>
+        <Text style={styles.loginContainer}>Log In</Text>
         <Text style={styles.loginDetails}>Enter Your Details To Login</Text>
         <View style={styles.inputContainer}>
           <View style={styles.inputIconContainer}></View>
           <Text style={styles.label}>Email</Text>
 
           <TextInput
-            style={[
-              styles.input,
-              styles.inputError,
-            ]}
+            style={[styles.input, styles.inputError]}
             placeholder="username"
             placeholderTextColor="#CCCCCC"
             value={empId}
             onChangeText={setEmail}
-            // onBlur={validateEmail}
           />
-
-          {/* {checkValidEmail && (
-            <Text style={styles.errorText}>Please enter a valid email</Text>
-          )} */}
 
           <View style={styles.passwordContainer}>
             <Text style={styles.label}>Password</Text>
             <View style={styles.passwordInputContainer}>
               <TextInput
-                style={[
-                  styles.input,
-                  checkValidPassword && styles.inputError,
-                ]}
+                style={[styles.input, checkValidPassword && styles.inputError]}
                 secureTextEntry={!showPassword}
                 placeholder="********"
                 placeholderTextColor="#CCCCCC"
@@ -208,6 +145,7 @@ const LoginScreen = () => {
 };
 
 export default LoginScreen;
+         
 
 
 

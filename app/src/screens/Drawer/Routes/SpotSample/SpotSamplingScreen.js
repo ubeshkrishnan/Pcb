@@ -6,7 +6,7 @@ import SelectDropdown from 'react-native-select-dropdown';
 import { useNavigation } from '@react-navigation/native';
 
 const SpotSampling = () => {
-  const [serial_no, setSerial_No] = useState(771);
+  const [serial_no, setSerial_No] = useState(956);
   const [point_of_collection, setPointOfCollection] = useState(null);
   const [collection_time, setCollectionTime] = useState('');
   const [latitude, setLatitude] = useState('');
