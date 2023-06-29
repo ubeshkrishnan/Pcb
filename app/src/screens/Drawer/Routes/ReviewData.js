@@ -8,6 +8,7 @@ import {
   Button,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Url } from '../../../../Global_Variable/api_link';
@@ -52,49 +53,67 @@ const ReviewData = ({ route, navigation }) => {
     console.log('Save button clicked');
     console.log('Data:', data);
 
-    const payload = {
-      schedule_type: data.schedule_type,
-      longitude: data.longitude,
-      latitude: data.latitude,
-      turbidity: data.turbidity,
-      serial_no: data.serial_no,
-      point_of_collection: data.point_of_collection,
-      collection_time: data.collection_time,
-      container: selectedContainerType,
-      sampled_by: data.sampled_by,
-      color: data.color,
-      treatment_type: selectedTreatmentType,
-    };
+    if (validateForm()) {
+      const payload = {
+        schedule_type: data.schedule_type,
+        longitude: data.longitude,
+        latitude: data.latitude,
+        turbidity: data.turbidity,
+        serial_no: data.serial_no,
+        point_of_collection: data.point_of_collection,
+        collection_time: data.collection_time,
+        container: selectedContainerType,
+        sampled_by: data.sampled_by,
+        color: data.color,
+        treatment_type: selectedTreatmentType,
+      };
 
-    fetch(Url + 'reviewdata', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log('Response:', result);
+      fetch(Url + 'reviewdata', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
       })
-      .catch((error) => {
-        console.log('Error inserting data:', error);
-      });
+        .then((response) => response.json())
+        .then((result) => {
+          console.log('Response:', result);
+          // Show success alert
+          Alert.alert('Success', 'Data saved successfully');
+        })
+        .catch((error) => {
+          console.log('Error inserting data:', error);
+          // Show error alert
+          Alert.alert('Error', 'Failed to save data');
+        });
+    } else {
+      console.log('Please fill in all fields');
+      // Show error alert
+      Alert.alert('Error', 'Please fill in all fields');
+    }
+  };
+
+  const validateForm = () => {
+    for (const key in datas) {
+      if (datas[key] === '') {
+        return false;
+      }
+    }
+    return true;
   };
 
   const fetchReviewPocData = async () => {
     try {
       const res = await axios.get(Url + '/reviewpoc');
-      // console.log(res.data);
       setDropdownPoc(res.data);
     } catch (error) {
       console.error('Error fetching point of collection options', error);
     }
   };
+
   const fetchReviewContainerData = async () => {
     try {
       const res = await axios.get(Url + '/reviewcontainer');
-      // console.log(res.data);
       setDropdownContainer(res.data);
     } catch (error) {
       console.error('Error fetching point of collection options', error);
@@ -104,7 +123,6 @@ const ReviewData = ({ route, navigation }) => {
   const fetchReviewTreatmentData = async () => {
     try {
       const res = await axios.get(Url + '/reviewtreatment');
-      // console.log(res.data);
       setDropdownTreatment(res.data);
     } catch (error) {
       console.error('Error fetching review treatment data', error);
@@ -123,8 +141,7 @@ const ReviewData = ({ route, navigation }) => {
       longitude: store.location.longitude,
       latitude: store.location.latitude,
     }));
-  }, [store.location]); // Add store.location as a dependency
-
+  }, [store.location]);
 
   useEffect(() => {
     return () => {
@@ -229,7 +246,7 @@ const ReviewData = ({ route, navigation }) => {
             </View>
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Turbidity</Text>
-              <TextInput style={styles.input} value={datas?.turbidity} onChangeText={(text) => setData({ ...data, turbidity: text })} />
+              <TextInput style={styles.input}/>
             </View>
           </View>
           <View style={styles.inputRow}>

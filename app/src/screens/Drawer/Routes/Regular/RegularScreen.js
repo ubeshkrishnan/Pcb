@@ -13,10 +13,7 @@ const RegularScreen = () => {
   const store = useSelector(store => store.counter);
   const dispatch = useDispatch();
 
-  const [regularscheduletype, setRegularScheduleType] = useState([]);
-  const [sampletype, setSampleType] = useState([]);
   const [cards, setCards] = useState([]);
-  const [inputValues, setInputValues] = useState(['', '', '', '', '', '', '', '']);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [filteredCards, setFilteredCards] = useState([]);
@@ -30,11 +27,7 @@ const RegularScreen = () => {
 
   const fetchData = async () => {
     try {
-      const [cardResponse, scheduleTypeResponse, sampleTypeResponse] = await axios.all([
-        axios.get(Url + '/regularcarddetail'),
-        axios.get(Url + '/regularscheduletype'),
-        axios.get(Url + '/sampletypes')
-      ]);
+      const cardResponse = await axios.get(Url + '/regularcarddetail');
 
       if (cardResponse && cardResponse.data) {
         setCards(cardResponse.data);
@@ -43,18 +36,11 @@ const RegularScreen = () => {
       } else {
         console.log('Error fetching Regular card details:', cardResponse);
       }
-
-      if (scheduleTypeResponse && scheduleTypeResponse.data) {
-        setRegularScheduleType(scheduleTypeResponse.data);
-      }
-
-      if (sampleTypeResponse && sampleTypeResponse.data) {
-        setSampleType(sampleTypeResponse.data);
-      }
     } catch (error) {
       console.log('Error fetching data:', error);
     }
   };
+
 
   const filterCards = (text) => {
     if (text === '') {
@@ -68,8 +54,8 @@ const RegularScreen = () => {
       const village = (card.village || '').toLowerCase();
       const category = (card.category || '').toLowerCase();
       const scheduleTypes =
-        regularscheduletype?.map((item) => (item.schedule_type || '').toLowerCase()) || [];
-      const sampleTypes = sampletype?.map((item) => (item.sample_type || '').toLowerCase()) || [];
+        cards?.map((item) => (item.schedule_type || '').toLowerCase()) || [];
+      const sampleTypes = cards?.map((item) => (item.sample_type || '').toLowerCase()) || [];
 
       return (
         companyName.includes(searchValueLower) ||
@@ -77,7 +63,7 @@ const RegularScreen = () => {
         village.includes(searchValueLower) ||
         category.includes(searchValueLower) ||
         scheduleTypes.includes(searchValueLower) ||
-        sampleTypes.includes(searchValueLower)
+        cards.includes(searchValueLower)
       );
     });
   };
@@ -143,21 +129,19 @@ const RegularScreen = () => {
             </View>
             <View style={styles.row}>
               <View style={styles.column}>
-                {regularscheduletype.map((scheduleItem, index) => (
-                  <Text key={index} style={styles.CardDetail}>
-                    Scheduled Type:
-                    <Text style={styles.CardMap}>{scheduleItem.schedule_type}</Text>
-                  </Text>
-                ))}
+                <Text style={styles.CardDetail}>
+                  Scheduled Type:
+                  <Text style={styles.CardMap}>{item.schedule_type}</Text>
+                </Text>
               </View>
+
               <View style={styles.column}>
-                {sampletype.map((sampleItem, index) => (
-                  <Text key={index} style={styles.CardDetail}>
-                    Sample Type:
-                    <Text style={styles.CardMap}>{sampleItem.sample_type}</Text>
-                  </Text>
-                ))}
+                <Text style={styles.CardDetail}>
+                  Sample Type:
+                  <Text style={styles.CardMap}>{item.sample_type}</Text>
+                </Text>
               </View>
+
             </View>
 
           </TouchableOpacity>
@@ -192,7 +176,7 @@ const RegularScreen = () => {
           placeholderTextColor="gray"
           value={searchValue}
           onChangeText={handleSearchChange}
-          autoFocus
+          // autoFocus
           clearButtonMode="while-editing"
         />
         {searchValue !== '' && (

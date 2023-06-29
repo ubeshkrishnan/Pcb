@@ -82,7 +82,7 @@ const RegularScreenChild = ({ navigation }) => {
       placeholderTextColor="gray"
       value={searchValue}
       onChangeText={handleSearch}
-      autoFocus
+      // autoFocus
       clearButtonMode="while-editing"
     />
     {searchValue.length > 0 && (

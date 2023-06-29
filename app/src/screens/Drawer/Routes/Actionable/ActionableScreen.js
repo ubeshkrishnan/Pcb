@@ -1,53 +1,85 @@
-import React, { useState } from 'react';
-import { Text, View, TextInput, TouchableOpacity, Modal, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, View, TextInput, TouchableOpacity, ScrollView, FlatList } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
+import axios from "axios";
+import { Url } from "../../../../../Global_Variable/api_link"
+import ActionableScreen from './ActionableScreenChild';
+import { useDispatch, useSelector } from 'react-redux'
+import { increment } from '../../../../store/Reviewstore'
 
-const ActionableScreen = () => {
+const ActionScreen = () => {
+  const store = useSelector(store => store.counter);
+  const dispatch = useDispatch();
+
   const [cards, setCards] = useState([]);
-  const [inputValues, setInputValues] = useState(['', '', '', '', '', '', '', '']);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+  const [filteredCards, setFilteredCards] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const navigation = useNavigation();
-  
-  const handleAddCard = () => {
-    setIsModalVisible(true);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const cardResponse = await axios.get(Url + '/actionablecarddetail');
+
+      if (cardResponse && cardResponse.data) {
+        setCards(cardResponse.data);
+        setFilteredCards(cardResponse.data);
+        setIsLoading(false);
+      } else {
+        console.log('Error fetching Regular card details:', cardResponse);
+      }
+    } catch (error) {
+      console.log('Error fetching data:', error);
+    }
   };
 
-  const handleSaveCard = () => {
-    const newCard = {
-      content: [
-        [
-          inputValues[0],
-          inputValues[1],
-          inputValues[2],
-          inputValues[3],
-          inputValues[4],
-          inputValues[5],
-          inputValues[6],
-          inputValues[7],
-        ],
-      ],
-    };
-    setCards((prevCards) => [...prevCards, newCard]);
-    setInputValues(['', '', '', '', '', '', '', '']);
-    setIsModalVisible(false);
-  };
 
-  const handleCancel = () => {
-    setInputValues(['', '', '', '', '', '', '', '']);
-    setIsModalVisible(false);
-  };
+  const filterCards = (text) => {
+    if (text === '') {
+      return cards;
+    }
 
-  const handleInputChange = (index, text) => {
-    setInputValues((prevInputValues) => {
-      const updatedInputValues = [...prevInputValues];
-      updatedInputValues[index] = text;
-      return updatedInputValues;
+    const searchValueLower = text.toLowerCase();
+    return cards.filter((card) => {
+      const companyName = (card.company_name || '').toLowerCase();
+      const taluk = (card.taluk || '').toLowerCase();
+      const village = (card.village || '').toLowerCase();
+      const category = (card.category || '').toLowerCase();
+      const scheduleTypes =
+        cards?.map((item) => (item.schedule_type || '').toLowerCase()) || [];
+      const sampleTypes = cards?.map((item) => (item.sample_type || '').toLowerCase()) || [];
+
+      return (
+        companyName.includes(searchValueLower) ||
+        taluk.includes(searchValueLower) ||
+        village.includes(searchValueLower) ||
+        category.includes(searchValueLower) ||
+        scheduleTypes.includes(searchValueLower) ||
+        cards.includes(searchValueLower)
+      );
     });
   };
 
-  const navigateToActionableScreenChild = () => {
-    navigation.navigate('ActionableScreenChild'); // Replace 'ActionableScreenChild' with the actual name of your route
+  const handleSearchChange = (text) => {
+    setSearchValue(text);
+    const filteredCards = filterCards(text);
+    setFilteredCards(filteredCards);
+  };
+
+  const clearSearch = () => {
+    setSearchValue('');
+    setFilteredCards(cards);
+  };
+
+  const navigateToRegularScreenChild = () => {
+    navigation.navigate('ActionableScreenChild');
   }
 
   const placeholders = [
@@ -55,162 +87,130 @@ const ActionableScreen = () => {
     'Scheme',
     'Category',
     'Region/Taluk',
-    'Scheduled Type',
+    'Scheduled',
+    'Type',
     'Village',
     'No.of Samples',
     'Sample Type',
   ];
-  const inputStyles = [
-    styles.firstInput,
-    styles.secondInput,
-    styles.thirdInput,
-    styles.fourthInput,
-    styles.fifthInput,
-    styles.sixthInput,
-    styles.seventhInput,
-    styles.eighthInput,
-  ];
 
-  return (
-    <ScrollView>
-      <View>
-      <View style={styles.horizontalLine}></View>
-
-        <View style={styles.rowContainer}>
-  <TextInput
-    style={styles.searchBarInput}
-    placeholder="Search"
-    placeholderTextColor="gray"
-    // value={searchValue}
-    onChangeText={text => setSearchValue(text)}
-    // onSubmitEditing={handleSearch}
-    autoFocus // Enable autofocus
-  />
-  <View style={styles.searchIconContainer}>
-    <MaterialIcons
-      name="search"
-      size={20}
-      color="gray"
-      // onPress={handleSearch}
-    />
-  </View>
-  <TouchableOpacity style={styles.addButton} onPress={handleAddCard}>
-            <Text style={styles.addButtonLabel}>Add</Text>
-          </TouchableOpacity>
-</View>
-    </View>
- {/* {cards.map((card, cardIndex) => (
-          <TouchableOpacity key={cardIndex} onPress={navigateToActionableScreenChild}>
-            <View style={styles.ActionableCardMain}>
-              <Text style={styles.CardSerialNo}></Text>
-              {card.content.map((row, rowIndex) => (
-                <View key={rowIndex} style={styles.row}>
-                  <View style={styles.column}>
-                    <Text style={styles.CardSerialNo}>
-                      {row[0]}
-                      <Text style={styles.CardDetailRight}>{row[1]}</Text>
-                    </Text>
-                    <Text style={styles.CardDetail}>
-                      Region/Taluk:
-                      <Text style={styles.CardMap}>{row[2]}</Text>
-                    </Text>
-                    <Text style={styles.CardDetail}>
-                      Village:
-                      <Text style={styles.CardMap}>{row[3]}</Text>
-                      </Text>
-                    <Text style={styles.CardDetail}>
-                      No Of Samples:
-                      <Text style={styles.CardMap}>{row[4]}</Text>
-                    </Text>
-                    <Text style={styles.CardDetail}>
-                      Category:
-                      <Text style={styles.CardMap}>{row[5]}</Text>
-                    </Text>
-                    <Text style={styles.CardDetail}>
-                      Scheduled Type:
-                      <Text style={styles.CardMap}>{row[6]}</Text>
-                    </Text>
-                    <Text style={styles.CardDetail}>
-                      Sample Type:
-                      <Text style={styles.CardMap}>{row[7]}</Text>
-                    </Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-          </TouchableOpacity>
-        ))} */}
-
-        <View style={styles.ActionableCardMain}>
-          <TouchableOpacity onPress={navigateToActionableScreenChild}>
+  const renderItem = ({ item }) => {
+    return (
+      <ScrollView>
+        <View style={styles.RegularCardMain}>
+          {isModalVisible && <ActionableScreen visible={isModalVisible} item={cards} setcards={setCards} />}
+          <TouchableOpacity onPress={navigateToRegularScreenChild}>
             <Text style={styles.CardSerialNo}>
-              11000
-              <Text style={styles.CardDetailRight}>Sivajothi Blue Metal</Text>
+              <Text style={styles.SerialNoText}>{item.ref_id} </Text>- {" "}
+              <Text style={styles.CardDetailRight}>{item.company_name}</Text>
             </Text>
+
             <View style={styles.row}>
               <View style={styles.column}>
                 <Text style={styles.CardDetail}>
-                  Region/Taluk:<Text style={styles.CardMap}> Coimbatore</Text>
+                  Region/Taluk:
+                  <Text style={styles.CardMap}>{item.taluk}</Text>
                 </Text>
-                <Text style={styles.CardDetail}>
-                  Village:<Text style={styles.CardMap}> Korapatti</Text>
+                <Text style={styles.CardDetail}> Village:
+                  <Text style={styles.CardMap}>{item.village}</Text>
                 </Text>
               </View>
               <View style={styles.column}>
                 <Text style={styles.CardDetail}>
-                  No Of Samples:<Text style={styles.CardMap}> 2</Text>
+                  No Of Samples:
+                  <Text style={styles.CardMap}>{item.water}</Text>
                 </Text>
                 <Text style={styles.CardDetail}>
-                  Category:<Text style={styles.CardMap}>Red Large</Text>
+                  Category:
+                  <Text style={styles.CardMap}>{item.category}</Text>
                 </Text>
               </View>
             </View>
             <View style={styles.row}>
               <View style={styles.column}>
                 <Text style={styles.CardDetail}>
-                  Scheduled Type:<Text style={styles.CardMap}> Scheduled</Text>
+                  Scheduled Type:
+                  <Text style={styles.CardMap}>{item.schedule_type}</Text>
                 </Text>
               </View>
+
               <View style={styles.column}>
                 <Text style={styles.CardDetail}>
-                  Sample Type:<Text style={styles.CardMap}> Effluent</Text>
+                  Sample Type:
+                  <Text style={styles.CardMap}>{item.sample_type}</Text>
                 </Text>
               </View>
+
             </View>
+
           </TouchableOpacity>
         </View>
+      </ScrollView>
+    );
+  };
 
-        <Modal visible={isModalVisible} animationType="slide">
-          <View style={styles.modalContainer}>
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((inputIndex) => (
-              <TextInput
-                key={inputIndex}
-                style={styles.input}
-                placeholder={placeholders[inputIndex - 1]}
-                placeholderTextColor="black"
-                value={inputValues[inputIndex - 1]}
-                onChangeText={(text) => handleInputChange(inputIndex - 1, text)}
-              />
-            ))}
+  const renderEndData = () => {
+    if (isLoading) {
+      return <Text style={styles.LoadingData}>LOADING DATA...</Text>;
+    } else {
+      return <Text style={styles.CardEndText}>END DATA</Text>;
+    }
+  };
 
-            <TouchableOpacity style={styles.saveButton} onPress={handleSaveCard}>
-              <Text style={styles.buttonLabelSave}>Save</Text>
-            </TouchableOpacity>
+  const renderNoRecords = () => {
+    return (
+      <View style={styles.noRecordsContainer}>
+        <Text style={styles.noRecordsText}>No records found</Text>
+      </View>
+    );
+  };
 
-            <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
-              <Text style={styles.buttonLabelCancel}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
-    </ScrollView>
+  return (
+    <View>
+      <View style={styles.horizontalLine}></View>
+      <View style={styles.rowContainer}>
+        <TextInput
+          style={styles.searchBarInput}
+          placeholder="Search"
+          placeholderTextColor="gray"
+          value={searchValue}
+          onChangeText={handleSearchChange}
+          // autoFocus
+          clearButtonMode="while-editing"
+        />
+        {searchValue !== '' && (
+          <TouchableOpacity style={styles.clearIconContainer} onPress={clearSearch}>
+            <MaterialIcons name="clear" size={20} color="gray" />
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity style={styles.searchIconContainer} onPress={() => handleSearchChange(searchValue)}>
+          <MaterialIcons name="search" size={20} color="gray" />
+        </TouchableOpacity>
+      </View>
+
+      <FlatList
+        data={filteredCards}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        ListEmptyComponent={renderNoRecords}
+      />
+
+      {renderEndData()}
+    </View>
   );
 };
 
-export default ActionableScreen;
+export default ActionScreen;
 
 
 
 const styles = {
+  noRecordsText: {
+    color: "grey",
+    textAlign: "center",
+    marginTop: 40,
+    fontSize: 20,
+  },
   headerText: {
     color: 'black',
     marginTop: 15,
@@ -220,191 +220,163 @@ const styles = {
     borderBottomColor: 'black',
     borderBottomWidth: 1,
   },
+  SerialNoText: {
+    fontWeight: 'bold',
+    color: 'red',
+    marginRight: 20,
+    textDecorationLine: 'underline',
+
+  },
   rowContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginLeft: 30,
     marginTop: 20,
-  },
-  searchBarInput:{
+    borderRadius: 20,
     borderColor: 'black',
-    color:'black',
-    borderWidth: 1,
-    height:40, 
-    width:180,
-    borderRadius:7,
-    paddingLeft: 27, // Adjust this value to align the placeholder text
-    paddingRight: 10,
+    position: 'relative',
   },
+
+  clearIconContainer: {
+    // position: 'absolute',
+    right: 30,
+    paddingBottom: 10,
+  },
+
   searchIconContainer: {
     position: 'absolute',
-    paddingLeft:5,
+    paddingLeft: 5,
     // right: 1,
+    paddingBottom: 10,
+  },
+  headersample: {
+    backgroundColor: '#CCCCCC',
+    height: 37,
+    color: 'black',
+    fontSize: 15,
+    fontWeight: 'bold',
+    paddingLeft: 20,
+    paddingTop: 9,
+
   },
   searchBar: {
     flex: 1,
     height: 35,
     width: 100,
-    borderColor: 'gray',
+    borderColor: 'red',
     borderWidth: 1,
     paddingLeft: 10,
     borderRadius: 20,
     marginRight: 10,
+    color: 'red',
+
   },
-  addButton: {
-    backgroundColor: 'grey',
-    padding: 10,
-    borderRadius:10,
-    // alignSelf: 'flex-end', // Align the button to the right
-    marginRight: 70,
-    // paddingLeft:30,
+  searchBarInput: {
+    borderColor: 'black',
+    color: 'black',
+    borderWidth: 1,
+    height: 40,
+    width: 180,
+    borderRadius: 7,
+    paddingLeft: 27,
+    paddingRight: 40,
+    marginBottom: 14,
   },
-  addButtonLabel: {
-    color: 'white',
-    fontWeight: 'bold',
-    marginLeft: 'auto', // Push the label to the right
-    marginRight: 10,
-     // Add some right margin for spacing
-  },
-  card: {
-    backgroundColor: 'red',
-    marginTop: 20,
-    marginLeft: 30,
-    marginRight: 10,
-    height: 100,
-    borderRadius: 10,
-    width:280,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+
+
   cardContent: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
-    // marginBottom: 10, // Adjust the marginBottom value as needed
-  },
-  
-
-  modalContainer:{
-color:'red'
-  },
-  input:{
-    color:'black'
   },
   modalContainer: {
-    // backgroundColor: 'grey', // Set input screen color as grey
+    color: 'red',
+  },
+  input: {
+    color: 'black',
+  },
+  modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-     justifyContent: 'center',
+    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f5f5f5',
   },
-  input: {
-    color: 'black', // Set input color as red
-    width: 200,
-    height: 40,
-    borderColor: 'black',
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 5,
-    marginTop: 10,
-  },
-// For input fields
 
-  firstInput: {
-    // Updated style for the first input
-    color: 'red', // Set the desired color for the first input
-
-  },
-  secondInput: {
-    // Styles specific to the second input
-    color: 'black', 
-  },
-  thirdInput: {
-    // Styles specific to the third input
-  },
-  fourthInput: {
-    // Styles specific to the fourth input
-  },
-  fifthInput: {
-    // Styles specific to the fifth input
-  },
-  sixthInput: {
-    // Styles specific to the sixth input
-  },
-  seventhInput: {
-    // Styles specific to the seventh input
-  },
-  eighthInput: {
-    // Styles specific to the eighth input
-  },
-  saveButton: {
-    // Your save button styles
-  },
-  cancelButton: {
-    // Your cancel button styles
-  },
-  buttonLabelSave: {
-    // Your button label styles
-    color:'white',
-    fontWeight:'bold',
-    backgroundColor:'green',
-    width:45,
-    borderRadius:10,
-    marginTop:10,
-    paddingLeft:7,
-  },
-  buttonLabelCancel:{
-    color:'red',
-    color:'white',
-    fontWeight:'bold',
-    backgroundColor:'red',
-    width:54,
-    height:20,
-    borderRadius:10,
-    marginTop:10,
-  },
-  // Actionable card
-  ActionableCardMain: {
+  RegularCardMain: {
     backgroundColor: '#D0E3F1',
     marginTop: 20,
-    width: 350,
-    height: 160,
+    height: 'auto',
     padding: 10,
-    marginLeft:5,
+    borderRadius: 20,
+    marginLeft: 15,
+    marginRight: 15,
+    flex: 1,
   },
+
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+
   column: {
     flex: 1,
   },
-  CardSerialNo:{
-backgroundColor:'#CCCCCC',
-height:27,
-color:'black',
-fontSize:15,
-fontWeight:"bold",
-paddingLeft:9,
- },
- CardDetail:{
-marginTop:5,
-paddingLeft:9,
-fontWeight:'bold',
-color:'black',
- },
- CardDetailRight: {
-  color: 'blue',
-  textAlign: 'right',
 
-  paddingRight:100,
-},
- CardMap:{
-  marginLeft: 15, // Adjust the marginLeft value to move the component to the right
-  fontWeight: '400',
-  paddingLeft: 10,
-  color:'black',
- },
+  CardSerialNo: {
+    backgroundColor: '#CCCCCC',
+    color: 'black',
+    fontSize: 15,
+    fontWeight: 'bold',
+    paddingLeft: 30,
+    height: "auto",
+    padding: 10,
+    borderBottomLeftRadius: 50,
+  },
+
+
+  CardDetail: {
+    marginTop: 5,
+    paddingLeft: 9,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+
+  CardDetailRight: {
+    color: 'blue',
+    textAlign: 'right',
+    paddingRight: 200,
+  },
+
+  CardMap: {
+    marginLeft: 15,
+    fontWeight: '400',
+    paddingLeft: 10,
+    color: 'black',
+  },
+
+  SearchIcon: {
+    marginTop: 30,
+    marginLeft: 20,
+    paddingRight: 20,
+
+  },
+
+  CardEndText: {
+    color: 'white',
+    backgroundColor: 'black',
+    height: 27,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginTop: 20,
+    paddingTop: 4,
+    fontSize: 15,
+  },
+  LoadingData: {
+    color: 'red',
+    fontSize: 20,
+    textAlign: 'center',
+    marginTop: 60,
+  }
 };

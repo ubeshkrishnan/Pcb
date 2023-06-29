@@ -10,22 +10,10 @@
     <list default="true" id="778e6186-edc9-4560-a2a8-34c50698d262" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/android/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/android/app/proguard-rules.pro" beforeDir="false" afterPath="$PROJECT_DIR$/app/android/app/proguard-rules.pro" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/android/app/src/debug/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/android/app/src/debug/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/android/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/android/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/android/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/app/android/gradle.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/android/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" afterPath="$PROJECT_DIR$/app/android/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/android/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/app/android/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/android/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/app/android/gradlew" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/android/gradlew.bat" beforeDir="false" afterPath="$PROJECT_DIR$/app/android/gradlew.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/android/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/android/settings.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/screens/Drawer/Routes/Actionable/ActionableScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/screens/Drawer/Routes/Actionable/ActionableScreen.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/screens/Drawer/Routes/Regular/RegularScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/screens/Drawer/Routes/Regular/RegularScreen.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/screens/Drawer/Routes/ReviewData.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/screens/Drawer/Routes/ReviewData.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/screens/Drawer/Routes/SpotSample/SpotSamplingScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/screens/Drawer/Routes/SpotSample/SpotSamplingScreen.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/screens/LoginScreen/Body.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/screens/LoginScreen/Body.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/screens/Drawer/Routes/Regular/RegularScreenChild.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/screens/Drawer/Routes/Regular/RegularScreenChild.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,18 +31,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "ToolWindowRunning Devices.ShowToolbar": "false",
-    "cidr.known.project.marker": "true",
-    "com.android.tools.idea.streaming.emulator.zoom.toolbar.visible": "false",
-    "last_opened_file_path": "C:/Users/staff/Documents/Pcb",
-    "settings.editor.selected.configurable": "device.mirroring"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;ToolWindowRunning Devices.ShowToolbar&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;com.android.tools.idea.streaming.emulator.zoom.toolbar.visible&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/staff/Documents/Pcb&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;device.mirroring&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">

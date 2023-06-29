@@ -1,5 +1,5 @@
 apply plugin: "com.android.application"
-apply plugin: "com.facebook.react"
+// apply plugin: "com.facebook.react"
 
 import com.android.build.OutputFile
 import org.apache.tools.ant.taskdefs.condition.Os
@@ -201,6 +201,16 @@ android {
                 tasks.findByName("configureCMakeRelWithDebInfo[${architecture}]")?.configure {
                     dependsOn("preReleaseBuild")
                 }
+                // Add this to your build.gradle file
+
+                    tasks.named(':app:bundleReleaseJsAndAssets') {
+            dependsOn(':react-native-async-storage_async-storage:compileReleaseAidl',
+                    ':react-native-community_geolocation:compileReleaseAidl',
+                    ':react-native-community_netinfo:compileReleaseAidl')
+            // Add other dependencies here
+        }
+
+
             }
         }
     }
