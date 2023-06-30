@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   View,
@@ -8,11 +8,11 @@ import {
   TouchableOpacity,
   PermissionsAndroid,
 } from 'react-native';
-import { launchCamera } from 'react-native-image-picker';
-import { useNavigation } from '@react-navigation/native';
+import {launchCamera} from 'react-native-image-picker';
+import {useNavigation} from '@react-navigation/native';
 import Geolocation from 'react-native-geolocation-service';
-import { useDispatch } from 'react-redux';
-import { updateLocation } from '../../../store/Reviewstore';
+import {useDispatch} from 'react-redux';
+import {updateLocation} from '../../../store/Reviewstore';
 
 const CameraPopup = () => {
   const dispatch = useDispatch();
@@ -23,9 +23,12 @@ const CameraPopup = () => {
   const [imagesTaken, setImagesTaken] = useState(0); // New state variable to count images taken
   const [imageTimestamp, setImageTimestamp] = useState(null); // New state variable to store image timestamp
   const handleReviewData = () => {
-    navigation.navigate('ReviewData', { viewLocation: viewLocation, imageTimestamp });
+    navigation.navigate('ReviewData', {
+      viewLocation: viewLocation,
+      imageTimestamp,
+    });
   };
-  
+
   const openCamera = async () => {
     try {
       if (imagesTaken === 3) {
@@ -33,7 +36,7 @@ const CameraPopup = () => {
         navigation.goBack();
       } else {
         const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.CAMERA
+          PermissionsAndroid.PERMISSIONS.CAMERA,
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           const options = {
@@ -69,33 +72,34 @@ const CameraPopup = () => {
       console.warn(err);
     }
   };
-  
+
   useEffect(() => {
     const requestLocationPermission = async () => {
       try {
         const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           Geolocation.getCurrentPosition(
             position => {
-              console.log(position.coords,"pooss");
+              // console.log(position.coords,"pooss");
               dispatch(
                 updateLocation({
                   latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-                currentTime:imageTimestamp,
-                })
+                  longitude: position.coords.longitude,
+                  currentTime: `${new Date()}`,
+                  // currentTime:`${new Date()}`,
+                }),
               );
               setLocation({
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
               });
-              setViewLocation([{ ...location }]);
+              setViewLocation([{...location}]);
             },
             error => {
               console.log('Error getting geolocation:', error);
-            }
+            },
           );
         } else {
           console.log('Location permission denied');
@@ -114,11 +118,14 @@ const CameraPopup = () => {
 
   return (
     <View style={styles.imagecontainer}>
-      <TouchableOpacity style={styles.button} onPress={openCamera} disabled={imagesTaken === 3}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={openCamera}
+        disabled={imagesTaken === 3}>
         <Text style={styles.buttonText}>Open Camera</Text>
       </TouchableOpacity>
       {cameraPhoto ? (
-        <Image style={styles.imageStyles} source={{ uri: cameraPhoto }} />
+        <Image style={styles.imageStyles} source={{uri: cameraPhoto}} />
       ) : null}
       <Button
         title={`Capture (${imagesTaken} / 3)`} // Show the image count
@@ -135,9 +142,7 @@ const CameraPopup = () => {
       />
       {location && (
         <View style={styles.locationContainer}>
-          <Text style={styles.geolocation}>
-            Latitude: {location.latitude}
-          </Text>
+          <Text style={styles.geolocation}>Latitude: {location.latitude}</Text>
           <Text style={styles.geolocation}>
             Longitude: {location.longitude}
           </Text>
@@ -147,12 +152,11 @@ const CameraPopup = () => {
   );
 };
 
-
 const styles = StyleSheet.create({
   imageContainer: {
     alignItems: 'center',
   },
-  
+
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -175,7 +179,6 @@ const styles = StyleSheet.create({
   geolocation: {
     color: 'red',
     marginBottom: 10,
-    
   },
   showGeolocation: {
     display: 'flex',
@@ -196,7 +199,5 @@ const styles = StyleSheet.create({
     height: 50,
   },
 });
-
-
 
 export default CameraPopup;
