@@ -4,13 +4,21 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import { Url } from '../../../../../Global_Variable/api_link';
 import ModalRegularChild from './modalRegularChild';
+import { useRoute } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { updateLocation } from '../../../../store/Reviewstore';
 
 const RegularScreenChild = ({ navigation }) => {
+  const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
   const [searchValue, setSearchValue] = useState('');
+
+  const route = useRoute();
+  console.log(route, "routess");
+
 
   const openModal = () => {
     setModalVisible(true);
@@ -21,12 +29,15 @@ const RegularScreenChild = ({ navigation }) => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+
+    if (route.params.sampleId)
+      fetchData();
+  }, [route.params]);
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(Url + '/regularscreenchild');
+      const response = await axios.get(Url + `/regularscreenchild/${route.params.sampleId}`);
+      console.log(response, "chceck id");
       setData(response.data);
       setFilteredData(response.data); // Set filtered data initially
       setIsLoading(false);
@@ -55,9 +66,20 @@ const RegularScreenChild = ({ navigation }) => {
     setSearchValue('');
     setFilteredData(data); // Reset filtered data to the original data
   };
+  
+useEffect(() => {
+  dispatch(updateLocation({
+    latitude: '',
+    longitude: '',
+    currentTime: '',
+  }))
+  
+}, [])
 
   const navigateToReviewData = (item) => {
+ 
     navigation.navigate('Review Data', { data: item });
+
   };
 
   return (
@@ -72,67 +94,67 @@ const RegularScreenChild = ({ navigation }) => {
 
       <View style={styles.horizontalLine}></View>
       <View style={styles.rowContainer}>
-  <View style={styles.searchBarInputContainer}>
-    <TouchableOpacity style={styles.searchIconContainer}>
-      <MaterialIcons name="search" size={20} color="gray" />
-    </TouchableOpacity>
-    <TextInput
-      style={styles.searchBarInput}
-      placeholder="Search"
-      placeholderTextColor="gray"
-      value={searchValue}
-      onChangeText={handleSearch}
-      // autoFocus
-      clearButtonMode="while-editing"
-    />
-    {searchValue.length > 0 && (
-      <TouchableOpacity style={styles.clearIconContainer} onPress={clearSearch}>
-        <MaterialIcons name="clear" size={20} color="gray" />
-      </TouchableOpacity>
-    )}
-  </View>
-</View>
+        <View style={styles.searchBarInputContainer}>
+          <TouchableOpacity style={styles.searchIconContainer}>
+            <MaterialIcons name="search" size={20} color="gray" />
+          </TouchableOpacity>
+          <TextInput
+            style={styles.searchBarInput}
+            placeholder="Search"
+            placeholderTextColor="gray"
+            value={searchValue}
+            onChangeText={handleSearch}
+            // autoFocus
+            clearButtonMode="while-editing"
+          />
+          {searchValue.length > 0 && (
+            <TouchableOpacity style={styles.clearIconContainer} onPress={clearSearch}>
+              <MaterialIcons name="clear" size={20} color="gray" />
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
 
 
       {isLoading ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <ActivityIndicator size="large" color="#0000ff" />
-</View>
-) : (
-<FlatList
-data={filteredData}
-keyExtractor={(item) => item.serialNo} // Use serialNo as the key
+        </View>
+      ) : (
+        <FlatList
+          data={filteredData}
+          keyExtractor={(item) => item.serialNo} // Use serialNo as the key
 
-const renderItem={({ item }) => (
-<View style={styles.RegularCard}>
-<TouchableOpacity onPress={() => navigateToReviewData(item)}>
-<Text style={styles.CardSerialNo}>
-{item.serialNo}
-<Text style={styles.CardDetailRight}>11001-01</Text>
-</Text>
-            <ModalRegularChild visible={modalVisible} item={data} setcards={setData} onClose={closeModal} />
+          const renderItem={({ item }) => (
+            <View style={styles.RegularCard}>
+              <TouchableOpacity onPress={() => navigateToReviewData(item)}>
+                <Text style={styles.CardSerialNo}>
+                  {item.serialNo}
+                  <Text style={styles.CardDetailRight}>11001-01</Text>
+                </Text>
+                <ModalRegularChild visible={modalVisible} item={data} setcards={setData} onClose={closeModal} />
 
-<Text style={styles.CardDetail}>
-  Point of Collection:
-  <Text style={styles.CardMap}> {item.poc_type}</Text>
-</Text>
-<Text style={styles.CardDetail}>
-  Collection Time Stamp:
-  <Text style={styles.CardMap}> {item.collectionTimeStamp}</Text>
-</Text>
-<Text style={styles.CardDetail}>
-  Latitude:<Text style={styles.CardMap}> {item.latitude}</Text>
-</Text>
-<Text style={styles.CardDetail}>
-  Longitude:<Text style={styles.CardMap}> {item.longitude}</Text>
-</Text>
-</TouchableOpacity>
-</View>
-)}
-/>
-)}
-</View>
-);
+                <Text style={styles.CardDetail}>
+                  Point of Collection:
+                  <Text style={styles.CardMap}> {item.poc_type}</Text>
+                </Text>
+                <Text style={styles.CardDetail}>
+                  Collection Time Stamp:
+                  <Text style={styles.CardMap}> {item.collectionTimeStamp}</Text>
+                </Text>
+                <Text style={styles.CardDetail}>
+                  Latitude:<Text style={styles.CardMap}> {item.latitude}</Text>
+                </Text>
+                <Text style={styles.CardDetail}>
+                  Longitude:<Text style={styles.CardMap}> {item.longitude}</Text>
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+      )}
+    </View>
+  );
 };
 
 export default RegularScreenChild;
@@ -186,14 +208,14 @@ const styles = {
   clearIconContainer: {
     paddingRight: 10,
   },
-  
+
   title: {
     fontSize: 15,
     fontWeight: 'bold',
     textDecorationLine: 'underline',
     marginLeft: 10,
-    color:'black',
-    
+    color: 'black',
+
   },
   CardSerialNo: {
     backgroundColor: '#CCCCCC',
@@ -203,9 +225,9 @@ const styles = {
     paddingLeft: 30,
     height: "auto",
     padding: 10,
-    borderBottomLeftRadius: 50,  
+    borderBottomLeftRadius: 50,
   },
-  
+
   CardDetail: {
     marginTop: 5,
     paddingLeft: 9,
@@ -213,7 +235,7 @@ const styles = {
     color: 'black',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    
+
   },
   CardDetailRight: {
     color: 'blue',
@@ -246,7 +268,7 @@ const styles = {
     borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    borderBottomLeftRadius: 50,  
+    borderBottomLeftRadius: 50,
   },
   addButtonIcon: {
     color: 'white',

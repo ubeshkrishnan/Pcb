@@ -8,6 +8,7 @@ import RegularscreenData from '../RegularscreenData';
 import ModalRegular from './modalRegularChild';
 import { useDispatch, useSelector } from 'react-redux'
 import { increment } from '../../../../store/Reviewstore'
+import { iteratorSymbol } from 'immer/dist/internal';
 
 const RegularScreen = () => {
   const store = useSelector(store => store.counter);
@@ -79,8 +80,9 @@ const RegularScreen = () => {
     setFilteredCards(cards);
   };
 
-  const navigateToRegularScreenChild = () => {
-    navigation.navigate('RegularScreenChild');
+  const navigateToRegularScreenChild = (item) => {
+console.log(item.sample_coll_id,"itemm");
+    navigation.navigate('RegularScreenChild',{sampleId:item.sample_coll_id});
   }
 
   const placeholders = [
@@ -100,7 +102,7 @@ const RegularScreen = () => {
       <ScrollView>
         <View style={styles.RegularCardMain}>
           {isModalVisible && <ModalRegular visible={isModalVisible} item={cards} setcards={setCards} />}
-          <TouchableOpacity onPress={navigateToRegularScreenChild}>
+          <TouchableOpacity onPress={() =>navigateToRegularScreenChild(item)}>
             <Text style={styles.CardSerialNo}>
               <Text style={styles.SerialNoText}>{item.ref_id} </Text>- {" "}
               <Text style={styles.CardDetailRight}>{item.company_name}</Text>

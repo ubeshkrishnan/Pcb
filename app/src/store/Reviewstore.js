@@ -18,15 +18,24 @@ export const counterSlice = createSlice({
     },
     
     updateLocation:(state,action)=>{
-      // console.log(action,"action data")
+      console.log(action.payload,"update data")
    state.location=action.payload
     },
+    resetLocation:(state,action)=>{
+      state.location ={
+        latitude: '',
+        longitude: '',
+        currentTime: ''
+      }
+    },
+
     decrement: (state) => {
       state.value -= 1
     },
     incrementByAmount: (state, action) => {
       state.value += action.payload
     },
+
   },
 })
 

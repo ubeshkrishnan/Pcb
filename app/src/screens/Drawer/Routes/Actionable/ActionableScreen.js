@@ -4,11 +4,12 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import axios from "axios";
 import { Url } from "../../../../../Global_Variable/api_link"
-import ActionableScreen from './ActionableScreenChild';
+import ModalActionable from './modalActionable';
 import { useDispatch, useSelector } from 'react-redux'
 import { increment } from '../../../../store/Reviewstore'
+import { iteratorSymbol } from 'immer/dist/internal';
 
-const ActionScreen = () => {
+const RegularScreen = () => {
   const store = useSelector(store => store.counter);
   const dispatch = useDispatch();
 
@@ -78,8 +79,9 @@ const ActionScreen = () => {
     setFilteredCards(cards);
   };
 
-  const navigateToRegularScreenChild = () => {
-    navigation.navigate('ActionableScreenChild');
+  const navigateToActionableScreenChild = (item) => {
+console.log(item.sample_coll_id,"itemm");
+    navigation.navigate('ActionableScreenChild',{sampleId:item.sample_coll_id});
   }
 
   const placeholders = [
@@ -97,9 +99,9 @@ const ActionScreen = () => {
   const renderItem = ({ item }) => {
     return (
       <ScrollView>
-        <View style={styles.RegularCardMain}>
-          {isModalVisible && <ActionableScreen visible={isModalVisible} item={cards} setcards={setCards} />}
-          <TouchableOpacity onPress={navigateToRegularScreenChild}>
+        <View style={styles.ActionCardMain}>
+          {isModalVisible && <ModalActionable visible={isModalVisible} item={cards} setcards={setCards} />}
+          <TouchableOpacity onPress={() =>navigateToActionableScreenChild(item)}>
             <Text style={styles.CardSerialNo}>
               <Text style={styles.SerialNoText}>{item.ref_id} </Text>- {" "}
               <Text style={styles.CardDetailRight}>{item.company_name}</Text>
@@ -200,7 +202,7 @@ const ActionScreen = () => {
   );
 };
 
-export default ActionScreen;
+export default RegularScreen;
 
 
 
@@ -304,7 +306,7 @@ const styles = {
     backgroundColor: '#f5f5f5',
   },
 
-  RegularCardMain: {
+  ActionCardMain: {
     backgroundColor: '#D0E3F1',
     marginTop: 20,
     height: 'auto',

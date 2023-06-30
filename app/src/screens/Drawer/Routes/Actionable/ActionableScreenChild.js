@@ -1,21 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
+import { Text, View, TouchableOpacity, Modal, ActivityIndicator, ScrollView, TextInput, FlatList } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import { Url } from '../../../../../Global_Variable/api_link';
+import ModalActionable from './modalActionable';
+import { useRoute } from '@react-navigation/native';
 
-const ActionableScreenChild = ({ navigation }) => {
+const ActionabelScreenChild = ({ navigation }) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
+
+  const route = useRoute();
+  console.log(route, "routess");
+
+
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+
+    if (route.params.sampleId)
+      fetchData();
+  }, [route.params]);
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(Url+'/regularscreenchild');
+      const response = await axios.get(Url + `/actionablecreenchild/${route.params.sampleId}`);
+      console.log(response, "chceck id");
       setData(response.data);
+      setFilteredData(response.data); // Set filtered data initially
       setIsLoading(false);
     } catch (error) {
       console.log('Error:', error);
@@ -23,81 +44,184 @@ const ActionableScreenChild = ({ navigation }) => {
     }
   };
 
+  const handleSearch = (query) => {
+    setSearchValue(query);
+    const filteredData = data.filter((item) => {
+      const lowerCaseQuery = query.toLowerCase();
+      return (
+        (item.serialNo && item.serialNo.includes(lowerCaseQuery)) ||
+        (item.poc_type && item.poc_type.toLowerCase().includes(lowerCaseQuery)) ||
+        (item.collectionTimeStamp && item.collectionTimeStamp.includes(lowerCaseQuery)) ||
+        (item.latitude && item.latitude.includes(lowerCaseQuery)) ||
+        (item.longitude && item.longitude.includes(lowerCaseQuery))
+      );
+    });
+    setFilteredData(filteredData);
+  };
+
+  const clearSearch = () => {
+    setSearchValue('');
+    setFilteredData(data); // Reset filtered data to the original data
+  };
+
   const navigateToReviewData = (item) => {
     navigation.navigate('Review Data', { data: item });
   };
 
-  if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
-
   return (
-    <View>
-      <Text style={styles.CardSerialNo}>
-        {/* <MaterialIcons name="search" size={20} style={styles.SearchIcon} /> */}
-        <Text >11000 - Sivajothi Blue Metal</Text>
-      </Text>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>11000 - Sivajothi Blue Metal</Text>
+        <TouchableOpacity onPress={openModal} style={styles.addButton}>
+          <MaterialIcons name="add" size={20} style={styles.addButtonIcon} />
+          <Text style={styles.addButtonLabel}>Add</Text>
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.horizontalLine}></View>
-
-      {data.map((item) => (
-        <View style={styles.RegularCard} key={item.id}>
-          <TouchableOpacity onPress={() => navigateToReviewData(item)}>
-            <Text style={styles.CardSerialNo}>
-              {item.serialNo}
-              <Text style={styles.CardDetailRight}>11001-01</Text>
-            </Text>
-
-            <Text style={styles.CardDetail}>
-              Point of Collection:
-              <Text style={styles.CardMap}> {item.poc_type}</Text>
-            </Text>
-            <Text style={styles.CardDetail}>
-              Collection Time Stamp:
-              <Text style={styles.CardMap}> {item.collectionTimeStamp}</Text>
-            </Text>
-            <Text style={styles.CardDetail}>
-              Latitude:<Text style={styles.CardMap}> {item.latitude}</Text>
-              {/* <MaterialIcons name="keyboard-arrow-right" size={40} style={styles.RightArrowIcon} /> */}
-            </Text>
-            
-            <Text style={styles.CardDetail}>
-              Longitude:<Text style={styles.CardMap}> {item.longitude}</Text>
-            </Text>
-     
+      <View style={styles.rowContainer}>
+        <View style={styles.searchBarInputContainer}>
+          <TouchableOpacity style={styles.searchIconContainer}>
+            <MaterialIcons name="search" size={20} color="gray" />
           </TouchableOpacity>
+          <TextInput
+            style={styles.searchBarInput}
+            placeholder="Search"
+            placeholderTextColor="gray"
+            value={searchValue}
+            onChangeText={handleSearch}
+            // autoFocus
+            clearButtonMode="while-editing"
+          />
+          {searchValue.length > 0 && (
+            <TouchableOpacity style={styles.clearIconContainer} onPress={clearSearch}>
+              <MaterialIcons name="clear" size={20} color="gray" />
+            </TouchableOpacity>
+          )}
         </View>
-      ))}
+      </View>
+
+
+      {isLoading ? (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      ) : (
+        <FlatList
+          data={filteredData}
+          keyExtractor={(item) => item.serialNo} // Use serialNo as the key
+
+          const renderItem={({ item }) => (
+            <View style={styles.RegularCard}>
+              <TouchableOpacity onPress={() => navigateToReviewData(item)}>
+                <Text style={styles.CardSerialNo}>
+                  {item.serialNo}
+                  <Text style={styles.CardDetailRight}>11001-01</Text>
+                </Text>
+                <ModalActionable visible={modalVisible} item={data} setcards={setData} onClose={closeModal} />
+
+                <Text style={styles.CardDetail}>
+                  Point of Collection:
+                  <Text style={styles.CardMap}> {item.poc_type}</Text>
+                </Text>
+                <Text style={styles.CardDetail}>
+                  Collection Time Stamp:
+                  <Text style={styles.CardMap}> {item.collectionTimeStamp}</Text>
+                </Text>
+                <Text style={styles.CardDetail}>
+                  Latitude:<Text style={styles.CardMap}> {item.latitude}</Text>
+                </Text>
+                <Text style={styles.CardDetail}>
+                  Longitude:<Text style={styles.CardMap}> {item.longitude}</Text>
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+      )}
     </View>
   );
 };
 
-export default ActionableScreenChild;
+export default ActionabelScreenChild;
+
 
 
 const styles = {
+  container: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    marginTop: 20,
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 30,
+    marginTop: 20,
+    borderRadius: 20,
+    borderColor: 'black',
+  },
+  searchIconContainer: {
+    position: 'absolute',
+    paddingLeft: 5,
+    // right: 1,
+    paddingBottom: 10,
+  },
+  searchBarInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 5,
+    // marginTop: 20,
+    borderRadius: 5,
+    borderColor: 'black',
+    borderWidth: 1,
+    height: 40,
+    width: 180,
+  },
+  searchIconContainer: {
+    paddingLeft: 5,
+  },
+  searchBarInput: {
+    flex: 1,
+    color: 'black',
+    paddingLeft: 10,
+  },
+  clearIconContainer: {
+    paddingRight: 10,
+  },
+
+  title: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+    marginLeft: 10,
+    color: 'black',
+
+  },
   CardSerialNo: {
     backgroundColor: '#CCCCCC',
-    height: 27,
     color: 'black',
     fontSize: 15,
     fontWeight: 'bold',
-    paddingLeft: 9,
-    textDecorationLine: 'underline',
+    paddingLeft: 30,
+    height: "auto",
+    padding: 10,
+    borderBottomLeftRadius: 50,
   },
+
   CardDetail: {
     marginTop: 5,
     paddingLeft: 9,
     fontWeight: 'bold',
     color: 'black',
-    
     flexDirection: 'row',
     justifyContent: 'space-between',
-    
+
   },
   CardDetailRight: {
     color: 'blue',
@@ -113,17 +237,32 @@ const styles = {
   RegularCard: {
     backgroundColor: '#D0E3F1',
     marginTop: 20,
-    height: 125,
-    marginLeft:20,
-    marginRight:20,
-    // width: 325,
+    height: 'auto',
+    marginLeft: 20,
+    marginRight: 20,
+    borderRadius: 20,
+    padding: 10,
   },
   horizontalLine: {
     borderBottomColor: 'black',
     borderBottomWidth: 1,
+    marginVertical: 10,
   },
-  // ArrowContainer: {
-  //   marginLeft: 10, // Adjust the spacing as needed
-  // },
-  
+  addButton: {
+    backgroundColor: 'green',
+    padding: 10,
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomLeftRadius: 50,
+  },
+  addButtonIcon: {
+    color: 'white',
+    marginRight: 5,
+  },
+  addButtonLabel: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
 };
+

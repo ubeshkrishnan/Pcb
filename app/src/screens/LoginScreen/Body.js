@@ -19,7 +19,7 @@ import Header from './Header';
 const LoginScreen = () => {
   const logoOpacity = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
-  const [empId, setEmail] = useState('EN2022');
+  const [empId, setEmail] = useState('EN 1011');
   const [password, setPassword] = useState('lims@123');
   const [showPassword, setShowPassword] = useState(false);
   const [checkValidPassword, setCheckValidPassword] = useState(false);
