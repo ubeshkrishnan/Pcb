@@ -14,7 +14,7 @@ const ActionabelScreenChild = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState('');
 
   const route = useRoute();
-  console.log(route, "routess");
+  // console.log(route, "routess");
 
 
   const openModal = () => {
@@ -65,7 +65,7 @@ const ActionabelScreenChild = ({ navigation }) => {
   };
 
   const navigateToReviewData = (item) => {
-    navigation.navigate('Review Data', { data: item });
+    navigation.navigate('ReviewData', { data: item });
   };
 
   return (

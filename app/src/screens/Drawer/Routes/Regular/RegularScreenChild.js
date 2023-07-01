@@ -17,7 +17,7 @@ const RegularScreenChild = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState('');
 
   const route = useRoute();
-  console.log(route, "routess");
+  // console.log(route, "routess");
 
 
   const openModal = () => {
@@ -66,20 +66,18 @@ const RegularScreenChild = ({ navigation }) => {
     setSearchValue('');
     setFilteredData(data); // Reset filtered data to the original data
   };
-  
-useEffect(() => {
-  dispatch(updateLocation({
-    latitude: '',
-    longitude: '',
-    currentTime: '',
-  }))
-  
-}, [])
+
+  useEffect(() => {
+    dispatch(updateLocation({
+      latitude: '',
+      longitude: '',
+      currentTime: '',
+    }))
+
+  }, [])
 
   const navigateToReviewData = (item) => {
- 
-    navigation.navigate('Review Data', { data: item });
-
+    navigation.navigate('ReviewData', { data: item });
   };
 
   return (
@@ -123,23 +121,24 @@ useEffect(() => {
       ) : (
         <FlatList
           data={filteredData}
-          keyExtractor={(item) => item.serialNo} // Use serialNo as the key
-
-          const renderItem={({ item }) => (
+          keyExtractor={(item) => item.serialNo} // Assuming 'serialNo' is a unique identifier (convert to string if not already)
+          renderItem={({ item }) => (
             <View style={styles.RegularCard}>
               <TouchableOpacity onPress={() => navigateToReviewData(item)}>
                 <Text style={styles.CardSerialNo}>
                   {item.serialNo}
-                  <Text style={styles.CardDetailRight}>11001-01</Text>
+                  <Text style={styles.CardDetailRight}>{item.serial_no}</Text>
                 </Text>
-                <ModalRegularChild visible={modalVisible} item={data} setcards={setData} onClose={closeModal} />
 
-                <Text style={styles.CardDetail}>
-                  Point of Collection:
+                <ModalRegularChild visible={modalVisible} item={item} setcards={setData} onClose={closeModal} />
+
+                <Text style={styles.CardDetail}>point Of Collection : 
+                  {item.poc_typ}
                   <Text style={styles.CardMap}> {item.poc_type}</Text>
                 </Text>
-                <Text style={styles.CardDetail}>
-                  Collection Time Stamp:
+                <Text style={styles.CardDetail}>Collection Time:
+                  <Text style={styles.CardMap}> {item.collection_time}</Text>
+
                   <Text style={styles.CardMap}> {item.collectionTimeStamp}</Text>
                 </Text>
                 <Text style={styles.CardDetail}>
@@ -152,6 +151,7 @@ useEffect(() => {
             </View>
           )}
         />
+
       )}
     </View>
   );

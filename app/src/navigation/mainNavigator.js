@@ -1,26 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,lazy ,Suspense} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { isReadyRef, navigationRef } from '../helpers';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import HeaderSession from '../screens/HeaderSession';
+const HeaderSession = React.lazy(() => import('../screens/HeaderSession'));
 import LoginScreen from '../screens/LoginScreen';
-import DashboardScreen from '../screens/Dashboard/DashboardScreen';
-import RegularScreen from '../screens/Drawer/Routes/Regular/RegularScreen';
-import RegularScreenChild from '../screens/Drawer/Routes/Regular/RegularScreenChild';
-import ActionableScreen from '../screens/Drawer/Routes/Actionable/ActionableScreen';
-import ActionableScreenChild from '../screens/Drawer/Routes/Actionable/ActionableScreenChild';
-import SpotSampling from '../screens/Drawer/Routes/SpotSample/SpotSamplingScreen';
-import RecordsScreen from '../screens/Drawer/Routes/RecordScreen';
-import Routes from '../screens/Drawer/Routes';
-import DashboardGraph from '../screens/Dashboard/DashboardGraph';
-import BasicInfo from '../screens/Drawer/Routes/BasicInformationScreen';
-import ReviewData from '../screens/Drawer/Routes/ReviewData';
-import LogOut from '../screens/Drawer/Routes/LogOut';
-import CameraPopup from '../screens/Drawer/Routes/CameraPopup';
+const DashboardScreen=React.lazy(() => import ('../screens/Dashboard/DashboardScreen'));
+const RegularScreen = React.lazy(() => import('../screens/Drawer/Routes/Regular/RegularScreen'));
+const RegularScreenChild = React.lazy(() => import('../screens/Drawer/Routes/Regular/RegularScreenChild'));
+const ActionableScreen = React.lazy(() => import('../screens/Drawer/Routes/Actionable/ActionableScreen'));
+const ActionableScreenChild = React.lazy(() => import('../screens/Drawer/Routes/Actionable/ActionableScreenChild'));
+const SpotSampling = React.lazy(() => import('../screens/Drawer/Routes/SpotSample/SpotSamplingScreen'));
+const RecordsScreen = React.lazy(() => import('../screens/Drawer/Routes/RecordScreen'));
+const Routes = React.lazy(() => import('../screens/Drawer/Routes'));
+const DashboardGraph = React.lazy(() => import('../screens/Dashboard/DashboardGraph'));
+const BasicInfo = React.lazy(() => import('../screens/Drawer/Routes/BasicInformationScreen'));
+const ReviewData = React.lazy(() => import('../screens/Drawer/Routes/ReviewData'));
+const LogOut = React.lazy(() => import('../screens/Drawer/Routes/LogOut'));
+const CameraPopup = lazy(()=> import ('../screens/Drawer/Routes/CameraPopup'));
 import NoInternet from '../screens/NoInternet';
 import { NetworkProvider } from 'react-native-offline';
 import NetInfo from '@react-native-community/netinfo';
+const ModalRegularChild = lazy(()=>import ('../screens/Drawer/Routes/Regular/modalRegularChild'));
 // import FingerPrint from '../screens/FingerPrint/FingerPrint';
 
 const MainNavigator = () => {
@@ -54,6 +55,7 @@ const MainNavigator = () => {
   };
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <NetworkProvider>
       <NavigationContainer ref={navigationRef} onReady={() => (isReadyRef.current = true)}>
         <Stack.Navigator
@@ -71,7 +73,9 @@ const MainNavigator = () => {
           <Stack.Screen name="CameraPopup" component={CameraPopup} />
           <Stack.Screen name="RegularScreenChild" component={RegularScreenChild} />
           <Stack.Screen name="ActionableScreenChild" component={ActionableScreenChild} />
-          <Stack.Screen name="Review Data" component={ReviewData} />
+          <Stack.Screen name="ReviewData" component={ReviewData} />
+          <Stack.Screen name="ModalRegularChild" component={ModalRegularChild} />
+          
           <Stack.Screen name="Logout" component={LogOut} options={{ headerShown: false }} />
           <Stack.Screen
             name="Dashboard"
@@ -86,6 +90,7 @@ const MainNavigator = () => {
       </NavigationContainer>
       {isOnline ? null : <NoInternet />}
     </NetworkProvider>
+    </Suspense>
   );
 };
 

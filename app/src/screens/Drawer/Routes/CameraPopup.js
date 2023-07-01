@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState ,useContext} from 'react';
 import {
   Text,
   View,
@@ -13,21 +13,20 @@ import {useNavigation} from '@react-navigation/native';
 import Geolocation from 'react-native-geolocation-service';
 import {useDispatch} from 'react-redux';
 import {updateLocation} from '../../../store/Reviewstore';
+import { DataContext } from '../../../context/DataContext';
 
-const CameraPopup = () => {
+const CameraPopup = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const [cameraPhoto, setCameraPhoto] = useState('');
   const [location, setLocation] = useState(null);
-  const navigation = useNavigation();
   const [viewLocation, setViewLocation] = useState([]);
   const [imagesTaken, setImagesTaken] = useState(0); // New state variable to count images taken
   const [imageTimestamp, setImageTimestamp] = useState(null); // New state variable to store image timestamp
+  const { appData, setAppData}=useContext(DataContext);
+
   const handleReviewData = () => {
-    navigation.navigate('ReviewData', {
-      viewLocation: viewLocation,
-      imageTimestamp,
-    });
-  };
+    navigation.navigate('ReviewData',{data:route?.param?.data})
+    };
 
   const openCamera = async () => {
     try {
@@ -44,6 +43,7 @@ const CameraPopup = () => {
             mediaType: 'photo',
             cameraType: 'back', // Set cameraType to 'back' for rear-facing camera
           };
+          
           launchCamera(options, response => {
             if (response.didCancel) {
               console.log('User cancelled camera picker');
@@ -82,24 +82,39 @@ const CameraPopup = () => {
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           Geolocation.getCurrentPosition(
             position => {
-              // console.log(position.coords,"pooss");
-              dispatch(
-                updateLocation({
-                  latitude: position.coords.latitude,
-                  longitude: position.coords.longitude,
-                  currentTime: `${new Date()}`,
-                  // currentTime:`${new Date()}`,
-                }),
-              );
-              setLocation({
+              const updatedDate = new Date();
+              const formattedDate = `${updatedDate.getFullYear()}-${String(
+                updatedDate.getMonth() + 1
+              ).padStart(2, '0')}-${String(updatedDate.getDate()).padStart(2, '0')}`;
+              const formattedTime = `${String(updatedDate.getHours()).padStart(
+                2,
+                '0'
+              )}:${String(updatedDate.getMinutes()).padStart(2, '0')}:${String(
+                updatedDate.getSeconds()
+              ).padStart(2, '0')}`;
+
+              const currentTime = `${formattedDate} ${formattedTime}`;
+              setAppData({...appData,
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
-              });
-              setViewLocation([{...location}]);
+                currentTime: currentTime,
+                  })
+              // dispatch(
+              //   updateLocation({
+              //     latitude: position.coords.latitude,
+              //     longitude: position.coords.longitude,
+              //     currentTime: currentTime,
+              //   })
+              // );
+              // setLocation({
+              //   latitude: position.coords.latitude,
+              //   longitude: position.coords.longitude,
+              // });
+             // setViewLocation([{ ...location }]);
             },
             error => {
               console.log('Error getting geolocation:', error);
-            },
+            }
           );
         } else {
           console.log('Location permission denied');
@@ -129,7 +144,7 @@ const CameraPopup = () => {
       ) : null}
       <Button
         title={`Capture (${imagesTaken} / 3)`} // Show the image count
-        onPress={handleReviewData}
+        onPress={()=>handleReviewData()}
         disabled={!cameraPhoto || !location || imagesTaken !== 3} // Disable the button until three images are captured
       >
         Capture
@@ -137,14 +152,14 @@ const CameraPopup = () => {
       <Button
         title="Back"
         onPress={() => {
-          navigation.goBack();
+          navigation.navigate(appData.lastScreen,{data:route?.param?.data});
         }}
       />
-      {location && (
+      {appData && (
         <View style={styles.locationContainer}>
-          <Text style={styles.geolocation}>Latitude: {location.latitude}</Text>
+          <Text style={styles.geolocation}>Latitude: {appData.latitude}</Text>
           <Text style={styles.geolocation}>
-            Longitude: {location.longitude}
+            Longitude: {appData.longitude}
           </Text>
         </View>
       )}

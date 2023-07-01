@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   Text,
@@ -11,13 +11,16 @@ import {
   Alert,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {Url} from '../../../../Global_Variable/api_link';
-import {useDispatch, useSelector} from 'react-redux';
+import { Url } from '../../../../Global_Variable/api_link';
+import { useDispatch, useSelector } from 'react-redux';
 import SelectDropdown from 'react-native-select-dropdown';
 import axios from 'axios';
+import {resetLocation} from '../../../store/Reviewstore';
+import { DataContext } from '../../../context/DataContext';
 
-const ReviewData = ({route, navigation}) => {
+const ReviewData = ({ route, navigation }) => {
   const store = useSelector(store => store.counter);
+  const { appData, setAppData}=useContext(DataContext);
   const dispatch = useDispatch();
 
   const [selectedSampleType, setSelectedSampleType] = useState('');
@@ -28,7 +31,7 @@ const ReviewData = ({route, navigation}) => {
   const [selectedColorType, setselectedColorType] = useState('');
 
   const [users, setUsers] = useState([]);
-  const {data} = route.params;
+  const { data } = route?.params;
   const [dropdownSample, setDropdownSample] = useState([]);
   const [dropdownColor, setDropdownColor] = useState([]);
   const [dropdownTurbitidy, setDropdownTurbidity] = useState([]);
@@ -36,91 +39,85 @@ const ReviewData = ({route, navigation}) => {
   const [dropdownTreatment, setDropdownTreatment] = useState([]);
   const [dropdownContainer, setDropdownContainer] = useState([]);
 
-  const [datas, setData] = useState({
-    sample_type: '',
-    longitude: '',
-    latitude: '',
-    turbidity: '',
-    serial_no: '',
-    point_of_collection: '',
-    collection_time: '',
-    container: '',
-    sampled_by: '',
-    color: '',
-    treatment_type: '',
-  });
+  const initialData={
+      schedule_type: data?.schedule_type,
+      longitude: appData?.longitude,
+      latitude: appData?.latitude,
+      turbidity: '',
+      serial_no:  data?.serial_no,
+      point_of_collection: '',
+      collection_time: '',
+      container: '',
+      employee_id:  data?.employee_id,
+      color: '',
+      treatment_type: '',
+    }
+  
+  const [datas, setData] = useState(initialData);
 
   useEffect(() => {
-    setData({
+    data && setData({
       ...data,
       longitude: store.location.longitude,
       latitude: store.location.latitude,
       collection_time: store.location.currentTime,
     });
-    console.log(store.location.currentTime, 'ssstre');
   }, [store]);
 
-  useEffect(() => {
-    console.log(data, 'timeeeee');
-  }, [datas]);
-
   const handleImageClick = () => {
-    navigation.navigate('CameraPopup');
-    console.log('CameraPopup');
+    setAppData({...appData,lastScreen:'ReviewData'})
+    navigation.navigate('CameraPopup',{data:route?.params?.data});
   };
 
-  const handleSave = () => {
-    console.log('Save button clicked');
-    console.log('Data:', data);
+  useEffect(() => {
 
-    if (validateForm()) {
-      const payload = {
-        schedule_type: data.schedule_type,
-        longitude: data.longitude,
-        latitude: data.latitude,
-        turbidity: data.turbidity,
-        serial_no: data.serial_no,
-        point_of_collection: data.point_of_collection,
-        collection_time: data.collection_time,
-        container: selectedContainerType,
-        sampled_by: data.sampled_by,
-        color: data.color,
-        treatment_type: selectedTreatmentType,
-      };
+    if (route.params.sampleId)
+      fetchData();
+  }, [route.params]);
 
-      fetch(Url + 'reviewdata', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
+ const handleSave = () => {
+    const payload = {
+      schedule_type: datas.schedule_type,
+      sample_type:selectedSampleType,
+      longitude: datas.longitude,
+      latitude: datas.latitude,
+      turbidity: selectedTurbidityType,
+      serial_no: datas.serial_no,
+      point_of_collection: selectedPocType,
+      collection_time: datas.collection_time,
+      container: selectedContainerType,
+      sampled_by: datas.employee_id,
+      color: selectedColorType,
+      treatment_type: selectedTreatmentType,
+    };
+    fetch(Url + '/reviewdata/' + route.params.sampleId, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        console.log('Response:', result);
+        // Show success alert
+        Alert.alert('Success', 'Data saved successfully');
       })
-        .then((response) => response.json())
-        .then((result) => {
-          console.log('Response:', result);
-          // Show success alert
-          Alert.alert('Success', 'Data saved successfully');
-        })
-        .catch((error) => {
-          console.log('Error inserting data:', error);
-          // Show error alert
-          Alert.alert('Error', 'Failed to save data');
-        });
-    } else {
-        console.log('Please fill in all fields');
+      .catch((error) => {
+        console.log('Error updating data:', error);
         // Show error alert
-        Alert.alert('Error', 'Please fill in all fields');
-      }
-  };
-
-  const validateForm = () => {
-    for (const key in datas) {
-      if (datas[key] === '') {
-        return false;
-      }
-    }
-    return true;
-  };
+        Alert.alert('Error', 'Failed to update data');
+      });
+    
+  }
+  // const validateForm = () => {
+  //   for (const key in datas) {
+  //     if (datas[key] === '') {
+  //       return false;
+  //     }
+  //   }
+  //   return true;
+  // };
 
   const fetchReviewPocData = async () => {
     try {
@@ -151,9 +148,10 @@ const ReviewData = ({route, navigation}) => {
   const fetchReviewSampleTypeData = async () => {
     try {
       const res = await axios.get(Url + '/reviewsampletype');
-      setDropdownSample(res.data);
+        setDropdownSample(res.data);
     } catch (error) {
       console.error('Error fetching review treatment data', error);
+
     }
   };
   const fetchReviewColorData = async () => {
@@ -182,33 +180,26 @@ const ReviewData = ({route, navigation}) => {
     fetchReviewTurbidityData();
   }, []);
 
-
-
   useEffect(() => {
-    return () => {
-      setData({
-        sample_type: '',
-        longitude: '',
-        latitude: '',
-        turbidity: '',
-        serial_no: '',
-        point_of_collection: '',
-        currentTime: '',
-        container: '',
-        sampled_by: '',
-        color: '',
-        treatment_type: '',
-      });
-    };
-  }, []);
+    setData({...datas, latitude: appData.latitude,
+    longitude: appData.longitude,
+    collection_time:appData.currentTime})
+   },[appData]);
 
+  const onHandleCancel=()=>{
+    setAppData({...appData, latitude: '',
+    longitude: '',
+    currentTime: ''})
+    setData(initialData);
+    navigation.goBack()
+  }
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
       <View style={styles.container}>
         <View style={styles.imageContainer}>
           <TouchableOpacity
             style={styles.captureButtonBg}
-            onPress={handleImageClick}>
+            onPress={()=>handleImageClick()}>
             <MaterialIcons
               style={styles.captureButton}
               name="photo-camera"
@@ -223,20 +214,22 @@ const ReviewData = ({route, navigation}) => {
               <Text style={styles.label}>Schedule Type</Text>
               <TextInput
                 style={styles.input}
-                value={data?.schedule_type}
-                onChangeText={text => setData({...data, schedule_type: text})}
+                value={datas?.schedule_type}
+                onChangeText={text => setData({ ...datas, schedule_type: text })}
               />
             </View>
 
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Sample Type</Text>
               <SelectDropdown
-                data={dropdownSample.map(item => item.sample_type)}
+              data={dropdownSample}
                 defaultValue={selectedSampleType}
-                onSelect={selectedItem => setSelectedSampleType(selectedItem)}
+                onSelect={selectedItem => setSelectedSampleType(selectedItem.sample_type_id)}
                 buttonStyle={styles.dropdownButton}
-                buttonTextAfterSelection={selectedItem => selectedItem}
+                buttonTextAfterSelection={(selectedItem) =>
+                selectedItem.sample_type}
                 buttonTextStyle={styles.dropdownButtonText}
+                rowTextForSelection={(item, index) => item.sample_type}
                 renderDropdownIcon={() => (
                   <Text style={styles.dropdownIcon}>▼</Text>
                 )}
@@ -251,23 +244,25 @@ const ReviewData = ({route, navigation}) => {
               <Text style={styles.label}>Serial No</Text>
               <TextInput
                 style={styles.input}
-                value={data?.serial_no}
-                onChangeText={text => setData({...data, serial_no: text})}
+                value={datas?.serial_no}
+                onChangeText={text => setData({ ...datas, serial_no: text })}
               />
             </View>
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Point of collection</Text>
               <SelectDropdown
-                data={dropdownPoc.map(item => item.poc_type)}
+                data={dropdownPoc}
                 defaultValue={selectedPocType}
-                onSelect={selectedItem => setselectedPocType(selectedItem)}
+                onSelect={selectedItem => setselectedPocType(selectedItem.poc_id)}
                 buttonStyle={styles.dropdownButton}
-                buttonTextAfterSelection={selectedItem => selectedItem}
+                buttonTextAfterSelection={selectedItem => selectedItem.poc_type}
                 buttonTextStyle={styles.dropdownButtonText}
+                rowTextForSelection={(item, index) => item.poc_type}
                 renderDropdownIcon={() => (
                   <Text style={styles.dropdownIcon}>▼</Text>
                 )}
                 dropdownStyle={styles.dropdownContainer}
+      
                 rowStyle={styles.dropdownRow}
                 rowTextStyle={styles.dropdownRowText}
               />
@@ -282,13 +277,18 @@ const ReviewData = ({route, navigation}) => {
             </View>
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Container</Text>
+
               <SelectDropdown
-                data={dropdownContainer.map(item => item.container_type)}
+                data={dropdownContainer}
                 defaultValue={selectedContainerType}
                 onSelect={selectedItem =>
-                  setSelectedContainerType(selectedItem)
+                  setSelectedContainerType(selectedItem.container_type_id)
                 }
                 buttonStyle={styles.dropdownButton}
+                buttonTextAfterSelection={(selectedItem) =>
+                selectedItem.container_type
+                }
+                rowTextForSelection={(item, index) => item.container_type}
                 renderDropdownIcon={() => (
                   <Text style={styles.dropdownIcon}>▼</Text>
                 )}
@@ -304,18 +304,19 @@ const ReviewData = ({route, navigation}) => {
               <Text style={styles.label}>Sampled by</Text>
               <TextInput
                 style={styles.input}
-                value={data?.employee_id}
-                onChangeText={text => setData({...data, employee_id: text})}
+                value={datas?.employee_id}
+                onChangeText={text => setData({ ...datas, employee_id: text })}
               />
             </View>
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Color</Text>
               <SelectDropdown
-                data={dropdownColor.map(item => item.sample_color)}
+                data={dropdownColor}
                 defaultValue={selectedColorType}
-                onSelect={selectedItem => setselectedColorType(selectedItem)}
+                onSelect={selectedItem => setselectedColorType(selectedItem.sample_color_id)}
                 buttonStyle={styles.dropdownButton}
-                buttonTextAfterSelection={selectedItem => selectedItem}
+                buttonTextAfterSelection={selectedItem => selectedItem.sample_color}
+                rowTextForSelection={(item, index) => item.sample_color}
                 buttonTextStyle={styles.dropdownButtonText}
                 renderDropdownIcon={() => (
                   <Text style={styles.dropdownIcon}>▼</Text>
@@ -332,20 +333,21 @@ const ReviewData = ({route, navigation}) => {
               <TextInput
                 style={styles.input}
                 value={datas?.latitude?.toString()}
-                onChangeText={text => setData({...data, latitude: text})}
+                onChangeText={text => setData({ ...datas, latitude: text })}
               />
             </View>
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Turbidity</Text>
               <SelectDropdown
-                data={dropdownTurbitidy.map(item => item.sample_turbidity)}
+                data={dropdownTurbitidy}
                 defaultValue={selectedTurbidityType}
                 onSelect={selectedItem =>
-                  setselectedTurbidityType(selectedItem)
+                  setselectedTurbidityType(selectedItem.sample_turbidity_id)
                 }
                 buttonStyle={styles.dropdownButton}
-                buttonTextAfterSelection={selectedItem => selectedItem}
+                buttonTextAfterSelection={selectedItem => selectedItem.sample_turbidity}
                 buttonTextStyle={styles.dropdownButtonText}
+                rowTextForSelection={(item, index) => item.sample_turbidity}
                 renderDropdownIcon={() => (
                   <Text style={styles.dropdownIcon}>▼</Text>
                 )}
@@ -361,19 +363,20 @@ const ReviewData = ({route, navigation}) => {
               <TextInput
                 style={styles.input}
                 value={datas?.longitude?.toString()}
-                onChangeText={text => setData({...data, longitude: text})}
+                onChangeText={text => setData({ ...datas, longitude: text })}
               />
             </View>
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Treatment Type</Text>
               <SelectDropdown
-                data={dropdownTreatment.map(item => item.treatment_type)}
+                data={dropdownTreatment}
                 defaultValue={selectedTreatmentType}
                 onSelect={selectedItem =>
-                  setSelectedTreatmentType(selectedItem)
+                  setSelectedTreatmentType(selectedItem.treatment_type_id)
                 }
                 buttonStyle={styles.dropdownButton}
-                buttonTextAfterSelection={selectedItem => selectedItem}
+                buttonTextAfterSelection={selectedItem => selectedItem.treatment_type}
+                rowTextForSelection={(item, index) => item.treatment_type}
                 buttonTextStyle={styles.dropdownButtonText}
                 renderDropdownIcon={() => (
                   <Text style={styles.dropdownIcon}>▼</Text>
@@ -395,7 +398,7 @@ const ReviewData = ({route, navigation}) => {
           <Button title="Submit" onPress={handleSave} color="green" />
           <Button
             title="Cancel"
-            onPress={() => navigation.goBack()}
+            onPress={() => onHandleCancel()}
             color="red"
           />
         </View>

@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import { Text, View, TextInput, TouchableOpacity, Modal, ScrollView, StyleSheet, Alert, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Url } from '../../../../../Global_Variable/api_link';
 import SelectDropdown from 'react-native-select-dropdown';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { DataContext } from '../../../../context/DataContext';
 
 const ModalRegularChild = ({ visible, item, setcards }) => {
+  const { appData, setAppData}=useContext(DataContext);
+  // alert(JSON.stringify(appData))
   // State for input values
   const [inputValues, setInputValues] = useState({
     serial_no: '',
@@ -78,6 +81,7 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
   };
   // camera
   const handleImageClick = () => {
+    setAppData({...appData,lastScreen:'ModalRegularChild'})
     navigation.navigate('CameraPopup');
     console.log('CameraPopup');
   };
@@ -104,7 +108,7 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
   return (
     <Modal visible={visible} animationType="slide">
       <View style={styles.imageContainer}>
-        <TouchableOpacity style={styles.captureButtonBg} onPress={handleImageClick}>
+        <TouchableOpacity style={styles.captureButtonBg} onPress={()=>handleImageClick()}>
           <MaterialIcons style={styles.captureButton} name="photo-camera" size={32} color="black" />
         </TouchableOpacity>
         <Text style={{ color: '#888' }}>Capture Picture</Text>

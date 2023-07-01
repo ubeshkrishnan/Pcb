@@ -2,8 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   value: 0,
-  location:{
-   
+  location: {
+
   }
 }
 
@@ -11,18 +11,18 @@ export const counterSlice = createSlice({
   name: 'counter',
   initialState,
   reducers: {
-    increment: (state,action) => {
+    increment: (state, action) => {
       // console.log(state,"sttate")
       // console.log(action,"action")
       state.value = action.payload + state.value
     },
-    
-    updateLocation:(state,action)=>{
-      console.log(action.payload,"update data")
-   state.location=action.payload
+
+    updateLocation: (state, action) => {
+      console.log(action.payload, "update data")
+      state.location = action.payload
     },
-    resetLocation:(state,action)=>{
-      state.location ={
+    resetLocation: (state, action) => {
+      state.location = {
         latitude: '',
         longitude: '',
         currentTime: ''
@@ -40,6 +40,6 @@ export const counterSlice = createSlice({
 })
 
 
-export const { increment, decrement, incrementByAmount,updateLocation } = counterSlice.actions
+export const { increment, decrement, incrementByAmount, updateLocation,resetLocation } = counterSlice.actions
 
 export default counterSlice.reducer
