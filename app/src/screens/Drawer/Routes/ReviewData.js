@@ -17,11 +17,15 @@ import SelectDropdown from 'react-native-select-dropdown';
 import axios from 'axios';
 import {resetLocation} from '../../../store/Reviewstore';
 import { DataContext } from '../../../context/DataContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ReviewData = ({ route, navigation }) => {
   const store = useSelector(store => store.counter);
   const { appData, setAppData}=useContext(DataContext);
   const dispatch = useDispatch();
+  // local storage
+  const [userData, setUserData] = useState(null);
+  const [employeeIds, setEmployeeIds] = useState([]);
 
   const [selectedSampleType, setSelectedSampleType] = useState('');
   const [selectedContainerType, setSelectedContainerType] = useState('');
@@ -31,6 +35,7 @@ const ReviewData = ({ route, navigation }) => {
   const [selectedColorType, setselectedColorType] = useState('');
 
   const [users, setUsers] = useState([]);
+  console.log('ReivewRoute',route.params.data)
   const { data } = route?.params;
   const [dropdownSample, setDropdownSample] = useState([]);
   const [dropdownColor, setDropdownColor] = useState([]);
@@ -38,7 +43,7 @@ const ReviewData = ({ route, navigation }) => {
   const [dropdownPoc, setDropdownPoc] = useState([]);
   const [dropdownTreatment, setDropdownTreatment] = useState([]);
   const [dropdownContainer, setDropdownContainer] = useState([]);
-
+  
   const initialData={
       schedule_type: data?.schedule_type,
       longitude: appData?.longitude,
@@ -55,69 +60,53 @@ const ReviewData = ({ route, navigation }) => {
   
   const [datas, setData] = useState(initialData);
 
-  useEffect(() => {
-    data && setData({
-      ...data,
-      longitude: store.location.longitude,
-      latitude: store.location.latitude,
-      collection_time: store.location.currentTime,
-    });
-  }, [store]);
-
   const handleImageClick = () => {
-    setAppData({...appData,lastScreen:'ReviewData'})
-    navigation.navigate('CameraPopup',{data:route?.params?.data});
+    setAppData({ ...appData, lastScreen: 'ReviewData' });
+    navigation.navigate('CameraPopup', { data:route?.params?.data });
   };
-
-  useEffect(() => {
-
-    if (route.params.sampleId)
-      fetchData();
-  }, [route.params]);
-
- const handleSave = () => {
-    const payload = {
-      schedule_type: datas.schedule_type,
-      sample_type:selectedSampleType,
-      longitude: datas.longitude,
-      latitude: datas.latitude,
-      turbidity: selectedTurbidityType,
-      serial_no: datas.serial_no,
-      point_of_collection: selectedPocType,
-      collection_time: datas.collection_time,
-      container: selectedContainerType,
-      sampled_by: datas.employee_id,
-      color: selectedColorType,
-      treatment_type: selectedTreatmentType,
-    };
-    fetch(Url + '/reviewdata/' + route.params.sampleId, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log('Response:', result);
-        // Show success alert
-        Alert.alert('Success', 'Data saved successfully');
-      })
-      .catch((error) => {
-        console.log('Error updating data:', error);
-        // Show error alert
-        Alert.alert('Error', 'Failed to update data');
-      });
+  
+  const handleSave = async  () => {
+    console.log(data,"datttaa");
     
-  }
-  // const validateForm = () => {
-  //   for (const key in datas) {
-  //     if (datas[key] === '') {
-  //       return false;
-  //     }
-  //   }
-  //   return true;
-  // };
+    if (data && data?.sample_id) {
+      const payload = {
+        sample_type: selectedSampleType,
+        longitude: datas.longitude,
+        latitude: datas.latitude,
+        turbidity: selectedTurbidityType,
+        serial_no: datas.serial_no,
+        point_of_collection: selectedPocType,
+        collection_time: datas.collection_time,
+        container: selectedContainerType,
+        employee_id: userData,
+        color: selectedColorType,
+        treatment_type: selectedTreatmentType,
+      };
+      console.log(payload, "payy"); 
+      // console.log(data?.sample_id, "payy"); 
+
+      axios
+        .put(`${Url}/reviewdata/${data?.sample_id}`, payload, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((response) => {
+          console.log('URL:',data?.sample_id);
+          console.log('Response:', response.data);
+          // Show success alert
+          Alert.alert('Success', 'Data saved successfully');
+        })
+        .catch((error) => {
+          console.log('URL:',data?.sample_id);
+          console.log('Error updating data:', error);
+          // Show error alert
+          Alert.alert('Error', 'Failed to update data');
+        });
+    } else {
+      console.log('Sample ID not available.');
+    }
+  };
 
   const fetchReviewPocData = async () => {
     try {
@@ -181,6 +170,26 @@ const ReviewData = ({ route, navigation }) => {
   }, []);
 
   useEffect(() => {
+    const fetchData =  () => {
+      const  data = AsyncStorage.getItem("login").then((value) => {
+      setUserData(value.toString().replace(/"/g,''));
+      if (value) {
+
+        // Extract the employee_id from the data
+        // Map the employee_id if it is an array
+        if (Array.isArray(value)) {
+          setEmployeeIds(value);
+        }
+      }
+      console.log('Fetched data on review:', value);
+    })
+  };
+    fetchData();
+  }, []);
+
+  
+
+  useEffect(() => {
     setData({...datas, latitude: appData.latitude,
     longitude: appData.longitude,
     collection_time:appData.currentTime})
@@ -193,6 +202,18 @@ const ReviewData = ({ route, navigation }) => {
     setData(initialData);
     navigation.goBack()
   }
+  
+  const renderEmployeeIds = () => {
+   
+    return employeeIds.map((id) => (
+      <Text key={id} style={styles.employee_id}>
+        {id}
+      </Text>
+    ));
+   
+  };
+
+  
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
       <View style={styles.container}>
@@ -245,7 +266,6 @@ const ReviewData = ({ route, navigation }) => {
               <TextInput
                 style={styles.input}
                 value={datas?.serial_no}
-                onChangeText={text => setData({ ...datas, serial_no: text })}
               />
             </View>
             <View style={styles.inputColumn}>
@@ -300,14 +320,18 @@ const ReviewData = ({ route, navigation }) => {
             </View>
           </View>
           <View style={styles.inputRow}>
-            <View style={styles.inputColumn}>
-              <Text style={styles.label}>Sampled by</Text>
-              <TextInput
-                style={styles.input}
-                value={datas?.employee_id}
-                onChangeText={text => setData({ ...datas, employee_id: text })}
-              />
-            </View>
+    <View style={styles.inputColumn}>
+      <Text style={styles.label}>Sampled by</Text>
+      <TextInput
+        style={styles.input}
+        value={userData}
+        onSelect={selectedItem =>
+                  setUserData(selectedItem.sampled_by)
+                }
+      />
+    </View>
+
+
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Color</Text>
               <SelectDropdown
@@ -395,7 +419,7 @@ const ReviewData = ({ route, navigation }) => {
             onPress={() => console.log('Drafts')}
             color="black"
           />
-          <Button title="Submit" onPress={handleSave} color="green" />
+          <Button title="Submit" onPress={()=>handleSave()} color="green" />
           <Button
             title="Cancel"
             onPress={() => onHandleCancel()}

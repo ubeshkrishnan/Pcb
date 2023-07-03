@@ -23,9 +23,8 @@ const CameraPopup = ({ route, navigation }) => {
   const [imagesTaken, setImagesTaken] = useState(0); // New state variable to count images taken
   const [imageTimestamp, setImageTimestamp] = useState(null); // New state variable to store image timestamp
   const { appData, setAppData}=useContext(DataContext);
-
   const handleReviewData = () => {
-    navigation.navigate('ReviewData',{data:route?.param?.data})
+    navigation.navigate(appData.lastScreen,{data:route?.params?.data});
     };
 
   const openCamera = async () => {
@@ -151,9 +150,7 @@ const CameraPopup = ({ route, navigation }) => {
       </Button>
       <Button
         title="Back"
-        onPress={() => {
-          navigation.navigate(appData.lastScreen,{data:route?.param?.data});
-        }}
+        onPress={() => handleReviewData()}
       />
       {appData && (
         <View style={styles.locationContainer}>

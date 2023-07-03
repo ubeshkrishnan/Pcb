@@ -32,12 +32,13 @@ const RegularScreenChild = ({ navigation }) => {
 
     if (route.params.sampleId)
       fetchData();
+      // console.log(route.params,"test");
   }, [route.params]);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(Url + `/regularscreenchild/${route.params.sampleId}`);
-      console.log(response, "chceck id");
+      // console.log(response, "chceck id");
       setData(response.data);
       setFilteredData(response.data); // Set filtered data initially
       setIsLoading(false);

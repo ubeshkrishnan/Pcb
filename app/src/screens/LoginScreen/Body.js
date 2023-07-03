@@ -19,7 +19,7 @@ import Header from './Header';
 const LoginScreen = () => {
   const logoOpacity = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
-  const [empId, setEmail] = useState('EN 1011');
+  const [empId, setEmail] = useState('EN2022');
   const [password, setPassword] = useState('lims@123');
   const [showPassword, setShowPassword] = useState(false);
   const [checkValidPassword, setCheckValidPassword] = useState(false);
@@ -57,6 +57,8 @@ const LoginScreen = () => {
       try {
         const response = await axios.post(Url + '/auth', { empId, password });
 
+
+
         if (response.data.success) {
           AsyncStorage.setItem('login', JSON.stringify(empId));
           handleNavigateToDashboard();
@@ -66,6 +68,7 @@ const LoginScreen = () => {
       } catch (error) {
         setError('An error occurred during login FRONT');
       }
+
     }
   };
 
