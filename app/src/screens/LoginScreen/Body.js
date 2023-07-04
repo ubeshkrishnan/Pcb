@@ -19,12 +19,28 @@ import Header from './Header';
 const LoginScreen = () => {
   const logoOpacity = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
+  
   const [empId, setEmail] = useState('EN2022');
   const [password, setPassword] = useState('lims@123');
   const [showPassword, setShowPassword] = useState(false);
   const [checkValidPassword, setCheckValidPassword] = useState(false);
   const [error, setError] = useState('');
-
+  const [userDetail, setUserDetail] = useState({
+    user_id: '',
+    district: '',
+    employee_id: '',
+    region: '',
+    designation: '',
+    dob: '',
+    office_id: '',
+    user_img: '',
+    user_name: '',
+    first_name: '',
+    last_name: '',
+    phone_no: '',
+    gender: '',
+    address: '',
+  })
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -53,16 +69,25 @@ const LoginScreen = () => {
       setError('Please enter a valid password (minimum 6 characters)');
     } else {
       setError('');
-
       try {
         const response = await axios.post(Url + '/auth', { empId, password });
-
-
+        // console.log("Response Data:", response.data); // Log the entire response data
 
         if (response.data.success) {
+          
           AsyncStorage.setItem('login', JSON.stringify(empId));
+          
+           // Update the userDetail state with the data received from the backend
+         const userDetailsFromBackend = response.data.user; // Assuming the response contains the user details
+        setUserDetail(userDetailsFromBackend);
+
+    // Store the userDetail data in AsyncStorage
+    AsyncStorage.setItem('userDetails', JSON.stringify(userDetailsFromBackend));
+// console.log(userDetailsFromBackend,"check local");
           handleNavigateToDashboard();
-        } else {
+      
+        }  
+        else {
           setError('Invalid email or password');
         }
       } catch (error) {

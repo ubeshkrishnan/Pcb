@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TextInput, Button, ScrollView, StyleSheet, Alert } from 'react-native';
+import { Text, View, TextInput, Button, ScrollView, StyleSheet, Alert,Modal,TouchableOpacity} from 'react-native';
 import axios from 'axios';
 import { Url } from '../../../../../Global_Variable/api_link';
 import SelectDropdown from 'react-native-select-dropdown';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 const SpotSampling = () => {
@@ -71,6 +72,13 @@ const SpotSampling = () => {
   };
 
   return (
+<Modal  animationType="slide">
+    <View style={styles.imageContainer}>
+        <TouchableOpacity style={styles.captureButtonBg} onPress={()=>handleImageClick()}>
+          <MaterialIcons style={styles.captureButton} name="photo-camera" size={32} color="black" />
+        </TouchableOpacity>
+        <Text style={{ color: '#888' }}>Capture Picture</Text>
+      </View>
     <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: 'white' }}>
       <View style={styles.container}>
         <Text style={styles.label}>Serial No</Text>
@@ -134,6 +142,7 @@ const SpotSampling = () => {
         </View>
       </View>
     </ScrollView>
+    </Modal>
   );
 };
 
@@ -228,4 +237,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'black',
   },
+    // camera
+    captureButtonBg: {
+      backgroundColor: 'grey',
+      height: 100,
+      width: 200,
+      marginTop: 70,
+      borderRadius: 20,
+    },
+    captureButton: {
+      // backgroundColor: 'grey',
+      borderRadius: 25,
+      color: 'black',
+      textAlign: "center",
+      paddingTop: 30,
+      borderRadius: 10,
+    },
+    imageContainer: {
+      alignItems: 'center',
+      // marginBottom: 8,
+    },
 });

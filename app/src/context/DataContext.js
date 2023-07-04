@@ -6,6 +6,7 @@ export const DataProvider = ({ children }) => {
   const [appData, setAppData] = useState({ 
   latitude: '',
   longitude: '',
+  capturedImages:'',
   currentTime: '',
   lastScreen:'',
   

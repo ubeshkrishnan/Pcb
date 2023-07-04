@@ -24,8 +24,10 @@ const ReviewData = ({ route, navigation }) => {
   const { appData, setAppData}=useContext(DataContext);
   const dispatch = useDispatch();
   // local storage
-  const [userData, setUserData] = useState(null);
-  const [employeeIds, setEmployeeIds] = useState([]);
+  const [userData, setUserData] = useState('');
+  const [employeeIds, setEmployeeIds] = useState('');
+  const [capturedImages, setCapturedImages] = useState([]);
+  const [imagesTaken, setImagesTaken] = useState(0);
 
   const [selectedSampleType, setSelectedSampleType] = useState('');
   const [selectedContainerType, setSelectedContainerType] = useState('');
@@ -35,7 +37,7 @@ const ReviewData = ({ route, navigation }) => {
   const [selectedColorType, setselectedColorType] = useState('');
 
   const [users, setUsers] = useState([]);
-  console.log('ReivewRoute',route.params.data)
+  // console.log('ReivewRoute',route.params.data)
   const { data } = route?.params;
   const [dropdownSample, setDropdownSample] = useState([]);
   const [dropdownColor, setDropdownColor] = useState([]);
@@ -53,7 +55,7 @@ const ReviewData = ({ route, navigation }) => {
       point_of_collection: '',
       collection_time: '',
       container: '',
-      employee_id:  data?.employee_id,
+      employee_id:  '',
       color: '',
       treatment_type: '',
     }
@@ -62,11 +64,15 @@ const ReviewData = ({ route, navigation }) => {
 
   const handleImageClick = () => {
     setAppData({ ...appData, lastScreen: 'ReviewData' });
-    navigation.navigate('CameraPopup', { data:route?.params?.data });
+    navigation.navigate('CameraPopup', { data:route?.params?.data })
+    capturedImages: capturedImages;
+    imagesTaken: imagesTaken;
+    setCapturedImages: setCapturedImages;
+    setImagesTaken: setImagesTaken;
   };
   
   const handleSave = async  () => {
-    console.log(data,"datttaa");
+    // console.log(data,"datttaa");
     
     if (data && data?.sample_id) {
       const payload = {
@@ -78,7 +84,7 @@ const ReviewData = ({ route, navigation }) => {
         point_of_collection: selectedPocType,
         collection_time: datas.collection_time,
         container: selectedContainerType,
-        employee_id: userData,
+        employee_id: userData.user_id,
         color: selectedColorType,
         treatment_type: selectedTreatmentType,
       };
@@ -92,13 +98,13 @@ const ReviewData = ({ route, navigation }) => {
           },
         })
         .then((response) => {
-          console.log('URL:',data?.sample_id);
+          // console.log('URL:',data?.sample_id);
           console.log('Response:', response.data);
           // Show success alert
           Alert.alert('Success', 'Data saved successfully');
         })
         .catch((error) => {
-          console.log('URL:',data?.sample_id);
+          // console.log('URL:',data?.sample_id);
           console.log('Error updating data:', error);
           // Show error alert
           Alert.alert('Error', 'Failed to update data');
@@ -170,22 +176,20 @@ const ReviewData = ({ route, navigation }) => {
   }, []);
 
   useEffect(() => {
-    const fetchData =  () => {
-      const  data = AsyncStorage.getItem("login").then((value) => {
-      setUserData(value.toString().replace(/"/g,''));
-      if (value) {
-
-        // Extract the employee_id from the data
-        // Map the employee_id if it is an array
-        if (Array.isArray(value)) {
-          setEmployeeIds(value);
-        }
+    const fetchData =async  () => {
+      try {
+      const  data = await AsyncStorage.getItem("userDetails")
+      if (data) {
+        setUserData(JSON.parse(data));
       }
-      console.log('Fetched data on review:', value);
-    })
+      // console.log("DEE:",data);
+    } catch (error) {
+      console.log('Error retrieving data:', error);
+    }
   };
-    fetchData();
-  }, []);
+  fetchData();
+}, []);
+
 
   
 
@@ -324,9 +328,9 @@ const ReviewData = ({ route, navigation }) => {
       <Text style={styles.label}>Sampled by</Text>
       <TextInput
         style={styles.input}
-        value={userData}
+        value={userData.employee_id}
         onSelect={selectedItem =>
-                  setUserData(selectedItem.sampled_by)
+                  setUserData(selectedItem.userData.user.id)
                 }
       />
     </View>

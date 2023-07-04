@@ -34,7 +34,7 @@ const ActionabelScreenChild = ({ navigation }) => {
   const fetchData = async () => {
     try {
       const response = await axios.get(Url + `/actionablecreenchild/${route.params.sampleId}`);
-      console.log(response, "chceck id");
+      // console.log(response, "chceck id");
       setData(response.data);
       setFilteredData(response.data); // Set filtered data initially
       setIsLoading(false);

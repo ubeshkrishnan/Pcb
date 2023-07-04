@@ -39,4 +39,33 @@ app.post("/auth", (req, res) => {
   });
 });
 
+
+LIve 
+// app.post("/auth", (req, res) => {
+  //   const { empId, password } = req.body;
+  // const md5Password = crypto.createHash("md5").update(password).digest("hex");
+  //   const sql = "SELECT user_id, district, employee_id, password, region, designation, dob, office_id, user_img, user_name, first_name, last_name, phone_no, gender FROM users WHERE employee_id = $1";  
+  //   db.query(sql, [empId], async (err, result) => {
+  //     if (err) {
+  // console.log(err);
+  //       res.status(500).send({ message: "Error occurred" });
+  //     } else if (result.rows.length === 0) {
+  //       res.status(401).send({ message: "Invalid username or password" });
+  //     } else {
+  //       const user = result.rows[0];
+  //       const storedPassword = user.password; // Assuming the password column in the database is named 'password'
+  
+  //       if (storedPassword === md5Password) {
+  //         console.log("Login successful");
+  //         res.status(200).send({ success:true  });
+  //       } else {
+  //         console.log("Invalid username or password");
+  //         res.status(401).send({ message: "Invalid username or password" });
+  //       }
+  //     }
+  //   });
+  // });
+  
+
+
 module.exports = app;

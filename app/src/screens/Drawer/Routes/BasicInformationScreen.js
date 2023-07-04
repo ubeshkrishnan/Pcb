@@ -1,7 +1,26 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const UserProfile = () => {
+  const [userData, setUserData] = useState({});
+
+  useEffect(() => {
+    const fetchData =async  () => {
+      try {
+      const  data = await AsyncStorage.getItem("userDetails")
+      if (data) {
+        setUserData(JSON.parse(data));
+      }
+      console.log("DEE:",data);
+    } catch (error) {
+      console.log('Error retrieving data:', error);
+    }
+  };
+  fetchData();
+  }, []);
+
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -9,20 +28,20 @@ const UserProfile = () => {
           source={require('../../../assets/profile.png')}
           style={styles.profilePicture}
         />
-        <Text style={styles.name}>ENOVA EMP </Text>
-        <Text style={styles.email}>enovasolutions.com</Text>
+        <Text style={styles.name}>{userData.first_name}</Text>
+        <Text style={styles.employeeId}>{userData.employee_id}</Text>
       </View>
       <View style={styles.body}>
         <View style={styles.card}>
           <Text style={styles.label}>Phone:</Text>
-          <Text style={styles.value}>123-456-7890</Text>
+          <Text style={styles.value}>{userData.phone_no}</Text>
         </View>
         <View style={styles.card}>
           <Text style={styles.label}>Address:</Text>
           <Text style={styles.value}>123 Main St, City, State</Text>
         </View>
         <View style={styles.card}>
-          <Text style={styles.label}>Bio:</Text>
+          <Text style={styles.label}>Designation:</Text>
           <Text style={styles.value}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed consectetur neque.
           </Text>
@@ -31,6 +50,8 @@ const UserProfile = () => {
     </View>
   );
 };
+
+export default UserProfile;
 
 const styles = StyleSheet.create({
   container: {
@@ -53,7 +74,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#888',
   },
-  email: {
+  employeeId: {
     fontSize: 16,
     color: '#888',
   },
@@ -74,4 +95,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserProfile;
+

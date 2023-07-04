@@ -18,7 +18,7 @@ export const counterSlice = createSlice({
     },
 
     updateLocation: (state, action) => {
-      console.log(action.payload, "update data")
+      // console.log(action.payload, "update data")
       state.location = action.payload
     },
     resetLocation: (state, action) => {

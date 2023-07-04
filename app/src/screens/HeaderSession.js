@@ -8,21 +8,21 @@ const HeaderSession = () => {
   const [employeeIds, setEmployeeIds] = useState([]);
 
   useEffect(() => {
-    const fetchData =  () => {
-      const  data = AsyncStorage.getItem("login").then((value) => {
-      setUserData(value.toString().replace(/"/g,''));
-      if (value) {
-
-        // Extract the employee_id from the data
-        // Map the employee_id if it is an array
-        if (Array.isArray(value)) {
-          setEmployeeIds(value);
+    const fetchData = () => {
+      const data = AsyncStorage.getItem("login").then((value) => {
+        setUserData(value.toString().replace(/"/g, ''));
+        if (value) {
+          // console.log('Data fetched from AsyncStorage:', value);
+          // Extract the employee_id from the data
+          // Map the employee_id if it is an array
+          if (Array.isArray(value)) {
+            setEmployeeIds(value);
+          }
         }
-      }
-    })
-  };
+      })
+    };
     fetchData();
-    
+
     Animated.timing(logoOpacity, {
       toValue: 1,
       duration: 1000,
@@ -56,9 +56,9 @@ const HeaderSession = () => {
           source={require('../assets/profile.png')}
         />
         <Text style={styles.title}>{userData}</Text>
-      {/* <Text style={styles.subtitle}>Employee IDs:</Text> */}
-      <View style={styles.employeeIdsContainer}>{renderEmployeeIds()}</View>
-    </View>
+        {/* <Text style={styles.subtitle}>Employee IDs:</Text> */}
+        <View style={styles.employeeIdsContainer}>{renderEmployeeIds()}</View>
+      </View>
     </View>
   );
 };
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     textAlign: 'center', // Add this line to center the text horizontally
   },
-  
+
   title: {
     fontSize: 12,
     fontWeight: 'bold',

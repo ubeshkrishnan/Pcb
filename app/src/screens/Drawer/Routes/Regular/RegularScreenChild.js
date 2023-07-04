@@ -20,7 +20,7 @@ const RegularScreenChild = ({ navigation }) => {
   // console.log(route, "routess");
 
 
-  const openModal = () => {
+  const openModalRegular = () => {
     setModalVisible(true);
   };
 
@@ -85,7 +85,7 @@ const RegularScreenChild = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>11000 - Sivajothi Blue Metal</Text>
-        <TouchableOpacity onPress={openModal} style={styles.addButton}>
+        <TouchableOpacity onPress={openModalRegular} style={styles.addButton}>
           <MaterialIcons name="add" size={20} style={styles.addButtonIcon} />
           <Text style={styles.addButtonLabel}>Add</Text>
         </TouchableOpacity>
