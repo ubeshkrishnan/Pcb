@@ -43,7 +43,7 @@ db.query('SELECT sample_coll_id FROM sample_collection WHERE ref_id = $1 ORDER B
 
     if (error) {
       console.error('Error executing query', error);
-      res.status(500).json({ error: 'An error occurred while updating the data' });
+      res.status(500).json({ error: 'An error occurred while fetching the data' });
     } else {
      console.log("USER TRY",result.rows)
       if (result.rows.length !==0) {

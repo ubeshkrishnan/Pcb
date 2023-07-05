@@ -81,8 +81,8 @@ const RegularScreen = () => {
   };
 
   const navigateToRegularScreenChild = (item) => {
-console.log(item.sample_coll_id,"itemm");
-    navigation.navigate('RegularScreenChild',{sampleId:item.sample_coll_id});
+    // console.log(item.sample_coll_id,"itemm");
+    navigation.navigate('RegularScreenChild', { sampleId: item.sample_coll_id });
   }
 
   const placeholders = [
@@ -102,9 +102,9 @@ console.log(item.sample_coll_id,"itemm");
       <ScrollView>
         <View style={styles.RegularCardMain}>
           {isModalVisible && <ModalRegular visible={isModalVisible} item={cards} setcards={setCards} />}
-          <TouchableOpacity onPress={() =>navigateToRegularScreenChild(item)}>
+          <TouchableOpacity onPress={() => navigateToRegularScreenChild(item)}>
             <Text style={styles.CardSerialNo}>
-              <Text style={styles.SerialNoText}>{item.ref_id} </Text>- {" "}
+              <Text style={styles.SerialNoText}>{item.ref_id} </Text>-{" "}
               <Text style={styles.CardDetailRight}>{item.company_name}</Text>
             </Text>
 

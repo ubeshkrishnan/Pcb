@@ -89,7 +89,7 @@ const ReviewData = ({ route, navigation }) => {
         treatment_type: selectedTreatmentType,
       };
       console.log(payload, "payy"); 
-      // console.log(data?.sample_id, "payy"); 
+      console.log(data?.sample_id, "payy"); 
 
       axios
         .put(`${Url}/reviewdata/${data?.sample_id}`, payload, {

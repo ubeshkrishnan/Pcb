@@ -69,6 +69,7 @@ const ActionabelScreenChild = ({ navigation }) => {
   };
 
   return (
+    
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>11000 - Sivajothi Blue Metal</Text>
@@ -116,7 +117,7 @@ const ActionabelScreenChild = ({ navigation }) => {
               <TouchableOpacity onPress={() => navigateToReviewData(item)}>
                 <Text style={styles.CardSerialNo}>
                   {item.serialNo}
-                  <Text style={styles.CardDetailRight}>11001-01</Text>
+                  <Text style={styles.CardDetailRight}>{item.serial_no}</Text>
                 </Text>
                 <ModalActionable visible={modalVisible} item={data} setcards={setData} onClose={closeModal} />
 

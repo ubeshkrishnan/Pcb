@@ -19,6 +19,14 @@ const RegularScreenChild = ({ navigation }) => {
   const route = useRoute();
   // console.log(route, "routess");
 
+  // NO RECORDS FOUND
+  const renderNoRecords = () => {
+    return <NoRecordsFound />;
+  };
+
+  const renderEndData = () => {
+    return <EndDataMessage />;
+  };
 
   const openModalRegular = () => {
     setModalVisible(true);
@@ -32,7 +40,7 @@ const RegularScreenChild = ({ navigation }) => {
 
     if (route.params.sampleId)
       fetchData();
-      // console.log(route.params,"test");
+    // console.log(route.params,"test");
   }, [route.params]);
 
   const fetchData = async () => {
@@ -63,6 +71,7 @@ const RegularScreenChild = ({ navigation }) => {
     setFilteredData(filteredData);
   };
 
+
   const clearSearch = () => {
     setSearchValue('');
     setFilteredData(data); // Reset filtered data to the original data
@@ -81,6 +90,20 @@ const RegularScreenChild = ({ navigation }) => {
     navigation.navigate('ReviewData', { data: item });
   };
 
+  const EndDataMessage = () => {
+    return (
+      <View style={styles.endDataContainer}>
+        <Text style={styles.endDataText}>END DATA</Text>
+      </View>
+    );
+  };
+  const NoRecordsFound = () => {
+    return (
+      <View style={styles.noRecordsContainer}>
+        <Text style={styles.noRecordsText}>No records found</Text>
+      </View>
+    );
+  };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -103,9 +126,9 @@ const RegularScreenChild = ({ navigation }) => {
             placeholderTextColor="gray"
             value={searchValue}
             onChangeText={handleSearch}
-            // autoFocus
             clearButtonMode="while-editing"
           />
+
           {searchValue.length > 0 && (
             <TouchableOpacity style={styles.clearIconContainer} onPress={clearSearch}>
               <MaterialIcons name="clear" size={20} color="gray" />
@@ -123,6 +146,7 @@ const RegularScreenChild = ({ navigation }) => {
         <FlatList
           data={filteredData}
           keyExtractor={(item) => item.serialNo} // Assuming 'serialNo' is a unique identifier (convert to string if not already)
+          ListEmptyComponent={renderNoRecords}
           renderItem={({ item }) => (
             <View style={styles.RegularCard}>
               <TouchableOpacity onPress={() => navigateToReviewData(item)}>
@@ -133,7 +157,7 @@ const RegularScreenChild = ({ navigation }) => {
 
                 <ModalRegularChild visible={modalVisible} item={item} setcards={setData} onClose={closeModal} />
 
-                <Text style={styles.CardDetail}>point Of Collection : 
+                <Text style={styles.CardDetail}>point Of Collection :
                   {item.poc_typ}
                   <Text style={styles.CardMap}> {item.poc_type}</Text>
                 </Text>
@@ -151,9 +175,10 @@ const RegularScreenChild = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           )}
+          ListFooterComponent={renderEndData}
         />
-
       )}
+      {/* {renderEndData()} */}
     </View>
   );
 };
@@ -279,5 +304,21 @@ const styles = {
     color: 'white',
     fontWeight: 'bold',
   },
+  noRecordsText: {
+    color: "grey",
+    textAlign: "center",
+    marginTop: 40,
+    fontSize: 20,
+  },
+  endDataText: {
+    color: 'white',
+    backgroundColor: 'black',
+    height: 27,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginTop: 20,
+    paddingTop: 4,
+    fontSize: 15,
+  }
 };
 

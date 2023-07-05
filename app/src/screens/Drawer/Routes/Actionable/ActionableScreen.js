@@ -79,7 +79,7 @@ const RegularScreen = () => {
   };
 
   const navigateToActionabelScreenChild = (item) => {
-console.log(item.sample_coll_id,"itemm");
+// console.log(item.sample_coll_id,"itemm");
     navigation.navigate('ActionableScreenChild',{sampleId:item.sample_coll_id});
   }
 

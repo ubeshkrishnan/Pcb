@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity, PermissionsAndroid, Button} from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity, PermissionsAndroid, Button,Modal,Dimensions} from 'react-native';
 import { launchCamera } from 'react-native-image-picker';
 import Geolocation from 'react-native-geolocation-service';
 import { DataContext } from '../../../context/DataContext';
 
 
 
-const CameraPopup = ({ route, navigation }) => {
+const CameraPopup = ({ route, navigation, isVisible, onClose }) => {
   const [location, setLocation] = useState(null);
   const [viewLocation, setViewLocation] = useState([]);
   const [capturedImages, setCapturedImages] = useState([]); // New state variable to store captured images
@@ -113,10 +113,11 @@ const CameraPopup = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.imagecontainer}>
-    <TouchableOpacity style={styles.button} onPress={openCamera} disabled={capturedImages.length === 3}>
-      <Text style={styles.buttonText}>Open Camera</Text>
-    </TouchableOpacity>
+    <Modal visible={isVisible} animationType="slide">
+    <View style={[styles.imagecontainer, { height: Dimensions.get('window').height * 0.3 }]}>
+      <TouchableOpacity style={styles.button} onPress={openCamera} disabled={capturedImages.length === 3}>
+        <Text style={styles.buttonText}>Open Camera</Text>
+      </TouchableOpacity>
 
       {/* Show captured images */}
       <View style={styles.imageGrid}>
@@ -126,9 +127,9 @@ const CameraPopup = ({ route, navigation }) => {
       </View>
 
       <Button
-        title={`Capture (${capturedImages.length} / 3)`} // Show the image count
+        title={`Capture (${capturedImages.length} / 3)`}
         onPress={handleReviewData}
-        disabled={capturedImages.length !== 3} // Disable the button until three images are captured
+        disabled={capturedImages.length !== 3}
       >
         Capture
       </Button>
@@ -142,13 +143,17 @@ const CameraPopup = ({ route, navigation }) => {
         </View>
       )}
     </View>
+  </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  imagecontainer: {
-    alignItems: 'center',
-  },
+    imagecontainer: {
+      flex: 1,
+      padding: 20,
+      backgroundColor: 'white',
+      height: Dimensions.get('window').height * 0.2, // Adjust the value here
+    },
   container: {
     flex: 1,
     justifyContent: 'center',

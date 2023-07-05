@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -6,18 +6,18 @@ const UserProfile = () => {
   const [userData, setUserData] = useState({});
 
   useEffect(() => {
-    const fetchData =async  () => {
+    const fetchData = async () => {
       try {
-      const  data = await AsyncStorage.getItem("userDetails")
-      if (data) {
-        setUserData(JSON.parse(data));
+        const data = await AsyncStorage.getItem("userDetails")
+        if (data) {
+          setUserData(JSON.parse(data));
+        }
+        console.log("DEE:", data);
+      } catch (error) {
+        console.log('Error retrieving data:', error);
       }
-      console.log("DEE:",data);
-    } catch (error) {
-      console.log('Error retrieving data:', error);
-    }
-  };
-  fetchData();
+    };
+    fetchData();
   }, []);
 
 
