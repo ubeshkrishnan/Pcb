@@ -26,7 +26,7 @@ const RegularScreen = () => {
 
   const fetchData = async () => {
     try {
-      const cardResponse = await axios.get(Url+'/actionablecarddetail');
+      const cardResponse = await axios.get(Url + '/actionablecarddetail');
 
       if (cardResponse && cardResponse.data) {
         setCards(cardResponse.data);
@@ -79,8 +79,8 @@ const RegularScreen = () => {
   };
 
   const navigateToActionabelScreenChild = (item) => {
-// console.log(item.sample_coll_id,"itemm");
-    navigation.navigate('ActionableScreenChild',{sampleId:item.sample_coll_id});
+    // console.log(item.sample_coll_id,"itemm");
+    navigation.navigate('ActionableScreenChild', { sampleId: item.sample_coll_id });
   }
 
   const placeholders = [
@@ -100,7 +100,7 @@ const RegularScreen = () => {
       <ScrollView>
         <View style={styles.RegularCardMain}>
           {isModalVisible && <ModalActionable visible={isModalVisible} item={cards} setcards={setCards} />}
-          <TouchableOpacity onPress={() =>navigateToActionabelScreenChild(item)}>
+          <TouchableOpacity onPress={() => navigateToActionabelScreenChild(item)}>
             <Text style={styles.CardSerialNo}>
               <Text style={styles.SerialNoText}>{item.ref_id} </Text>- {" "}
               <Text style={styles.CardDetailRight}>{item.company_name}</Text>

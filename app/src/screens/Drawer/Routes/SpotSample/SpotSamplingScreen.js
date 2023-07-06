@@ -7,7 +7,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 const SpotSampling = () => {
-  const [serial_no, setSerial_No] = useState(1525);
+  const [serial_no, setSerial_No] = useState(1566);
   const [point_of_collection, setPointOfCollection] = useState(null);
   const [collection_time, setCollectionTime] = useState('');
   const [latitude, setLatitude] = useState('');

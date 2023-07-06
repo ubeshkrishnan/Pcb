@@ -7,6 +7,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { DataContext } from '../../../../context/DataContext';
 
 const ModalRegularChild = ({ visible, item, setcards }) => {
+  
+  const [cards, setCards] = useState([]);
   const { appData, setAppData } = useContext(DataContext);
   // alert(JSON.stringify(appData))
   // State for input values
@@ -47,38 +49,44 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
     Alert.alert(title, message);
   };
   // Handle save button press
-  const handleSave = () => {
-    // Prepare data for POST request
-    const postData = {
-      serial_no: inputValues.serial_no,
-      created_by: 1,
-      poc_val: inputValues.point_of_collection ? inputValues.point_of_collection.poc_id : null,
-      collection_time_val: inputValues.collection_time,
-      latitude_val: inputValues.latitude,
-      longitude_val: inputValues.longitude,
-    };
-
-    console.log(postData, 'post data');
-
-    // Send POST request
-    fetch(Url + '/modalregular', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(postData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        item.push(inputValues);
-        setcards(item);
-        showAlert('Success', 'Saved successfully.');
-      })
-      .catch((error) => {
-        console.error(error);
-        showAlert('Error', 'An error occurred while saving the data.');
-      });
+ // Handle save button press
+// Handle save button press
+const handleSave = () => {
+  // Prepare data for POST request
+  const postData = {
+    serial_no: inputValues.serial_no,
+    created_by: 1,
+    poc_val: inputValues.point_of_collection ? inputValues.point_of_collection.poc_id : null,
+    collection_time_val: inputValues.collection_time,
+    latitude_val: inputValues.latitude,
+    longitude_val: inputValues.longitude,
   };
+
+  console.log(postData, 'post data');
+
+  // Send POST request
+  fetch(Url + '/modalregular', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(postData),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // Create a new array with updated values
+      const updatedItems = Array.isArray(item) ? [...item, inputValues] : [inputValues];
+      // Set the updated array using setcards function
+      setcards(updatedItems);
+      showAlert('Success', 'Saved successfully.');
+    })
+    .catch((error) => {
+      console.error(error);
+      showAlert('Error', 'An error occurred while saving the data.');
+    });
+};
+
+
   // camera
   const handleImageClick = () => {
     setAppData({ ...appData, lastScreen: 'ModalRegularChild' })

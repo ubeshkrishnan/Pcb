@@ -5,9 +5,9 @@ import {
   SafeAreaView,
   TextInput,
   TouchableOpacity,
-  Animated,
   ScrollView,
   StyleSheet,
+  Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -17,9 +17,8 @@ import { Url } from '../../../Global_Variable/api_link';
 import Header from './Header';
 
 const LoginScreen = () => {
-  const logoOpacity = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
-  
+
   const [empId, setEmail] = useState('EN2022');
   const [password, setPassword] = useState('lims@123');
   const [showPassword, setShowPassword] = useState(false);
@@ -40,7 +39,7 @@ const LoginScreen = () => {
     phone_no: '',
     gender: '',
     address: '',
-  })
+  });
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -48,14 +47,6 @@ const LoginScreen = () => {
   const handleNavigateToDashboard = () => {
     navigation.navigate('Dashboard');
   };
-
-  useEffect(() => {
-    Animated.timing(logoOpacity, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start();
-  }, []);
 
   const validatePassword = () => {
     setCheckValidPassword(password.length < 6);
@@ -74,26 +65,22 @@ const LoginScreen = () => {
         // console.log("Response Data:", response.data); // Log the entire response data
 
         if (response.data.success) {
-          
           AsyncStorage.setItem('login', JSON.stringify(empId));
-          
-           // Update the userDetail state with the data received from the backend
-         const userDetailsFromBackend = response.data.user; // Assuming the response contains the user details
-        setUserDetail(userDetailsFromBackend);
 
-    // Store the userDetail data in AsyncStorage
-    AsyncStorage.setItem('userDetails', JSON.stringify(userDetailsFromBackend));
-// console.log(userDetailsFromBackend,"check local");
+          // Update the userDetail state with the data received from the backend
+          const userDetailsFromBackend = response.data.user; // Assuming the response contains the user details
+          setUserDetail(userDetailsFromBackend);
+
+          // Store the userDetail data in AsyncStorage
+          AsyncStorage.setItem('userDetails', JSON.stringify(userDetailsFromBackend));
+          // console.log(userDetailsFromBackend,"check local");
           handleNavigateToDashboard();
-      
-        }  
-        else {
+        } else {
           setError('Invalid email or password');
         }
       } catch (error) {
         setError('An error occurred during login FRONT');
       }
-
     }
   };
 
@@ -101,15 +88,13 @@ const LoginScreen = () => {
     <ScrollView style={{ backgroundColor: '#D0E3F1', height: '100%' }}>
       <Header />
       <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <Animated.Image
-                 source={require('../../assets/tlogo.png')}
+      <Image
+          source={require('../../assets/tlogo.png')}
           style={{
             width: 120,
             height: 120,
             marginBottom: 20,
             marginTop: 20,
-            opacity: logoOpacity,
-            transform: [{ scale: logoOpacity }],
           }}
           resizeMode="contain"
         />

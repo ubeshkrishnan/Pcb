@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, StatusBar, SafeAreaView } from 'react-native';
 import MainNavigator from './src/navigation/mainNavigator';
 import { DataProvider } from './src/context/DataContext';
-
+import FirstView from './src/screens/LoginScreen/FirstView';
 export default function App() {
   return (
     <DataProvider>
