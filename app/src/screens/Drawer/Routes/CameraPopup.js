@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity, PermissionsAndroid, Button,Modal,Dimensions} from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity, PermissionsAndroid, Button, Modal, Dimensions } from 'react-native';
 import { launchCamera } from 'react-native-image-picker';
 import Geolocation from 'react-native-geolocation-service';
 import { DataContext } from '../../../context/DataContext';
@@ -63,20 +63,24 @@ const CameraPopup = ({ route, navigation, isVisible, onClose }) => {
       console.log('ImagePicker Error: ', response.errorMessage);
     } else if (response.assets.length > 0) {
       const imageUri = response.assets[0].uri;
-
       // Create a timestamp for the image
       const timestamp = new Date().toLocaleString();
-
+      const imagesTaken = { uri: imageUri, timestamp };
       // Add the captured image to the array
       setCapturedImages(prevImages => [...prevImages, { uri: imageUri, timestamp }]);
-
+      console.log("URLL:", imageUri);
       if (capturedImages.length < 3) {
         // Continue capturing images until we have three
         openCamera();
-      }else {
+      } else {
         // Navigate back to the CAMERA page after capturing three images
         navigation.goBack();
       }
+      // Set the capturedImages in the context
+      setAppData(prevData => ({
+        ...prevData,
+        capturedImages: [...prevData.capturedImages, imagesTaken]
+      }));
     }
   };
 
@@ -114,46 +118,46 @@ const CameraPopup = ({ route, navigation, isVisible, onClose }) => {
 
   return (
     <Modal visible={isVisible} animationType="slide">
-    <View style={[styles.imagecontainer, { height: Dimensions.get('window').height * 0.3 }]}>
-      <TouchableOpacity style={styles.button} onPress={openCamera} disabled={capturedImages.length === 3}>
-        <Text style={styles.buttonText}>Open Camera</Text>
-      </TouchableOpacity>
+      <View style={[styles.imagecontainer, { height: Dimensions.get('window').height * 0.3 }]}>
+        <TouchableOpacity style={styles.button} onPress={openCamera} disabled={capturedImages.length === 3}>
+          <Text style={styles.buttonText}>Open Camera</Text>
+        </TouchableOpacity>
 
-      {/* Show captured images */}
-      <View style={styles.imageGrid}>
-        {capturedImages.map((image, index) => (
-          <Image key={index} style={styles.imageStyles} source={{ uri: image.uri }} />
-        ))}
-      </View>
-
-      <Button
-        title={`Capture (${capturedImages.length} / 3)`}
-        onPress={handleReviewData}
-        disabled={capturedImages.length !== 3}
-      >
-        Capture
-      </Button>
-
-      <Button title="Back" onPress={() => handleReviewData()} />
-
-      {appData && (
-        <View style={styles.locationContainer}>
-          <Text style={styles.geolocation}>Latitude: {appData.latitude}</Text>
-          <Text style={styles.geolocation}>Longitude: {appData.longitude}</Text>
+        {/* Show captured images */}
+        <View style={styles.imageGrid}>
+          {capturedImages.map((image, index) => (
+            <Image key={index} style={styles.imageStyles} source={{ uri: image.uri }} />
+          ))}
         </View>
-      )}
-    </View>
-  </Modal>
+
+        <Button
+          title={`Capture (${capturedImages.length} / 3)`}
+          onPress={handleReviewData}
+          disabled={capturedImages.length !== 3}
+        >
+          Capture
+        </Button>
+
+        <Button title="Back" onPress={() => handleReviewData()} />
+
+        {appData && (
+          <View style={styles.locationContainer}>
+            <Text style={styles.geolocation}>Latitude: {appData.latitude}</Text>
+            <Text style={styles.geolocation}>Longitude: {appData.longitude}</Text>
+          </View>
+        )}
+      </View>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-    imagecontainer: {
-      flex: 1,
-      padding: 20,
-      backgroundColor: 'white',
-      height: Dimensions.get('window').height * 0.2, // Adjust the value here
-    },
+  imagecontainer: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: 'white',
+    height: Dimensions.get('window').height * 0.2, // Adjust the value here
+  },
   container: {
     flex: 1,
     justifyContent: 'center',

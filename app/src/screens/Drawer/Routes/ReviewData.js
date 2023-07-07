@@ -9,25 +9,23 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Dimensions,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { Url } from '../../../../Global_Variable/api_link';
-import { useDispatch, useSelector } from 'react-redux';
 import SelectDropdown from 'react-native-select-dropdown';
 import axios from 'axios';
-import {resetLocation} from '../../../store/Reviewstore';
-import { DataContext } from '../../../context/DataContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DataContext } from '../../../context/DataContext';
+import { Url } from '../../../../Global_Variable/api_link';
 
 const ReviewData = ({ route, navigation }) => {
-  const store = useSelector(store => store.counter);
-  const { appData, setAppData}=useContext(DataContext);
-  const dispatch = useDispatch();
-  // local storage
-  const [userData, setUserData] = useState('');
-  const [employeeIds, setEmployeeIds] = useState('');
-  const [capturedImages, setCapturedImages] = useState([]);
-  const [imagesTaken, setImagesTaken] = useState(0);
+  const windowWidth = Dimensions.get('window').width;
+  const [dropdownSample, setDropdownSample] = useState([]);
+  const [dropdownPoc, setDropdownPoc] = useState([]);
+  const [dropdownTreatment, setDropdownTreatment] = useState([]);
+  const [dropdownContainer, setDropdownContainer] = useState([]);
+  const [dropdownColor, setDropdownColor] = useState([]);
+  const [dropdownTurbitidy, setDropdownTurbidity] = useState([]);
 
   const [selectedSampleType, setSelectedSampleType] = useState('');
   const [selectedContainerType, setSelectedContainerType] = useState('');
@@ -36,79 +34,86 @@ const ReviewData = ({ route, navigation }) => {
   const [selectedTurbidityType, setselectedTurbidityType] = useState('');
   const [selectedColorType, setselectedColorType] = useState('');
 
-  const [users, setUsers] = useState([]);
-  // console.log('ReivewRoute',route.params.data)
   const { data } = route?.params;
-  const [dropdownSample, setDropdownSample] = useState([]);
-  const [dropdownColor, setDropdownColor] = useState([]);
-  const [dropdownTurbitidy, setDropdownTurbidity] = useState([]);
-  const [dropdownPoc, setDropdownPoc] = useState([]);
-  const [dropdownTreatment, setDropdownTreatment] = useState([]);
-  const [dropdownContainer, setDropdownContainer] = useState([]);
-  
-  const initialData={
-      schedule_type: data?.schedule_type,
-      longitude: appData?.longitude,
-      latitude: appData?.latitude,
-      turbidity: '',
-      serial_no:  data?.serial_no,
-      point_of_collection: '',
-      collection_time: '',
-      container: '',
-      employee_id:  '',
-      color: '',
-      treatment_type: '',
-    }
-  
-  const [datas, setData] = useState(initialData);
+  const { appData, setAppData } = useContext(DataContext);
+
+  // local storage
+  const [userData, setUserData] = useState('');
+  const [employeeIds, setEmployeeIds] = useState('');
+  const [capturedImages, setCapturedImages] = useState([]);
+  const [imagesTaken, setImagesTaken] = useState(0);
+
+  const initialData = {
+    schedule_type: data?.schedule_type,
+    longitude: appData?.longitude,
+    latitude: appData?.latitude,
+    turbidity: '',
+    serial_no: data?.serial_no,
+    point_of_collection: '',
+    collection_time: '',
+    container: '',
+    employee_id: '',
+    color: '',
+    treatment_type: '',
+  }
+  const [datas, setData] = useState({
+    schedule_type: data?.schedule_type,
+    longitude: '',
+    latitude: '',
+    turbidity: '',
+    serial_no: data?.serial_no,
+    point_of_collection: '',
+    collection_time: '',
+    container: '',
+    employee_id: '',
+    color: '',
+    treatment_type: '',
+  });
 
   const handleImageClick = () => {
-    setAppData({ ...appData, lastScreen: 'ReviewData' });
-    navigation.navigate('CameraPopup', { data:route?.params?.data })
-    capturedImages: capturedImages;
-    imagesTaken: imagesTaken;
-    setCapturedImages: setCapturedImages;
-    setImagesTaken: setImagesTaken;
+    setAppData((prevAppData) => ({
+      ...prevAppData,
+      lastScreen: 'ReviewData',
+      setCapturedImages: setCapturedImages, // Set the capturedImages state from ReviewData component
+    }));
+    navigation.navigate('CameraPopup', { data: route?.params?.data });
   };
   
-  const handleSave = async  () => {
-    // console.log(data,"datttaa");
-    
+  const handleSave = async () => {
     if (data && data?.sample_id) {
-      const payload = {
-        sample_type: selectedSampleType,
-        longitude: datas.longitude,
-        latitude: datas.latitude,
-        turbidity: selectedTurbidityType,
-        serial_no: datas.serial_no,
-        point_of_collection: selectedPocType,
-        collection_time: datas.collection_time,
-        container: selectedContainerType,
-        employee_id: userData.user_id,
-        color: selectedColorType,
-        treatment_type: selectedTreatmentType,
-      };
-      console.log(payload, "payy"); 
-      console.log(data?.sample_id, "payy"); 
+      const formData = new FormData();
+      formData.append('sample_type', selectedSampleType);
+      formData.append('longitude', datas.longitude);
+      formData.append('latitude', datas.latitude);
+      formData.append('turbidity', selectedTurbidityType);
+      formData.append('serial_no', datas.serial_no);
+      formData.append('point_of_collection', selectedPocType);
+      formData.append('collection_time', datas.collection_time);
+      formData.append('container', selectedContainerType);
+      formData.append('employee_id', datas.employee_id);
+      formData.append('color', selectedColorType);
+      formData.append('treatment_type', selectedTreatmentType);
 
-      axios
-        .put(`${Url}/reviewdata/${data?.sample_id}`, payload, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((response) => {
-          // console.log('URL:',data?.sample_id);
-          console.log('Response:', response.data);
-          // Show success alert
-          Alert.alert('Success', 'Data saved successfully');
-        })
-        .catch((error) => {
-          // console.log('URL:',data?.sample_id);
-          console.log('Error updating data:', error);
-          // Show error alert
-          Alert.alert('Error', 'Failed to update data');
-        });
+      try {
+        const response = await axios.put(
+          `${Url}/reviewdata/${data?.sample_id}`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+
+        console.log(response.data);
+        Alert.alert('Success', 'Data saved successfully');
+        setTimeout(() => {
+          navigation.goBack();
+        }, 2000);
+      } catch (error) {
+        console.log('Error updating data:', error);
+        Alert.alert('Error', 'Failed to update data');
+      }
     } else {
       console.log('Sample ID not available.');
     }
@@ -140,15 +145,16 @@ const ReviewData = ({ route, navigation }) => {
       console.error('Error fetching review treatment data', error);
     }
   };
+
   const fetchReviewSampleTypeData = async () => {
     try {
       const res = await axios.get(Url + '/reviewsampletype');
-        setDropdownSample(res.data);
+      setDropdownSample(res.data);
     } catch (error) {
       console.error('Error fetching review treatment data', error);
-
     }
   };
+
   const fetchReviewColorData = async () => {
     try {
       const res = await axios.get(Url + '/reviewcolor');
@@ -166,6 +172,7 @@ const ReviewData = ({ route, navigation }) => {
       console.error('Error fetching review treatment data', error);
     }
   };
+
   useEffect(() => {
     fetchReviewPocData();
     fetchReviewTreatmentData();
@@ -176,55 +183,50 @@ const ReviewData = ({ route, navigation }) => {
   }, []);
 
   useEffect(() => {
-    const fetchData =async  () => {
+    const fetchData = async () => {
       try {
-      const  data = await AsyncStorage.getItem("userDetails")
-      if (data) {
-        setUserData(JSON.parse(data));
+        const data = await AsyncStorage.getItem("userDetails")
+        if (data) {
+          setUserData(JSON.parse(data));
+        }
+        // console.log("DEE:",data);
+      } catch (error) {
+        console.log('Error retrieving data:', error);
       }
-      // console.log("DEE:",data);
-    } catch (error) {
-      console.log('Error retrieving data:', error);
-    }
-  };
-  fetchData();
-}, []);
+    };
+    fetchData();
+  }, []);
 
 
-  
-
-  useEffect(() => {
-    setData({...datas, latitude: appData.latitude,
-    longitude: appData.longitude,
-    collection_time:appData.currentTime})
-   },[appData]);
-
-  const onHandleCancel=()=>{
-    setAppData({...appData, latitude: '',
-    longitude: '',
-    currentTime: ''})
+  const onHandleCancel = () => {
+    setAppData({
+      ...appData,
+      latitude: '',
+      longitude: '',
+      currentTime: '',
+      capturedImages: [],
+      setCapturedImages: () => {} // Initial empty function
+    });
     setData(initialData);
-    navigation.goBack()
-  }
-  
-  const renderEmployeeIds = () => {
-   
-    return employeeIds.map((id) => (
-      <Text key={id} style={styles.employee_id}>
-        {id}
-      </Text>
-    ));
-   
+    navigation.goBack();
   };
+console.log("captureeed",capturedImages);
+  useEffect(() => {
+    setData({
+      ...datas, latitude: appData.latitude,
+      longitude: appData.longitude,
+      collection_time: appData.currentTime
+    })
+  }, [appData]);
 
-  
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
       <View style={styles.container}>
         <View style={styles.imageContainer}>
           <TouchableOpacity
             style={styles.captureButtonBg}
-            onPress={()=>handleImageClick()}>
+            onPress={() => handleImageClick()}
+          >
             <MaterialIcons
               style={styles.captureButton}
               name="photo-camera"
@@ -233,6 +235,18 @@ const ReviewData = ({ route, navigation }) => {
             />
           </TouchableOpacity>
         </View>
+        <View style={styles.capturedImagesContainer}>
+  {appData.capturedImages.map((image, index) => (
+    <View style={styles.card} key={index}>
+      <Image
+        source={{ uri: image.uri }}
+        style={styles.capturedImage}
+      />
+    </View>
+  ))}
+</View>
+
+
         <View style={styles.inputContainer}>
           <View style={styles.inputRow}>
             <View style={styles.inputColumn}>
@@ -240,19 +254,26 @@ const ReviewData = ({ route, navigation }) => {
               <TextInput
                 style={styles.input}
                 value={datas?.schedule_type}
-                onChangeText={text => setData({ ...datas, schedule_type: text })}
+                onChangeText={(text) =>
+                  setData((prevData) => ({ ...prevData, schedule_type: text }))
+                }
+                editable={false}
               />
+
             </View>
 
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Sample Type</Text>
               <SelectDropdown
-              data={dropdownSample}
+                data={dropdownSample}
                 defaultValue={selectedSampleType}
-                onSelect={selectedItem => setSelectedSampleType(selectedItem.sample_type_id)}
+                onSelect={(selectedItem) =>
+                  setSelectedSampleType(selectedItem.sample_type_id)
+                }
                 buttonStyle={styles.dropdownButton}
                 buttonTextAfterSelection={(selectedItem) =>
-                selectedItem.sample_type}
+                  selectedItem.sample_type
+                }
                 buttonTextStyle={styles.dropdownButtonText}
                 rowTextForSelection={(item, index) => item.sample_type}
                 renderDropdownIcon={() => (
@@ -264,12 +285,16 @@ const ReviewData = ({ route, navigation }) => {
               />
             </View>
           </View>
+
+          {/* ... Other input fields */}
+
           <View style={styles.inputRow}>
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Serial No</Text>
               <TextInput
                 style={styles.input}
                 value={datas?.serial_no}
+                editable={false}
               />
             </View>
             <View style={styles.inputColumn}>
@@ -277,16 +302,15 @@ const ReviewData = ({ route, navigation }) => {
               <SelectDropdown
                 data={dropdownPoc}
                 defaultValue={selectedPocType}
-                onSelect={selectedItem => setselectedPocType(selectedItem.poc_id)}
+                onSelect={(selectedItem) => setselectedPocType(selectedItem.poc_id)}
                 buttonStyle={styles.dropdownButton}
-                buttonTextAfterSelection={selectedItem => selectedItem.poc_type}
+                buttonTextAfterSelection={(selectedItem) => selectedItem.poc_type}
                 buttonTextStyle={styles.dropdownButtonText}
                 rowTextForSelection={(item, index) => item.poc_type}
                 renderDropdownIcon={() => (
                   <Text style={styles.dropdownIcon}>▼</Text>
                 )}
                 dropdownStyle={styles.dropdownContainer}
-      
                 rowStyle={styles.dropdownRow}
                 rowTextStyle={styles.dropdownRowText}
               />
@@ -294,23 +318,27 @@ const ReviewData = ({ route, navigation }) => {
           </View>
           <View style={styles.inputRow}>
             <View style={styles.inputColumn}>
-              <Text style={styles.labelcollect}>
+              <Text style={styles.label}>
                 Collection Time
               </Text>
-              <TextInput type='date' style={styles.input} value={datas.collection_time} />
+              <TextInput type='date' style={styles.input} value={datas.collection_time}
+                editable={false}
+              />
+
             </View>
+
             <View style={styles.inputColumn}>
               <Text style={styles.label}>Container</Text>
 
               <SelectDropdown
                 data={dropdownContainer}
                 defaultValue={selectedContainerType}
-                onSelect={selectedItem =>
+                onSelect={(selectedItem) =>
                   setSelectedContainerType(selectedItem.container_type_id)
                 }
                 buttonStyle={styles.dropdownButton}
                 buttonTextAfterSelection={(selectedItem) =>
-                selectedItem.container_type
+                  selectedItem.container_type
                 }
                 rowTextForSelection={(item, index) => item.container_type}
                 renderDropdownIcon={() => (
@@ -324,16 +352,19 @@ const ReviewData = ({ route, navigation }) => {
             </View>
           </View>
           <View style={styles.inputRow}>
-    <View style={styles.inputColumn}>
-      <Text style={styles.label}>Sampled by</Text>
-      <TextInput
-        style={styles.input}
-        value={userData.employee_id}
-        onSelect={selectedItem =>
+
+            <View style={styles.inputColumn}>
+              <Text style={styles.label}>Sampled by</Text>
+              <TextInput
+                style={styles.input}
+                value={userData.employee_id}
+                onSelect={selectedItem =>
                   setUserData(selectedItem.userData.user.id)
                 }
-      />
-    </View>
+                editable={false}
+              />
+            </View>
+
 
 
             <View style={styles.inputColumn}>
@@ -341,9 +372,9 @@ const ReviewData = ({ route, navigation }) => {
               <SelectDropdown
                 data={dropdownColor}
                 defaultValue={selectedColorType}
-                onSelect={selectedItem => setselectedColorType(selectedItem.sample_color_id)}
+                onSelect={(selectedItem) => setselectedColorType(selectedItem.sample_color_id)}
                 buttonStyle={styles.dropdownButton}
-                buttonTextAfterSelection={selectedItem => selectedItem.sample_color}
+                buttonTextAfterSelection={(selectedItem) => selectedItem.sample_color}
                 rowTextForSelection={(item, index) => item.sample_color}
                 buttonTextStyle={styles.dropdownButtonText}
                 renderDropdownIcon={() => (
@@ -361,7 +392,11 @@ const ReviewData = ({ route, navigation }) => {
               <TextInput
                 style={styles.input}
                 value={datas?.latitude?.toString()}
-                onChangeText={text => setData({ ...datas, latitude: text })}
+                onChangeText={(text) =>
+
+                  setData((prevData) => ({ ...prevData, latitude: text }))
+                }
+                editable={false}
               />
             </View>
             <View style={styles.inputColumn}>
@@ -369,11 +404,11 @@ const ReviewData = ({ route, navigation }) => {
               <SelectDropdown
                 data={dropdownTurbitidy}
                 defaultValue={selectedTurbidityType}
-                onSelect={selectedItem =>
+                onSelect={(selectedItem) =>
                   setselectedTurbidityType(selectedItem.sample_turbidity_id)
                 }
                 buttonStyle={styles.dropdownButton}
-                buttonTextAfterSelection={selectedItem => selectedItem.sample_turbidity}
+                buttonTextAfterSelection={(selectedItem) => selectedItem.sample_turbidity}
                 buttonTextStyle={styles.dropdownButtonText}
                 rowTextForSelection={(item, index) => item.sample_turbidity}
                 renderDropdownIcon={() => (
@@ -391,7 +426,10 @@ const ReviewData = ({ route, navigation }) => {
               <TextInput
                 style={styles.input}
                 value={datas?.longitude?.toString()}
-                onChangeText={text => setData({ ...datas, longitude: text })}
+                onChangeText={(text) =>
+                  setData((prevData) => ({ ...prevData, longitude: text }))
+                }
+                editable={false}
               />
             </View>
             <View style={styles.inputColumn}>
@@ -399,11 +437,11 @@ const ReviewData = ({ route, navigation }) => {
               <SelectDropdown
                 data={dropdownTreatment}
                 defaultValue={selectedTreatmentType}
-                onSelect={selectedItem =>
+                onSelect={(selectedItem) =>
                   setSelectedTreatmentType(selectedItem.treatment_type_id)
                 }
                 buttonStyle={styles.dropdownButton}
-                buttonTextAfterSelection={selectedItem => selectedItem.treatment_type}
+                buttonTextAfterSelection={(selectedItem) => selectedItem.treatment_type}
                 rowTextForSelection={(item, index) => item.treatment_type}
                 buttonTextStyle={styles.dropdownButtonText}
                 renderDropdownIcon={() => (
@@ -423,7 +461,7 @@ const ReviewData = ({ route, navigation }) => {
             onPress={() => console.log('Drafts')}
             color="black"
           />
-          <Button title="Submit" onPress={()=>handleSave()} color="green" />
+          <Button title="Submit" onPress={() => handleSave()} color="green" />
           <Button
             title="Cancel"
             onPress={() => onHandleCancel()}
@@ -436,14 +474,46 @@ const ReviewData = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    paddingVertical: 24,
+  },
+  imageContainer: {
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+  captureButtonBg: {
+    backgroundColor: 'red',
+    height: 100,
+    width: 200,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  captureButton: {
+    borderRadius: 25,
+    textAlign: 'center',
+  },
+  capturedImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 8,
+    margin: 8,
+  },
+  inputContainer: {
+    width: '100%',
+  },
   inputRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    color: 'black',
+    marginBottom: 16,
   },
   inputColumn: {
     flex: 1,
-    marginBottom: 10,
+    marginRight: 8,
   },
   label: {
     fontSize: 16,
@@ -452,31 +522,7 @@ const styles = StyleSheet.create({
   input: {
     borderColor: 'gray',
     borderWidth: 1,
-    color: 'black',
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  imageContainer: {
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  inputContainer: {
-    width: '80%',
-  },
-  inputRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  input: {
-    // flex: 1,
-    borderColor: 'gray',
-    borderWidth: 1,
     paddingHorizontal: 10,
-    marginRight: 10,
     color: 'black',
   },
   buttonRow: {
@@ -488,34 +534,60 @@ const styles = StyleSheet.create({
   draft: {
     color: 'black',
   },
-  captureButtonBg: {
-    backgroundColor: 'red',
-    height: 100,
-    width: 200,
-    marginTop: 30,
-    borderRadius: 20,
-  },
-  captureButton: {
-    borderRadius: 25,
+  dropdownButton: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    backgroundColor: '#fff',
     color: 'black',
-    textAlign: 'center',
-    paddingTop: 30,
-    borderRadius: 10,
   },
-  imageContainer: {
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  picker: {
-    borderColor: 'black',
-    backgroundColor: 'grey',
-    height: 10,
+  dropdownButtonText: {
+    fontSize: 16,
+    color: 'black',
   },
   dropdownIcon: {
+    fontSize: 16,
     color: 'black',
   },
-  labelcollect: {
+  dropdownContainer: {
+    width: '40%',
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    backgroundColor: '#fff',
     color: 'black',
+  },
+  // dropdownRow: {
+  //   padding: 10,
+  //   backgroundColor: '#fff',
+  //   color:'black',
+  // },
+  // dropdownRowText: {
+  //   fontSize: 16,
+  //   color: 'black',
+  //   textAlign:'center',
+  //   paddingRight:100,
+  //   width:10,
+  // },
+  capturedImagesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  card: {
+    width: 100,
+    height: 100,
+    margin: 8,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  capturedImage: {
+    width: '100%',
+    height: '100%',
   },
 });
 

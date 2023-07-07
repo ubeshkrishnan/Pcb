@@ -117,6 +117,7 @@ const ModalActionable = ({ visible, item, setcards }) => {
             onChangeText={(value) => handleInputChange('serial_no', value)}
             placeholder="Serial No"
             placeholderTextColor="black"
+            editable={false}
           />
           <SelectDropdown
             data={pointOfCollectionOptions}
@@ -138,6 +139,7 @@ const ModalActionable = ({ visible, item, setcards }) => {
             onChangeText={(value) => handleInputChange('collection_time', value)}
             placeholder="Collection Time Stamp"
             placeholderTextColor="black"
+            editable={false}
           />
           <TextInput
             style={styles.inputField}
@@ -145,6 +147,7 @@ const ModalActionable = ({ visible, item, setcards }) => {
             onChangeText={(value) => handleInputChange('latitude', value)}
             placeholder="Latitude"
             placeholderTextColor="black"
+            editable={false}
           />
           <TextInput
             style={styles.inputField}
@@ -152,6 +155,7 @@ const ModalActionable = ({ visible, item, setcards }) => {
             onChangeText={(value) => handleInputChange('longitude', value)}
             placeholder="Longitude"
             placeholderTextColor="black"
+            editable={false}
           />
 
           <View style={styles.buttonContainer}>
