@@ -105,7 +105,7 @@ const LoginScreen = () => {
         <Text style={styles.loginDetails}>Enter Your Details To Login</Text>
         <View style={styles.inputContainer}>
           <View style={styles.inputIconContainer}></View>
-          <Text style={styles.label}>Email</Text>
+          <Text style={styles.label}>Emp Id</Text>
 
           <TextInput
             style={[styles.input, styles.inputError]}

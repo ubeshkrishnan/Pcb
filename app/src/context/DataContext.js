@@ -9,9 +9,11 @@ export const DataProvider = ({ children }) => {
     capturedImages: [],
     currentTime: '',
     lastScreen: '',
+    spotsampleScreen:'',
+    actionableScreen:'',
   });
 
-  // console.log('Captured Images:', appData.capturedImages);
+  // console.log('CONTEXT Images:', appData.capturedImages);
 
   return (
     <DataContext.Provider value={{ appData, setAppData }}>

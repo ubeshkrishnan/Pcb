@@ -78,10 +78,11 @@ const ReviewData = ({ route, navigation }) => {
     }));
     navigation.navigate('CameraPopup', { data: route?.params?.data });
   };
-  
+
   const handleSave = async () => {
     if (data && data?.sample_id) {
       const formData = new FormData();
+      // Add form fields
       formData.append('sample_type', selectedSampleType);
       formData.append('longitude', datas.longitude);
       formData.append('latitude', datas.latitude);
@@ -94,6 +95,20 @@ const ReviewData = ({ route, navigation }) => {
       formData.append('color', selectedColorType);
       formData.append('treatment_type', selectedTreatmentType);
 
+      // Append sample_coll_id to the form data
+      formData.append('sample_coll_id', data?.sampleCollIdValue);
+
+      // Add captured images
+      appData.capturedImages.forEach((image, index) => {
+        formData.append('sample_photos', {
+          uri: image.uri,
+          name: `image_${index}.jpg`,
+          type: 'image/jpeg',
+        });
+      });
+
+
+      console.log('Form Data:', formData); // Log the form data
       try {
         const response = await axios.put(
           `${Url}/reviewdata/${data?.sample_id}`,
@@ -105,7 +120,7 @@ const ReviewData = ({ route, navigation }) => {
           }
         );
 
-        console.log(response.data);
+        console.log("FORM", response.data);
         Alert.alert('Success', 'Data saved successfully');
         setTimeout(() => {
           navigation.goBack();
@@ -118,6 +133,7 @@ const ReviewData = ({ route, navigation }) => {
       console.log('Sample ID not available.');
     }
   };
+
 
   const fetchReviewPocData = async () => {
     try {
@@ -205,12 +221,12 @@ const ReviewData = ({ route, navigation }) => {
       longitude: '',
       currentTime: '',
       capturedImages: [],
-      setCapturedImages: () => {} // Initial empty function
+      setCapturedImages: () => { } // Initial empty function
     });
     setData(initialData);
     navigation.goBack();
   };
-console.log("captureeed",capturedImages);
+  // console.log("captureeed", appData.capturedImages );
   useEffect(() => {
     setData({
       ...datas, latitude: appData.latitude,
@@ -234,17 +250,18 @@ console.log("captureeed",capturedImages);
               color="black"
             />
           </TouchableOpacity>
+          <Text style={{ color: '#999999' }}>Capture Image</Text>
         </View>
         <View style={styles.capturedImagesContainer}>
-  {appData.capturedImages.map((image, index) => (
-    <View style={styles.card} key={index}>
-      <Image
-        source={{ uri: image.uri }}
-        style={styles.capturedImage}
-      />
-    </View>
-  ))}
-</View>
+          {appData.capturedImages.map((image, index) => (
+            <View style={styles.card} key={index}>
+              <Image
+                source={{ uri: image.uri }}
+                style={styles.capturedImage}
+              />
+            </View>
+          ))}
+        </View>
 
 
         <View style={styles.inputContainer}>
@@ -486,7 +503,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   captureButtonBg: {
-    backgroundColor: 'red',
+    backgroundColor: '#999999',
     height: 100,
     width: 200,
     borderRadius: 20,
@@ -509,7 +526,7 @@ const styles = StyleSheet.create({
   inputRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   inputColumn: {
     flex: 1,
@@ -545,7 +562,7 @@ const styles = StyleSheet.create({
   },
   dropdownButtonText: {
     fontSize: 16,
-    color: 'black',
+    color: '#B3B3B3',
   },
   dropdownIcon: {
     fontSize: 16,
@@ -576,7 +593,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: 8,
   },
   card: {
     width: 100,

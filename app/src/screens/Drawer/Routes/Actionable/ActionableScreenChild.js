@@ -16,6 +16,22 @@ const ActionabelScreenChild = ({ navigation }) => {
   const route = useRoute();
   // console.log(route, "routess");
 
+   // NO RECORDS FOUND
+   const renderNoRecords = () => {
+    return (
+      <View style={styles.noRecordsContainer}>
+        <Text style={styles.noRecordsText}>No records found</Text>
+      </View>
+    );
+  };
+
+  const renderEndData = () => {
+    return (
+      <View style={styles.endDataContainer}>
+        <Text style={styles.endDataText}>END DATA</Text>
+      </View>
+    );
+  };
 
   const openModal = () => {
     setModalVisible(true);
@@ -67,7 +83,20 @@ const ActionabelScreenChild = ({ navigation }) => {
   const navigateToReviewData = (item) => {
     navigation.navigate('ReviewData', { data: item });
   };
-
+  const EndDataMessage = () => {
+    return (
+      <View style={styles.endDataContainer}>
+        <Text style={styles.endDataText}>END DATA</Text>
+      </View>
+    );
+  };
+  const NoRecordsFound = () => {
+    return (
+      <View style={styles.noRecordsContainer}>
+        <Text style={styles.noRecordsText}>No records found</Text>
+      </View>
+    );
+  };
   return (
     
     <View style={styles.container}>
@@ -104,14 +133,13 @@ const ActionabelScreenChild = ({ navigation }) => {
 
 
       {isLoading ? (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <ActivityIndicator size="large" color="#0000ff" />
-        </View>
-      ) : (
+      <ActivityIndicator size="large" color="#0000ff" />
+    ) : filteredData.length === 0 ? (
+      renderNoRecords()
+    ) : (
         <FlatList
           data={filteredData}
           keyExtractor={(item) => item.serialNo} // Use serialNo as the key
-
           const renderItem={({ item }) => (
             <View style={styles.RegularCard}>
               <TouchableOpacity onPress={() => navigateToReviewData(item)}>
@@ -138,6 +166,8 @@ const ActionabelScreenChild = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           )}
+          ListEmptyComponent={renderNoRecords}
+  ListFooterComponent={renderEndData}
         />
       )}
     </View>
@@ -265,5 +295,21 @@ const styles = {
     color: 'white',
     fontWeight: 'bold',
   },
+  noRecordsText: {
+    color: "grey",
+    textAlign: "center",
+    marginTop: 40,
+    fontSize: 20,
+  },
+  endDataText: {
+    color: 'white',
+    backgroundColor: 'black',
+    height: 27,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginTop: 20,
+    paddingTop: 4,
+    fontSize: 15,
+  }
 };
 

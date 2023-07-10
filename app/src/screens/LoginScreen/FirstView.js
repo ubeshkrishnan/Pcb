@@ -27,10 +27,13 @@ export default function FirstView() {
         FirstView
       </Animated.Text>
       <Animated.Image
-        source={require('../../assets/tlogo.png')}
+        source={require('../../assets/fbg.jpg')}
         style={[styles.image, { transform: [{ scale: scaleAnim }] }]}
         resizeMode="contain"
       />
+      <View style={styles.centerTextContainer}>
+        <Text style={styles.centerText}>Tamil Nadu Pollution Control Board</Text>
+      </View>
     </Animated.View>
   );
 }
@@ -48,9 +51,22 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   image: {
-    width: 180,
-    height: 180,
+    width: 1500,
+    height: 10000,
     marginBottom: 20,
     marginTop: 20,
+  },
+  centerTextContainer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  
+  centerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });

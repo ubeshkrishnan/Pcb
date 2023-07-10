@@ -48,6 +48,7 @@ const RegularScreen = () => {
 
     const searchValueLower = text.toLowerCase();
     return cards.filter((card) => {
+      const ref_id = (card.ref_id || '').toString(); // Convert ref_id to string
       const companyName = (card.company_name || '').toLowerCase();
       const taluk = (card.taluk || '').toLowerCase();
       const village = (card.village || '').toLowerCase();
@@ -57,6 +58,7 @@ const RegularScreen = () => {
       const sampleTypes = cards?.map((item) => (item.sample_type || '').toLowerCase()) || [];
 
       return (
+        ref_id.includes(searchValueLower) || // Check if ref_id contains the search value
         companyName.includes(searchValueLower) ||
         taluk.includes(searchValueLower) ||
         village.includes(searchValueLower) ||

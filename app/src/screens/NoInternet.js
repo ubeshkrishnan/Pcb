@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import NetInfo from "@react-native-community/netinfo";
 
 const NoInternet = () => {
@@ -17,11 +17,20 @@ const NoInternet = () => {
 
   return (
     <View style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'white', alignItems: 'center' }}>
-      <Text style={{ fontSize: 20, color: isOnline ? 'green' : 'red' }}>
+      <Text style={styles.noInternet}>
         {isOnline ? 'You\'re online' : 'No internet connection'}
       </Text>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  noInternet: {
+    fontSize: 17,
+    backgroundColor: 'white',
+    color: 'black',
+    paddingBottom:8,
+  },
+});
 
 export default NoInternet;

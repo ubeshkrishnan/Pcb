@@ -6,8 +6,8 @@ import SelectDropdown from 'react-native-select-dropdown';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
-const SpotSampling = () => {
-  const [serial_no, setSerial_No] = useState(1566);
+const SpotSamplingScreen = () => {
+  const [serial_no, setSerial_No] = useState('');
   const [point_of_collection, setPointOfCollection] = useState(null);
   const [collection_time, setCollectionTime] = useState('');
   const [latitude, setLatitude] = useState('');
@@ -146,7 +146,7 @@ const SpotSampling = () => {
   );
 };
 
-export default SpotSampling;
+export default SpotSamplingScreen;
 
 const styles = StyleSheet.create({
   container: {

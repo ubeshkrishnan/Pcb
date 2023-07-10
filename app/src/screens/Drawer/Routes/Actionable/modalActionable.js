@@ -78,6 +78,7 @@ const ModalActionable = ({ visible, item, setcards }) => {
   };
   // camera
   const handleImageClick = () => {
+    
     navigation.navigate('CameraPopup');
     console.log('CameraPopup');
   };
@@ -113,7 +114,7 @@ const ModalActionable = ({ visible, item, setcards }) => {
         <View style={styles.modalContainer}>
           <TextInput
             style={styles.inputField}
-            value={inputValues.serial_no}
+            value={inputValues.ref_id_no}
             onChangeText={(value) => handleInputChange('serial_no', value)}
             placeholder="Serial No"
             placeholderTextColor="black"

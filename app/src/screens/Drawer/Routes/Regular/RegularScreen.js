@@ -50,6 +50,7 @@ const RegularScreen = () => {
 
     const searchValueLower = text.toLowerCase();
     return cards.filter((card) => {
+      const ref_id = (card.ref_id || '').toString(); // Convert ref_id to string
       const companyName = (card.company_name || '').toLowerCase();
       const taluk = (card.taluk || '').toLowerCase();
       const village = (card.village || '').toLowerCase();
@@ -59,6 +60,7 @@ const RegularScreen = () => {
       const sampleTypes = cards?.map((item) => (item.sample_type || '').toLowerCase()) || [];
 
       return (
+        ref_id.includes(searchValueLower) || // Check if ref_id contains the search value
         companyName.includes(searchValueLower) ||
         taluk.includes(searchValueLower) ||
         village.includes(searchValueLower) ||
@@ -99,7 +101,7 @@ const RegularScreen = () => {
 
   const renderItem = ({ item }) => {
     return (
-      <ScrollView>
+      <ScrollView >
         <View style={styles.RegularCardMain}>
           {isModalVisible && <ModalRegular visible={isModalVisible} item={cards} setcards={setCards} />}
           <TouchableOpacity onPress={() => navigateToRegularScreenChild(item)}>
@@ -152,22 +154,28 @@ const RegularScreen = () => {
     );
   };
 
-  const renderEndData = () => {
-    if (isLoading) {
-      return <Text style={styles.LoadingData}>LOADING DATA...</Text>;
-    } else {
-      return <Text style={styles.CardEndText}>END DATA</Text>;
-    }
+  // NO RECORDS FOUND
+  const renderNoRecords = () => {
+    return <NoRecordsFound />;
   };
 
-  const renderNoRecords = () => {
+  const renderEndData = () => {
+    return <EndDataMessage />;
+  };
+  const EndDataMessage = () => {
+    return (
+      <View style={styles.endDataContainer}>
+        <Text style={styles.endDataText}>END DATA</Text>
+      </View>
+    );
+  };
+  const NoRecordsFound = () => {
     return (
       <View style={styles.noRecordsContainer}>
         <Text style={styles.noRecordsText}>No records found</Text>
       </View>
     );
   };
-
   return (
     <View>
       <View style={styles.horizontalLine}></View>
@@ -208,6 +216,11 @@ export default RegularScreen;
 
 
 const styles = {
+  container: {
+    flex: 1,
+    paddingTop: 20,
+    paddingBottom: 20,
+  },
   noRecordsText: {
     color: "grey",
     textAlign: "center",
@@ -375,7 +388,9 @@ const styles = {
     marginTop: 20,
     paddingTop: 4,
     fontSize: 15,
+    marginBottom: 20, // Add marginBottom to create space below the "END DATA" message
   },
+  
   LoadingData: {
     color: 'red',
     fontSize: 20,

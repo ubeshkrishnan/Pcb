@@ -119,6 +119,7 @@ const CameraPopup = ({ route, navigation, isVisible, onClose }) => {
   return (
     <Modal visible={isVisible} animationType="slide">
       <View style={[styles.imagecontainer, { height: Dimensions.get('window').height * 0.3 }]}>
+
         <TouchableOpacity style={styles.button} onPress={openCamera} disabled={capturedImages.length === 3}>
           <Text style={styles.buttonText}>Open Camera</Text>
         </TouchableOpacity>

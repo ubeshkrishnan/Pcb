@@ -17,7 +17,7 @@ const ActionableScreen = React.lazy(() =>
 const ActionableScreenChild = React.lazy(() =>
   import('../screens/Drawer/Routes/Actionable/ActionableScreenChild')
 );
-const SpotSampling = React.lazy(() => import('../screens/Drawer/Routes/SpotSample/SpotSamplingScreen'));
+const SpotSamplingScreen = React.lazy(() => import('../screens/Drawer/Routes/SpotSample/SpotSamplingScreen'));
 const RecordsScreen = React.lazy(() => import('../screens/Drawer/Routes/RecordScreen'));
 const Routes = React.lazy(() => import('../screens/Drawer/Routes'));
 const DashboardGraph = React.lazy(() => import('../screens/Dashboard/DashboardGraph'));
@@ -56,7 +56,7 @@ const MainNavigator = () => {
         <Drawer.Screen name="MAIN-MENU" component={DashboardScreen} />
         <Drawer.Screen name="Regular Sampling" component={RegularScreen} />
         <Drawer.Screen name="Actionable Sampling" component={ActionableScreen} />
-        <Drawer.Screen name="Spot Sampling" component={SpotSampling} />
+        <Drawer.Screen name="Spot Sampling" component={SpotSamplingScreen} />
         <Drawer.Screen name="Basic Information" component={BasicInfo} />
         <Drawer.Screen name="Records" component={RecordsScreen} />
         <Drawer.Screen name="LogOut" component={LogOut} />
@@ -116,6 +116,7 @@ const MainNavigator = () => {
               <Stack.Screen name="RegularScreenChild" component={RegularScreenChild} />
               <Stack.Screen name="ActionableScreenChild" component={ActionableScreenChild} />
               <Stack.Screen name="ReviewData" component={ReviewData} />
+              <Stack.Screen name="SpotSamplingScreen" component={SpotSamplingScreen} />
               <Stack.Screen name="ModalRegularChild" component={ModalRegularChild} />
               <Stack.Screen name="Logout" component={LogOut} options={{ headerShown: false }} />
               <Stack.Screen
