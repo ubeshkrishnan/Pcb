@@ -77,9 +77,11 @@ const ReviewData = ({ route, navigation }) => {
       setCapturedImages: setCapturedImages, // Set the capturedImages state from ReviewData component
     }));
     navigation.navigate('CameraPopup', { data: route?.params?.data });
+    
   };
 
   const handleSave = async () => {
+    console.log("datta",route.params);
     if (data && data?.sample_id) {
       const formData = new FormData();
       // Add form fields
@@ -96,7 +98,7 @@ const ReviewData = ({ route, navigation }) => {
       formData.append('treatment_type', selectedTreatmentType);
 
       // Append sample_coll_id to the form data
-      formData.append('sample_coll_id', data?.sampleCollIdValue);
+      // formData.append('sample_coll_id', data?.sampleCollIdValue);
 
       // Add captured images
       appData.capturedImages.forEach((image, index) => {

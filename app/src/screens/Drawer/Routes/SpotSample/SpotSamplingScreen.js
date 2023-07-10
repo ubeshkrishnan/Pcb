@@ -72,14 +72,16 @@ const SpotSamplingScreen = () => {
   };
 
   return (
-    <Modal animationType="slide">
-      <View style={styles.imageContainer}>
+<View>      
+<ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: 'white' }}>
+<View style={styles.imageContainer}>
+
         <TouchableOpacity style={styles.captureButtonBg} onPress={() => handleImageClick()}>
           <MaterialIcons style={styles.captureButton} name="photo-camera" size={32} color="black" />
         </TouchableOpacity>
         <Text style={{ color: '#888' }}>Capture Picture</Text>
       </View>
-      <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: 'white' }}>
+    
         <View style={styles.container}>
           <Text style={styles.label}>Serial No</Text>
           <TextInput
@@ -141,8 +143,9 @@ const SpotSamplingScreen = () => {
             <Button title="Cancel" onPress={handleCancel} />
           </View>
         </View>
-      </ScrollView>
-    </Modal>
+        </ScrollView>
+      </View>
+
   );
 };
 
