@@ -72,8 +72,8 @@ const SpotSamplingScreen = () => {
   };
 
   return (
-<View>      
-<ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: 'white' }}>
+     
+<ScrollView >
 <View style={styles.imageContainer}>
 
         <TouchableOpacity style={styles.captureButtonBg} onPress={() => handleImageClick()}>
@@ -90,7 +90,7 @@ const SpotSamplingScreen = () => {
             placeholderTextColor="#CCCCCC"
             value={serial_no.toString()}
             onChangeText={() => { }}
-            editable={false}
+            // editable={false}
           />
 
           <Text style={styles.label}>Point Of Collection</Text>
@@ -144,7 +144,7 @@ const SpotSamplingScreen = () => {
           </View>
         </View>
         </ScrollView>
-      </View>
+  
 
   );
 };
@@ -153,7 +153,7 @@ export default SpotSamplingScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
     height: 100,
     width: 200,
-    marginTop: 70,
+    marginTop: 10,
     borderRadius: 20,
   },
   captureButton: {

@@ -114,6 +114,7 @@ const CameraPopup = ({ route, navigation, isVisible, onClose }) => {
 
   const handleReviewData = () => {
     navigation.navigate(appData.lastScreen, { data: route?.params?.data });
+    // navigation.navigate(appData.modalRegular, { data: route?.params?.data });
   };
 
   return (

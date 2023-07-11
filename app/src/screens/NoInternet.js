@@ -18,7 +18,7 @@ const NoInternet = () => {
   return (
     <View style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'white', alignItems: 'center' }}>
       <Text style={styles.noInternet}>
-        {isOnline ? 'You\'re online' : 'No internet connection'}
+        {isOnline ? 'You\'re online' : 'No internet connection...'}
       </Text>
     </View>
   );

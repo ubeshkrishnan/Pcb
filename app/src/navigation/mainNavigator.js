@@ -116,7 +116,10 @@ const MainNavigator = () => {
               <Stack.Screen name="RegularScreenChild" component={RegularScreenChild} />
               <Stack.Screen name="ActionableScreenChild" component={ActionableScreenChild} />
               <Stack.Screen name="ReviewData" component={ReviewData} />
-              <Stack.Screen name="SpotSamplingScreen" component={SpotSamplingScreen} />
+              <Stack.Screen name="SpotSamplingScreen"
+                component={SpotSamplingScreen}
+
+              />
               <Stack.Screen name="ModalRegularChild" component={ModalRegularChild} />
               <Stack.Screen name="Logout" component={LogOut} options={{ headerShown: false }} />
               <Stack.Screen

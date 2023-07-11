@@ -10,8 +10,10 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
 
   const [cards, setCards] = useState([]);
   const { appData, setAppData } = useContext(DataContext);
+
   // alert(JSON.stringify(appData))
   // State for input values
+
   const [inputValues, setInputValues] = useState({
     serial_no: '',
     point_of_collection: null,
@@ -109,6 +111,19 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
   useEffect(() => {
     fetchPointOfCollectionOptions();
   }, []);
+  
+  useEffect(() => {
+    
+    setInputValues(preview=>{
+      return {...preview,"latitude":appData?.latitude,"longitude":appData?.longitude,"collection_time":appData?.currentTime}
+    })
+    console.log("app modal",appData);
+    
+  }, [appData]);
+  useEffect(() => {
+    console.log("input",inputValues);
+  }, [inputValues])
+  
 
   // Get the screen dimensions
   const { width, height } = Dimensions.get('window');
@@ -130,7 +145,7 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
             placeholder="Serial No"
             placeholderTextColor="black"
             editable={false}
-            defaultValue={item.serial_no} // Add this line to set the default value dynamically
+            defaultValue={item?.serial_no} // Add this line to set the default value dynamically
           />
 
           <SelectDropdown
@@ -164,6 +179,7 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
             placeholderTextColor="black"
             editable={false}
           />
+          <Text style={{color:'black'}}>{inputValues.latitude}asdas</Text>
           <TextInput
             style={styles.inputField}
             value={inputValues.longitude}
