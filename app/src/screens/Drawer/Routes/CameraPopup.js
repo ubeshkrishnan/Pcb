@@ -6,7 +6,7 @@ import { DataContext } from '../../../context/DataContext';
 
 
 
-const CameraPopup = ({ route, navigation, isVisible, onClose }) => {
+const CameraPopup = ({ route, navigation, isVisible }) => {
   const [location, setLocation] = useState(null);
   const [viewLocation, setViewLocation] = useState([]);
   const [capturedImages, setCapturedImages] = useState([]); // New state variable to store captured images
@@ -116,61 +116,83 @@ const CameraPopup = ({ route, navigation, isVisible, onClose }) => {
     navigation.navigate(appData.lastScreen, { data: route?.params?.data });
     // navigation.navigate(appData.modalRegular, { data: route?.params?.data });
   };
-
+  const handleClose = () => {
+    navigation.goBack();
+  };
   return (
-    <Modal visible={isVisible} animationType="slide">
-      <View style={[styles.imagecontainer, { height: Dimensions.get('window').height * 0.3 }]}>
+    <Modal visible={isVisible} animationType="slide" transparent={true}>
+      <View style={styles.modalContainer}>
+        <View style={[styles.modalContent, { height: Dimensions.get('window').height * 0.5 }]}>
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={handleClose}
+          >
+            <Text style={styles.closeButtonText}>Close</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={openCamera} disabled={capturedImages.length === 3}>
-          <Text style={styles.buttonText}>Open Camera</Text>
-        </TouchableOpacity>
+          <View style={styles.cameraContainer}>
+            <TouchableOpacity style={styles.cameraButton} onPress={openCamera} disabled={capturedImages.length === 3}>
+              <Text style={styles.cameraButtonText}>Open Camera</Text>
+            </TouchableOpacity>
 
-        {/* Show captured images */}
-        <View style={styles.imageGrid}>
-          {capturedImages.map((image, index) => (
-            <Image key={index} style={styles.imageStyles} source={{ uri: image.uri }} />
-          ))}
-        </View>
+            <View style={styles.imageGrid}>
+              {capturedImages.map((image, index) => (
+                <Image key={index} style={styles.imageStyles} source={{ uri: image.uri }} />
+              ))}
+            </View>
 
-        <Button
-          title={`Capture (${capturedImages.length} / 3)`}
-          onPress={handleReviewData}
-          disabled={capturedImages.length !== 3}
-        >
-          Capture
-        </Button>
+            <Button
+              title={`Capture (${capturedImages.length} / 3)`}
+              onPress={handleReviewData}
+              disabled={capturedImages.length !== 3}
+            >
+              Capture
+            </Button>
 
-        <Button title="Back" onPress={() => handleReviewData()} />
+            <Button title="Back" onPress={() => handleReviewData()} />
 
-        {appData && (
-          <View style={styles.locationContainer}>
-            <Text style={styles.geolocation}>Latitude: {appData.latitude}</Text>
-            <Text style={styles.geolocation}>Longitude: {appData.longitude}</Text>
+            {appData && (
+              <View style={styles.locationContainer}>
+                <Text style={styles.geolocation}>Latitude: {appData.latitude}</Text>
+                <Text style={styles.geolocation}>Longitude: {appData.longitude}</Text>
+              </View>
+            )}
           </View>
-        )}
+        </View>
       </View>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  imagecontainer: {
+  modalContainer: {
     flex: 1,
-    padding: 20,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
     backgroundColor: 'white',
-    height: Dimensions.get('window').height * 0.2, // Adjust the value here
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
   },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  closeButton: {
+    alignSelf: 'flex-end',
+    padding: 10,
   },
-  button: {
+  closeButtonText: {
+    fontSize: 16,
+    color: 'blue',
+  },
+  cameraContainer: {
+    marginBottom: 10,
+  },
+  cameraButton: {
     backgroundColor: 'blue',
     padding: 10,
     marginVertical: 10,
   },
-  buttonText: {
+  cameraButtonText: {
     color: 'white',
     fontSize: 16,
   },
@@ -195,4 +217,3 @@ const styles = StyleSheet.create({
 });
 
 export default CameraPopup;
-

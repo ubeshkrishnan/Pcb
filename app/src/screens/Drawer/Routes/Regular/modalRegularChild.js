@@ -17,11 +17,10 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
   const [inputValues, setInputValues] = useState({
     serial_no: '',
     point_of_collection: null,
-    collection_time: '',
-    latitude: '',
-    longitude: '',
+    collection_time: appData.currentTime,
+    latitude: appData.latitude,
+    longitude: appData.longitude,
   });
-
   // State for point of collection options
   const [pointOfCollectionOptions, setPointOfCollectionOptions] = useState([]);
 
@@ -92,44 +91,30 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
   // camera
   const handleImageClick = () => {
     setAppData({ ...appData, lastScreen: 'ModalRegularChild' })
-    navigation.navigate('CameraPopup');
-    console.log('CameraPopup');
-  };
-
-  // Fetch point of collection options
-  const fetchPointOfCollectionOptions = async () => {
-    try {
-      const response = await fetch(Url + '/pointofcollectionoptions');
-      const data = await response.json();
-      setPointOfCollectionOptions(data);
-    } catch (error) {
-      console.error(error);
-    }
+    navigation.navigate('CameraPopup',{data:{parentLastScreen:'modalRegularChild'}});
   };
 
   // Fetch options on component mount
   useEffect(() => {
+    async function fetchPointOfCollectionOptions() {
+      try {
+        const response = await fetch(Url + '/pointofcollectionoptions');
+        const data = await response.json();
+        setPointOfCollectionOptions(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
     fetchPointOfCollectionOptions();
   }, []);
-  
-  useEffect(() => {
-    
-    setInputValues(preview=>{
-      return {...preview,"latitude":appData?.latitude,"longitude":appData?.longitude,"collection_time":appData?.currentTime}
-    })
-    console.log("app modal",appData);
-    
-  }, [appData]);
-  useEffect(() => {
-    console.log("input",inputValues);
-  }, [inputValues])
-  
+
+  useEffect(() => setInputValues({ ...inputValues, latitude: appData?.latitude, longitude: appData?.longitude, collection_time: appData?.currentTime }), [appData]);
 
   // Get the screen dimensions
   const { width, height } = Dimensions.get('window');
   // Render the modal component
   return (
-    <Modal visible={visible} animationType="slide">
+    visible ? <><Modal visible={visible} animationType="slide">
       <View style={styles.imageContainer}>
         <TouchableOpacity style={styles.captureButtonBg} onPress={() => handleImageClick()}>
           <MaterialIcons style={styles.captureButton} name="photo-camera" size={32} color="black" />
@@ -145,7 +130,7 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
             placeholder="Serial No"
             placeholderTextColor="black"
             editable={false}
-            defaultValue={item?.serial_no} // Add this line to set the default value dynamically
+            defaultValue={item?.ref_id} // Add this line to set the default value dynamically
           />
 
           <SelectDropdown
@@ -162,7 +147,6 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
             dropdownTextStyle={styles.dropdownText}
 
           />
-
           <TextInput
             style={styles.inputField}
             value={inputValues.collection_time}
@@ -170,20 +154,21 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
             placeholder="Collection Time Stamp"
             placeholderTextColor="black"
             editable={false}
+
           />
           <TextInput
             style={styles.inputField}
-            value={inputValues.latitude}
-            onChangeText={(value) => handleInputChange('latitude', value)}
+            value={inputValues?.latitude?.toString()}
+            // onChangeText={(value) => handleInputChange('latitude', value)}
             placeholder="Latitude"
             placeholderTextColor="black"
             editable={false}
           />
-          <Text style={{color:'black'}}>{inputValues.latitude}asdas</Text>
+
           <TextInput
             style={styles.inputField}
-            value={inputValues.longitude}
-            onChangeText={(value) => handleInputChange('longitude', value)}
+            value={inputValues?.longitude?.toString()}
+            //onChangeText={(value) => handleInputChange('longitude', value)}
             placeholder="Longitude"
             placeholderTextColor="black"
             editable={false}
@@ -201,7 +186,7 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
 
         </View>
       </ScrollView>
-    </Modal>
+    </Modal></> : <View></View>
   );
 };
 export default ModalRegularChild;

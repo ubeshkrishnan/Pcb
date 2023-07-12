@@ -5,12 +5,11 @@ import { useNavigation } from '@react-navigation/native';
 import axios from "axios";
 import { Url } from "../../../../../Global_Variable/api_link"
 import ModalActionable from './modalActionable';
-import { useDispatch, useSelector } from 'react-redux'
-import { increment } from '../../../../store/Reviewstore'
 
-const RegularScreen = () => {
-  const store = useSelector(store => store.counter);
-  const dispatch = useDispatch();
+
+const ActionableScreen = () => {
+
+
 
   const [cards, setCards] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -84,18 +83,14 @@ const RegularScreen = () => {
     // console.log(item.sample_coll_id,"itemm");
     navigation.navigate('ActionableScreenChild', { sampleId: item.sample_coll_id });
   }
+  const renderEndData = () => {
+    return (
+      <View style={styles.endDataContainer}>
+        <Text style={styles.endDataText}>END DATA</Text>
+      </View>
+    );
+  };
 
-  const placeholders = [
-    'Number',
-    'Scheme',
-    'Category',
-    'Region/Taluk',
-    'Scheduled',
-    'Type',
-    'Village',
-    'No.of Samples',
-    'Sample Type',
-  ];
 
   const renderItem = ({ item }) => {
     return (
@@ -152,13 +147,6 @@ const RegularScreen = () => {
     );
   };
 
-  const renderEndData = () => {
-    if (isLoading) {
-      return <Text style={styles.LoadingData}>LOADING DATA...</Text>;
-    } else {
-      return <Text style={styles.CardEndText}>END DATA</Text>;
-    }
-  };
 
   const renderNoRecords = () => {
     return (
@@ -196,14 +184,15 @@ const RegularScreen = () => {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         ListEmptyComponent={renderNoRecords}
+        ListFooterComponent={renderEndData}
       />
 
-      {renderEndData()}
+
     </View>
   );
 };
 
-export default RegularScreen;
+export default ActionableScreen;
 
 
 
@@ -381,5 +370,19 @@ const styles = {
     fontSize: 20,
     textAlign: 'center',
     marginTop: 60,
-  }
+  },
+  endDataContainer: {
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  endDataText: {
+    color: 'black',
+    backgroundColor: 'white',
+    fontSize: 15,
+    fontWeight: 'bold',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+  },
 };

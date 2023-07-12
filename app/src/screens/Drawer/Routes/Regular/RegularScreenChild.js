@@ -5,11 +5,8 @@ import axios from 'axios';
 import { Url } from '../../../../../Global_Variable/api_link';
 import ModalRegularChild from './modalRegularChild';
 import { useRoute } from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
-import { updateLocation } from '../../../../store/Reviewstore';
 
 const RegularScreenChild = ({ navigation }) => {
-  const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -17,7 +14,6 @@ const RegularScreenChild = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState('');
 
   const route = useRoute();
-  // console.log(route, "routess");
 
   // NO RECORDS FOUND
   const renderNoRecords = () => {
@@ -37,18 +33,16 @@ const RegularScreenChild = ({ navigation }) => {
   };
 
   useEffect(() => {
-
-    if (route.params.sampleId)
+    if (route.params.sampleId) {
       fetchData();
-    // console.log(route.params,"test");
+    }
   }, [route.params]);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(Url + `/regularscreenchild/${route.params.sampleId}`);
-      // console.log(response, "chceck id");
       setData(response.data);
-      setFilteredData(response.data); // Set filtered data initially
+      setFilteredData(response.data);
       setIsLoading(false);
     } catch (error) {
       console.log('Error:', error);
@@ -61,7 +55,7 @@ const RegularScreenChild = ({ navigation }) => {
     const filteredData = data.filter((item) => {
       const lowerCaseQuery = query.toLowerCase();
       return (
-        (item.serialNo && item.serialNo.includes(lowerCaseQuery)) ||
+        (item.serial_no && item.serial_no.toString().includes(query)) || // Modified condition
         (item.poc_type && item.poc_type.toLowerCase().includes(lowerCaseQuery)) ||
         (item.collectionTimeStamp && item.collectionTimeStamp.includes(lowerCaseQuery)) ||
         (item.latitude && item.latitude.includes(lowerCaseQuery)) ||
@@ -74,17 +68,8 @@ const RegularScreenChild = ({ navigation }) => {
 
   const clearSearch = () => {
     setSearchValue('');
-    setFilteredData(data); // Reset filtered data to the original data
+    setFilteredData(data);
   };
-
-  useEffect(() => {
-    dispatch(updateLocation({
-      latitude: '',
-      longitude: '',
-      currentTime: '',
-    }))
-
-  }, [])
 
   const navigateToReviewData = (item) => {
     navigation.navigate('ReviewData', { data: item });
@@ -97,6 +82,7 @@ const RegularScreenChild = ({ navigation }) => {
       </View>
     );
   };
+
   const NoRecordsFound = () => {
     return (
       <View style={styles.noRecordsContainer}>
@@ -108,7 +94,7 @@ const RegularScreenChild = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>11000 - Sivajothi Blue Metal</Text>
-        <TouchableOpacity onPress={openModalRegular} style={styles.addButton}>
+        <TouchableOpacity onPress={()=>openModalRegular()} style={styles.addButton}>
           <MaterialIcons name="add" size={20} style={styles.addButtonIcon} />
           <Text style={styles.addButtonLabel}>Add</Text>
         </TouchableOpacity>
@@ -137,7 +123,6 @@ const RegularScreenChild = ({ navigation }) => {
         </View>
       </View>
 
-
       {isLoading ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <ActivityIndicator size="large" color="#0000ff" />
@@ -145,7 +130,7 @@ const RegularScreenChild = ({ navigation }) => {
       ) : (
         <FlatList
           data={filteredData}
-          keyExtractor={(item) => item.serialNo} // Assuming 'serialNo' is a unique identifier (convert to string if not already)
+          keyExtractor={(item) => item.serialNo}
           ListEmptyComponent={renderNoRecords}
           renderItem={({ item }) => (
             <View style={styles.RegularCard}>
@@ -155,7 +140,7 @@ const RegularScreenChild = ({ navigation }) => {
                   <Text style={styles.CardDetailRight}>{item.serial_no}</Text>
                 </Text>
 
-                <ModalRegularChild visible={modalVisible} item={item} setcards={setData} onClose={closeModal} />
+               {modalVisible&& <ModalRegularChild visible={modalVisible} item={item} setcards={setData} onClose={closeModal} />}
 
                 <Text style={styles.CardDetail}>point Of Collection :
                   {item.poc_typ}
@@ -163,7 +148,6 @@ const RegularScreenChild = ({ navigation }) => {
                 </Text>
                 <Text style={styles.CardDetail}>Collection Time:
                   <Text style={styles.CardMap}> {item.collection_time}</Text>
-
                   <Text style={styles.CardMap}> {item.collectionTimeStamp}</Text>
                 </Text>
                 <Text style={styles.CardDetail}>
@@ -178,7 +162,6 @@ const RegularScreenChild = ({ navigation }) => {
           ListFooterComponent={renderEndData}
         />
       )}
-      {/* {renderEndData()} */}
     </View>
   );
 };
@@ -211,6 +194,7 @@ const styles = {
     paddingLeft: 5,
     // right: 1,
     paddingBottom: 10,
+
   },
   searchBarInputContainer: {
     flexDirection: 'row',
@@ -222,6 +206,7 @@ const styles = {
     borderWidth: 1,
     height: 40,
     width: 180,
+    marginBottom: 14,
   },
   searchIconContainer: {
     paddingLeft: 5,
@@ -310,15 +295,19 @@ const styles = {
     marginTop: 40,
     fontSize: 20,
   },
-  endDataText: {
-    color: 'white',
-    backgroundColor: 'black',
-    height: 27,
-    textAlign: 'center',
-    fontWeight: 'bold',
+  endDataContainer: {
+    alignItems: 'center',
     marginTop: 20,
-    paddingTop: 4,
+    marginBottom: 20,
+  },
+  endDataText: {
+    color: 'black',
+    backgroundColor: 'white',
     fontSize: 15,
-  }
+    fontWeight: 'bold',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+  },
 };
 

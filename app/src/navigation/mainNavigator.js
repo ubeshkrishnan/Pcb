@@ -31,6 +31,8 @@ import NetInfo from '@react-native-community/netinfo';
 const ModalRegularChild = lazy(() =>
   import('../screens/Drawer/Routes/Regular/modalRegularChild')
 );
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 // import FingerPrint from '../screens/FingerPrint/FingerPrint';
 
 const MainNavigator = () => {
@@ -53,13 +55,74 @@ const MainNavigator = () => {
   const DrawerNavigator = () => {
     return (
       <Drawer.Navigator>
-        <Drawer.Screen name="MAIN-MENU" component={DashboardScreen} />
-        <Drawer.Screen name="Regular Sampling" component={RegularScreen} />
+        <Drawer.Screen
+          name="MAIN-MENU"
+          component={DashboardScreen}
+          options={{
+            drawerIcon: ({ focused, color, size }) => (
+              <MaterialIcons
+                name={focused ? 'home' : 'home-outline'}
+                size={size}
+                color={color}
+              />
+            ),
+          }}
+        />
+        <Drawer.Screen
+          name="Regular Sampling"
+          component={RegularScreen}
+          options={{
+            drawerIcon: ({ focused, color, size }) => (
+              <MaterialIcons
+                name={focused ? 'icon-name-focused' : 'icon-name-unfocused'}
+                color={color}
+                size={size}
+              />
+            ),
+          }}
+        />
+
         <Drawer.Screen name="Actionable Sampling" component={ActionableScreen} />
-        <Drawer.Screen name="Spot Sampling" component={SpotSamplingScreen} />
-        <Drawer.Screen name="Basic Information" component={BasicInfo} />
+        <Drawer.Screen
+          name="Spot Sampling"
+          component={SpotSamplingScreen}
+          options={{
+            drawerIcon: ({ focused, color, size }) => (
+              <MaterialIcons
+                name={focused ? 'target' : 'target-outline'}
+                size={size}
+                color={color}
+              />
+            ),
+          }}
+        />
+        <Drawer.Screen
+          name="Basic Information"
+          component={BasicInfo}
+          options={{
+            drawerIcon: ({ focused, color, size }) => (
+              <MaterialIcons
+                name={focused ? 'info' : 'info-outline'}
+                size={size}
+                color={color}
+              />
+            ),
+          }}
+        />
         <Drawer.Screen name="Records" component={RecordsScreen} />
-        <Drawer.Screen name="LogOut" component={LogOut} />
+        <Drawer.Screen
+          name="LogOut"
+          component={LogOut}
+          options={{
+            drawerIcon: ({ focused, color, size }) => (
+              <MaterialIcons
+                name={focused ? 'logout' : 'logout'}
+                size={size}
+                color={color}
+              />
+            ),
+          }}
+        />
       </Drawer.Navigator>
     );
   };
@@ -112,7 +175,9 @@ const MainNavigator = () => {
               />
               <Stack.Screen name="Routes" component={Routes} />
               <Stack.Screen name="DashboardGraph" component={DashboardGraph} />
-              <Stack.Screen name="CameraPopup" component={CameraPopup} />
+              <Stack.Screen name="CameraPopup" component={CameraPopup}
+                options={{ headerShown: false }}
+              />
               <Stack.Screen name="RegularScreenChild" component={RegularScreenChild} />
               <Stack.Screen name="ActionableScreenChild" component={ActionableScreenChild} />
               <Stack.Screen name="ReviewData" component={ReviewData} />

@@ -3,10 +3,10 @@ import { Text, View, TouchableOpacity, Modal, ActivityIndicator, ScrollView, Tex
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import { Url } from '../../../../../Global_Variable/api_link';
-import ModalActionable from './modalActionable';
+import ModalActionableChild from './modalActionable';
 import { useRoute } from '@react-navigation/native';
 
-const ActionabelScreenChild = ({ navigation }) => {
+const ActionableScreenChild = ({ navigation }) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -14,26 +14,17 @@ const ActionabelScreenChild = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState('');
 
   const route = useRoute();
-  // console.log(route, "routess");
 
-   // NO RECORDS FOUND
-   const renderNoRecords = () => {
-    return (
-      <View style={styles.noRecordsContainer}>
-        <Text style={styles.noRecordsText}>No records found</Text>
-      </View>
-    );
+  // NO RECORDS FOUND
+  const renderNoRecords = () => {
+    return <NoRecordsFound />;
   };
 
   const renderEndData = () => {
-    return (
-      <View style={styles.endDataContainer}>
-        <Text style={styles.endDataText}>END DATA</Text>
-      </View>
-    );
+    return <EndDataMessage />;
   };
 
-  const openModal = () => {
+  const openModalRegular = () => {
     setModalVisible(true);
   };
 
@@ -42,17 +33,16 @@ const ActionabelScreenChild = ({ navigation }) => {
   };
 
   useEffect(() => {
-
-    if (route.params.sampleId)
+    if (route.params.sampleId) {
       fetchData();
+    }
   }, [route.params]);
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(Url + `/actionablecreenchild/${route.params.sampleId}`);
-      // console.log(response, "chceck id");
+      const response = await axios.get(Url + `/actionablescreenchild/${route.params.sampleId}`);
       setData(response.data);
-      setFilteredData(response.data); // Set filtered data initially
+      setFilteredData(response.data);
       setIsLoading(false);
     } catch (error) {
       console.log('Error:', error);
@@ -65,7 +55,7 @@ const ActionabelScreenChild = ({ navigation }) => {
     const filteredData = data.filter((item) => {
       const lowerCaseQuery = query.toLowerCase();
       return (
-        (item.serialNo && item.serialNo.includes(lowerCaseQuery)) ||
+        (item.serial_no && item.serial_no.toString().includes(query)) || // Modified condition
         (item.poc_type && item.poc_type.toLowerCase().includes(lowerCaseQuery)) ||
         (item.collectionTimeStamp && item.collectionTimeStamp.includes(lowerCaseQuery)) ||
         (item.latitude && item.latitude.includes(lowerCaseQuery)) ||
@@ -77,12 +67,13 @@ const ActionabelScreenChild = ({ navigation }) => {
 
   const clearSearch = () => {
     setSearchValue('');
-    setFilteredData(data); // Reset filtered data to the original data
+    setFilteredData(data);
   };
 
   const navigateToReviewData = (item) => {
     navigation.navigate('ReviewData', { data: item });
   };
+
   const EndDataMessage = () => {
     return (
       <View style={styles.endDataContainer}>
@@ -90,6 +81,7 @@ const ActionabelScreenChild = ({ navigation }) => {
       </View>
     );
   };
+
   const NoRecordsFound = () => {
     return (
       <View style={styles.noRecordsContainer}>
@@ -97,12 +89,12 @@ const ActionabelScreenChild = ({ navigation }) => {
       </View>
     );
   };
+
   return (
-    
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>11000 - Sivajothi Blue Metal</Text>
-        <TouchableOpacity onPress={openModal} style={styles.addButton}>
+        <TouchableOpacity onPress={()=>openModalRegular()} style={styles.addButton}>
           <MaterialIcons name="add" size={20} style={styles.addButtonIcon} />
           <Text style={styles.addButtonLabel}>Add</Text>
         </TouchableOpacity>
@@ -120,9 +112,9 @@ const ActionabelScreenChild = ({ navigation }) => {
             placeholderTextColor="gray"
             value={searchValue}
             onChangeText={handleSearch}
-            // autoFocus
             clearButtonMode="while-editing"
           />
+
           {searchValue.length > 0 && (
             <TouchableOpacity style={styles.clearIconContainer} onPress={clearSearch}>
               <MaterialIcons name="clear" size={20} color="gray" />
@@ -131,30 +123,31 @@ const ActionabelScreenChild = ({ navigation }) => {
         </View>
       </View>
 
-
       {isLoading ? (
-      <ActivityIndicator size="large" color="#0000ff" />
-    ) : filteredData.length === 0 ? (
-      renderNoRecords()
-    ) : (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      ) : (
         <FlatList
           data={filteredData}
-          keyExtractor={(item) => item.serialNo} // Use serialNo as the key
-          const renderItem={({ item }) => (
-            <View style={styles.RegularCard}>
+          keyExtractor={(item) => item.serialNo}
+          ListEmptyComponent={renderNoRecords}
+          renderItem={({ item,index }) => (
+            <View key={'Item'+index} style={styles.RegularCard}>
               <TouchableOpacity onPress={() => navigateToReviewData(item)}>
                 <Text style={styles.CardSerialNo}>
                   {item.serialNo}
                   <Text style={styles.CardDetailRight}>{item.serial_no}</Text>
                 </Text>
-                <ModalActionable visible={modalVisible} item={data} setcards={setData} onClose={closeModal} />
 
-                <Text style={styles.CardDetail}>
-                  Point of Collection:
+                <ModalActionableChild visible={modalVisible} item={item} setcards={setData} onClose={closeModal} />
+
+                <Text style={styles.CardDetail}>point Of Collection :
+                  {item.poc_typ}
                   <Text style={styles.CardMap}> {item.poc_type}</Text>
                 </Text>
-                <Text style={styles.CardDetail}>
-                  Collection Time Stamp:
+                <Text style={styles.CardDetail}>Collection Time:
+                  <Text style={styles.CardMap}> {item.collection_time}</Text>
                   <Text style={styles.CardMap}> {item.collectionTimeStamp}</Text>
                 </Text>
                 <Text style={styles.CardDetail}>
@@ -166,15 +159,14 @@ const ActionabelScreenChild = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           )}
-          ListEmptyComponent={renderNoRecords}
-  ListFooterComponent={renderEndData}
+          ListFooterComponent={renderEndData}
         />
       )}
     </View>
   );
 };
 
-export default ActionabelScreenChild;
+export default ActionableScreenChild;
 
 
 
@@ -301,15 +293,19 @@ const styles = {
     marginTop: 40,
     fontSize: 20,
   },
-  endDataText: {
-    color: 'white',
-    backgroundColor: 'black',
-    height: 27,
-    textAlign: 'center',
-    fontWeight: 'bold',
+  endDataContainer: {
+    alignItems: 'center',
     marginTop: 20,
-    paddingTop: 4,
+    marginBottom: 20,
+  },
+  endDataText: {
+    color: 'black',
+    backgroundColor: 'white',
     fontSize: 15,
-  }
+    fontWeight: 'bold',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+  },
 };
 

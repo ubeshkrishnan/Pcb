@@ -226,7 +226,7 @@ const ReviewData = ({ route, navigation }) => {
       setCapturedImages: () => { } // Initial empty function
     });
     setData(initialData);
-    navigation.goBack();
+   route?.params?.parentLastScreen?navigation.navigate(route?.params?.parentLastScreen) :navigation.goBack();
   };
   // console.log("captureeed", appData.capturedImages );
   useEffect(() => {
@@ -493,15 +493,17 @@ const ReviewData = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
+ 
   container: {
     flex: 1,
     alignItems: 'center',
     backgroundColor: '#fff',
     paddingHorizontal: 16,
     paddingVertical: 24,
+    height:'auto',
   },
   imageContainer: {
-    marginBottom: 16,
+    marginBottom: 10,
     alignItems: 'center',
   },
   captureButtonBg: {
@@ -543,9 +545,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 10,
     color: 'black',
+    borderRadius:8,
   },
   buttonRow: {
-    marginBottom: 20,
+    marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '65%',
@@ -556,15 +559,16 @@ const styles = StyleSheet.create({
   dropdownButton: {
     borderWidth: 1,
     borderColor: 'gray',
-    borderRadius: 4,
+    borderRadius: 8,
     paddingHorizontal: 10,
     paddingVertical: 8,
     backgroundColor: '#fff',
     color: 'black',
+    width:'auto',
   },
   dropdownButtonText: {
     fontSize: 16,
-    color: '#B3B3B3',
+    color: 'black',
   },
   dropdownIcon: {
     fontSize: 16,
@@ -579,11 +583,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     color: 'black',
   },
-  // dropdownRow: {
-  //   padding: 10,
-  //   backgroundColor: '#fff',
-  //   color:'black',
-  // },
+  dropdownRow: {
+    padding: 10,
+    backgroundColor: '#fff',
+    color:'black',
+  },
   // dropdownRowText: {
   //   fontSize: 16,
   //   color: 'black',
@@ -591,6 +595,7 @@ const styles = StyleSheet.create({
   //   paddingRight:100,
   //   width:10,
   // },
+
   capturedImagesContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',

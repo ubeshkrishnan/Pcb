@@ -58,7 +58,7 @@ const ModalActionable = ({ visible, item, setcards }) => {
     console.log(postData, 'post data');
 
     // Send POST request
-    fetch(Url + '/modalregular', {
+    fetch(Url + '/modalactionable', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

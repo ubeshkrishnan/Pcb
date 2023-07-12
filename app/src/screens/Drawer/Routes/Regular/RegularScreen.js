@@ -6,14 +6,8 @@ import axios from "axios";
 import { Url } from "../../../../../Global_Variable/api_link"
 import RegularscreenData from '../RegularscreenData';
 import ModalRegular from './modalRegularChild';
-import { useDispatch, useSelector } from 'react-redux'
-import { increment } from '../../../../store/Reviewstore'
-import { iteratorSymbol } from 'immer/dist/internal';
 
 const RegularScreen = () => {
-  const store = useSelector(store => store.counter);
-  const dispatch = useDispatch();
-
   const [cards, setCards] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -41,7 +35,6 @@ const RegularScreen = () => {
       console.log('Error fetching data:', error);
     }
   };
-
 
   const filterCards = (text) => {
     if (text === '') {
@@ -83,25 +76,20 @@ const RegularScreen = () => {
   };
 
   const navigateToRegularScreenChild = (item) => {
-    // console.log(item.sample_coll_id,"itemm");
     navigation.navigate('RegularScreenChild', { sampleId: item.sample_coll_id });
   }
 
-  const placeholders = [
-    'Number',
-    'Scheme',
-    'Category',
-    'Region/Taluk',
-    'Scheduled',
-    'Type',
-    'Village',
-    'No.of Samples',
-    'Sample Type',
-  ];
+  const renderEndData = () => {
+    return (
+      <View style={styles.endDataContainer}>
+        <Text style={styles.endDataText}>END DATAa</Text>
+      </View>
+    );
+  };
 
   const renderItem = ({ item }) => {
     return (
-      <ScrollView >
+      <ScrollView>
         <View style={styles.RegularCardMain}>
           {isModalVisible && <ModalRegular visible={isModalVisible} item={cards} setcards={setCards} />}
           <TouchableOpacity onPress={() => navigateToRegularScreenChild(item)}>
@@ -138,44 +126,27 @@ const RegularScreen = () => {
                   <Text style={styles.CardMap}>{item.schedule_type}</Text>
                 </Text>
               </View>
-
               <View style={styles.column}>
                 <Text style={styles.CardDetail}>
                   Sample Type:
                   <Text style={styles.CardMap}>{item.sample_type}</Text>
                 </Text>
               </View>
-
             </View>
-
           </TouchableOpacity>
         </View>
       </ScrollView>
     );
   };
 
-  // NO RECORDS FOUND
   const renderNoRecords = () => {
-    return <NoRecordsFound />;
-  };
-
-  const renderEndData = () => {
-    return <EndDataMessage />;
-  };
-  const EndDataMessage = () => {
-    return (
-      <View style={styles.endDataContainer}>
-        <Text style={styles.endDataText}>END DATA</Text>
-      </View>
-    );
-  };
-  const NoRecordsFound = () => {
     return (
       <View style={styles.noRecordsContainer}>
         <Text style={styles.noRecordsText}>No records found</Text>
       </View>
     );
   };
+
   return (
     <View>
       <View style={styles.horizontalLine}></View>
@@ -204,16 +175,13 @@ const RegularScreen = () => {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         ListEmptyComponent={renderNoRecords}
+        ListFooterComponent={renderEndData}
       />
-
-      {renderEndData()}
     </View>
   );
 };
 
 export default RegularScreen;
-
-
 
 const styles = {
   container: {
@@ -241,7 +209,6 @@ const styles = {
     color: 'red',
     marginRight: 20,
     textDecorationLine: 'underline',
-
   },
   rowContainer: {
     flexDirection: 'row',
@@ -252,18 +219,17 @@ const styles = {
     borderColor: 'black',
     position: 'relative',
   },
-
   clearIconContainer: {
     // position: 'absolute',
     right: 30,
     paddingBottom: 10,
   },
-
   searchIconContainer: {
     position: 'absolute',
     paddingLeft: 5,
     // right: 1,
     paddingBottom: 10,
+
   },
   headersample: {
     backgroundColor: '#CCCCCC',
@@ -273,7 +239,6 @@ const styles = {
     fontWeight: 'bold',
     paddingLeft: 20,
     paddingTop: 9,
-
   },
   searchBar: {
     flex: 1,
@@ -285,7 +250,6 @@ const styles = {
     borderRadius: 20,
     marginRight: 10,
     color: 'red',
-
   },
   searchBarInput: {
     borderColor: 'black',
@@ -298,8 +262,6 @@ const styles = {
     paddingRight: 40,
     marginBottom: 14,
   },
-
-
   cardContent: {
     color: 'white',
     fontSize: 15,
@@ -319,7 +281,6 @@ const styles = {
     alignItems: 'center',
     backgroundColor: '#f5f5f5',
   },
-
   RegularCardMain: {
     backgroundColor: '#D0E3F1',
     marginTop: 20,
@@ -330,55 +291,45 @@ const styles = {
     marginRight: 15,
     flex: 1,
   },
-
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-
   column: {
     flex: 1,
   },
-
   CardSerialNo: {
     backgroundColor: '#CCCCCC',
     color: 'black',
     fontSize: 15,
     fontWeight: 'bold',
     paddingLeft: 30,
-    height: "auto",
+    height: 'auto',
     padding: 10,
     borderBottomLeftRadius: 50,
   },
-
-
   CardDetail: {
     marginTop: 5,
     paddingLeft: 9,
     fontWeight: 'bold',
     color: 'black',
   },
-
   CardDetailRight: {
     color: 'blue',
     textAlign: 'right',
     paddingRight: 200,
   },
-
   CardMap: {
     marginLeft: 15,
     fontWeight: '400',
     paddingLeft: 10,
     color: 'black',
   },
-
   SearchIcon: {
     marginTop: 30,
     marginLeft: 20,
     paddingRight: 20,
-
   },
-
   CardEndText: {
     color: 'white',
     backgroundColor: 'black',
@@ -390,11 +341,29 @@ const styles = {
     fontSize: 15,
     marginBottom: 20, // Add marginBottom to create space below the "END DATA" message
   },
-  
   LoadingData: {
     color: 'red',
     fontSize: 20,
     textAlign: 'center',
     marginTop: 60,
-  }
+  },
+  endDataContainer: {
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  endDataText: {
+    color: 'black',
+    backgroundColor: 'white',
+    fontSize: 15,
+    fontWeight: 'bold',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+  },
+  noRecordsContainer: {
+    alignItems: 'center',
+    marginTop: 40,
+  },
 };
+
