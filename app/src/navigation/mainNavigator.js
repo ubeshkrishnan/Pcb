@@ -58,56 +58,57 @@ const MainNavigator = () => {
         <Drawer.Screen
           name="MAIN-MENU"
           component={DashboardScreen}
-          options={{
-            drawerIcon: ({ focused, color, size }) => (
-              <MaterialIcons
-                name={focused ? 'home' : 'home-outline'}
-                size={size}
-                color={color}
-              />
-            ),
-          }}
+          // options={{
+          //   drawerIcon: ({ focused, color, size }) => (
+          //     <MaterialIcons
+          //       name={focused ? 'home' : 'home-outline'}
+          //       size={size}
+          //       color={color}
+          //     />
+          //   ),
+          // }}
         />
         <Drawer.Screen
           name="Regular Sampling"
           component={RegularScreen}
-          options={{
-            drawerIcon: ({ focused, color, size }) => (
-              <MaterialIcons
-                name={focused ? 'icon-name-focused' : 'icon-name-unfocused'}
-                color={color}
-                size={size}
-              />
-            ),
-          }}
+          // options={{
+          //   drawerIcon: ({ focused, color, size }) => (
+          //     <MaterialIcons
+          //       name={focused ? 'icon-name-focused' : 'icon-name-unfocused'}
+          //       color={color}
+          //       size={size}
+          //     />
+          //   ),
+          // }}
         />
 
         <Drawer.Screen name="Actionable Sampling" component={ActionableScreen} />
+    
         <Drawer.Screen
           name="Spot Sampling"
           component={SpotSamplingScreen}
-          options={{
-            drawerIcon: ({ focused, color, size }) => (
-              <MaterialIcons
-                name={focused ? 'target' : 'target-outline'}
-                size={size}
-                color={color}
-              />
-            ),
-          }}
+          // options={{
+          //   drawerIcon: ({ focused, color, size }) => (
+          //     <MaterialIcons
+          //       name={focused ? 'target' : 'target-outline'}
+          //       size={size}
+          //       color={color}
+          //     />
+          //   ),
+          // }}
         />
         <Drawer.Screen
           name="Basic Information"
           component={BasicInfo}
-          options={{
-            drawerIcon: ({ focused, color, size }) => (
-              <MaterialIcons
-                name={focused ? 'info' : 'info-outline'}
-                size={size}
-                color={color}
-              />
-            ),
-          }}
+          // options={{
+          //   drawerIcon: ({ focused, color, size }) => (
+          //     <MaterialIcons
+          //       name={focused ? 'info' : 'info-outline'}
+          //       size={size}
+          //       color={color}
+          //     />
+          //   ),
+          // }}
         />
         <Drawer.Screen name="Records" component={RecordsScreen} />
         <Drawer.Screen

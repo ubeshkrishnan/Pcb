@@ -23,9 +23,6 @@ export default function FirstView() {
 
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-      <Animated.Text style={[styles.text, { transform: [{ scale: scaleAnim }] }]}>
-        FirstView
-      </Animated.Text>
       <Animated.Image
         source={require('../../assets/fbg.jpg')}
         style={[styles.image, { transform: [{ scale: scaleAnim }] }]}
@@ -58,8 +55,8 @@ const styles = StyleSheet.create({
   },
   centerTextContainer: {
     position: 'absolute',
-    top: '50%',
-    left: '50%',
+    // top: '50%',
+    // left: '50%',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -68,5 +65,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
-  },
+    marginRight:50,
+color:'black'},
 });

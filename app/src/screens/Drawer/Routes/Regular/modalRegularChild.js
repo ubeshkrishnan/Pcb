@@ -1,33 +1,37 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Text, View, TextInput, TouchableOpacity, Modal, ScrollView, StyleSheet, Alert, Dimensions } from 'react-native';
+import { Animated, Alert, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Url } from '../../../../../Global_Variable/api_link';
-import SelectDropdown from 'react-native-select-dropdown';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import SelectDropdown from 'react-native-select-dropdown';
+
 import { DataContext } from '../../../../context/DataContext';
+import { Url } from '../../../../../Global_Variable/api_link';
 
 const ModalRegularChild = ({ visible, item, setcards }) => {
-
-  const [cards, setCards] = useState([]);
+  const [fadeAnim] = useState(new Animated.Value(0)); // Initial opacity of 0
   const { appData, setAppData } = useContext(DataContext);
+  const navigation = useNavigation();
+ // State for point of collection options
+ const [pointOfCollectionOptions, setPointOfCollectionOptions] = useState([]);
+ 
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500, // Adjust the duration as per your preference
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
 
-  // alert(JSON.stringify(appData))
-  // State for input values
-
-  const [inputValues, setInputValues] = useState({
+  const initialState = {
     serial_no: '',
     point_of_collection: null,
     collection_time: appData.currentTime,
     latitude: appData.latitude,
     longitude: appData.longitude,
-  });
-  // State for point of collection options
-  const [pointOfCollectionOptions, setPointOfCollectionOptions] = useState([]);
+  };
 
-  // Navigation hook
-  const navigation = useNavigation();
+  const [inputValues, setInputValues] = useState(initialState);
 
-  // Handle input change
   const handleInputChange = (title, value) => {
     setInputValues((prev) => ({
       ...prev,
@@ -35,25 +39,16 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
     }));
   };
 
-  // Handle cancel button press
   const handleCancel = () => {
-    setInputValues({
-      serial_no: '',
-      point_of_collection: null,
-      collection_time: '',
-      latitude: '',
-      longitude: '',
-    });
+    setInputValues(initialState);
     navigation.goBack();
   };
+
   const showAlert = (title, message) => {
     Alert.alert(title, message);
   };
-  // Handle save button press
-  // Handle save button press
-  // Handle save button press
+
   const handleSave = () => {
-    // Prepare data for POST request
     const postData = {
       serial_no: inputValues.serial_no,
       created_by: 1,
@@ -65,7 +60,6 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
 
     console.log(postData, 'post data');
 
-    // Send POST request
     fetch(Url + '/modalregular', {
       method: 'POST',
       headers: {
@@ -75,9 +69,7 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        // Create a new array with updated values
         const updatedItems = Array.isArray(item) ? [...item, inputValues] : [inputValues];
-        // Set the updated array using setcards function
         setcards(updatedItems);
         showAlert('Success', 'Saved successfully.');
       })
@@ -87,14 +79,10 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
       });
   };
 
-
-  // camera
   const handleImageClick = () => {
-    setAppData({ ...appData, lastScreen: 'ModalRegularChild' })
-    navigation.navigate('CameraPopup',{data:{parentLastScreen:'modalRegularChild'}});
+    setAppData({ ...appData, lastScreen: 'ModalRegularChild' });
+    navigation.navigate('CameraPopup', { data: { parentLastScreen: 'modalRegularChild' } });
   };
-
-  // Fetch options on component mount
   useEffect(() => {
     async function fetchPointOfCollectionOptions() {
       try {
@@ -110,94 +98,118 @@ const ModalRegularChild = ({ visible, item, setcards }) => {
 
   useEffect(() => setInputValues({ ...inputValues, latitude: appData?.latitude, longitude: appData?.longitude, collection_time: appData?.currentTime }), [appData]);
 
-  // Get the screen dimensions
-  const { width, height } = Dimensions.get('window');
-  // Render the modal component
   return (
-    visible ? <><Modal visible={visible} animationType="slide">
-      <View style={styles.imageContainer}>
-        <TouchableOpacity style={styles.captureButtonBg} onPress={() => handleImageClick()}>
-          <MaterialIcons style={styles.captureButton} name="photo-camera" size={32} color="black" />
-        </TouchableOpacity>
-        <Text style={{ color: '#888' }}>Capture Picture</Text>
-      </View>
-      <ScrollView>
-        <View style={styles.modalContainer}>
-          <TextInput
-            style={styles.inputField}
-            value={inputValues.ref_id}
-            onChangeText={(value) => handleInputChange('serial_no', value)}
-            placeholder="Serial No"
-            placeholderTextColor="black"
-            editable={false}
-            defaultValue={item?.ref_id} // Add this line to set the default value dynamically
-          />
-
-          <SelectDropdown
-            data={pointOfCollectionOptions}
-            onSelect={(selectedItem) => handleInputChange('point_of_collection', selectedItem)}
-            defaultButtonText="Select Point of Collection"
-            buttonTextAfterSelection={(selectedItem) =>
-              selectedItem.poc_type}
-            rowTextForSelection={(item, index) => item.poc_type}
-            buttonStyle={styles.dropdownButton}
-            buttonTextStyle={styles.dropdownButtonText}
-            renderDropdownIcon={() => <Text style={styles.dropdownIcon}>▼</Text>}
-            dropdownStyle={styles.dropdown}
-            dropdownTextStyle={styles.dropdownText}
-
-          />
-          <TextInput
-            style={styles.inputField}
-            value={inputValues.collection_time}
-            onChangeText={(value) => handleInputChange('collection_time', value)}
-            placeholder="Collection Time Stamp"
-            placeholderTextColor="black"
-            editable={false}
-
-          />
-          <TextInput
-            style={styles.inputField}
-            value={inputValues?.latitude?.toString()}
-            // onChangeText={(value) => handleInputChange('latitude', value)}
-            placeholder="Latitude"
-            placeholderTextColor="black"
-            editable={false}
-          />
-
-          <TextInput
-            style={styles.inputField}
-            value={inputValues?.longitude?.toString()}
-            //onChangeText={(value) => handleInputChange('longitude', value)}
-            placeholder="Longitude"
-            placeholderTextColor="black"
-            editable={false}
-          />
-
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-              <Text style={styles.buttonLabel}>Save</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
-              <Text style={styles.buttonLabel}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-
+    <Modal visible={visible} animationType="none">
+      <Animated.View style={[styles.modalContainer, { opacity: fadeAnim }]}>
+        <View style={styles.imageContainer}>
+          <TouchableOpacity style={styles.captureButtonBg} onPress={handleImageClick}>
+            <MaterialIcons style={styles.captureButton} name="photo-camera" size={32} color="black" />
+          </TouchableOpacity>
+          <Text style={styles.captureButtonText}>Capture Picture</Text>
         </View>
-      </ScrollView>
-    </Modal></> : <View></View>
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+          <View style={styles.modalContent}>
+            <TextInput
+              style={styles.inputField}
+              value={inputValues.serial_no}
+              onChangeText={(value) => handleInputChange('serial_no', value)}
+              placeholder="Serial No"
+              placeholderTextColor="black"
+              defaultValue={item?.serial_no}
+            />
+
+            <SelectDropdown
+              data={pointOfCollectionOptions}
+              onSelect={(selectedItem) => handleInputChange('point_of_collection', selectedItem)}
+              defaultButtonText="Select Point of Collection"
+              buttonTextAfterSelection={(selectedItem) => selectedItem.poc_type}
+              rowTextForSelection={(item) => item.poc_type}
+              buttonStyle={styles.dropdownButton}
+              buttonTextStyle={styles.dropdownButtonText}
+              renderDropdownIcon={() => <Text style={styles.dropdownIcon}>▼</Text>}
+              dropdownStyle={styles.dropdown}
+              dropdownTextStyle={styles.dropdownText}
+            />
+
+            <TextInput
+              style={styles.inputField}
+              value={inputValues.collection_time}
+              onChangeText={(value) => handleInputChange('collection_time', value)}
+              placeholder="Collection Time Stamp"
+              placeholderTextColor="black"
+            />
+
+            <TextInput
+              style={styles.inputField}
+              value={inputValues.latitude.toString()}
+              onChangeText={(value) => handleInputChange('latitude', value)}
+              placeholder="Latitude"
+              placeholderTextColor="black"
+            />
+
+            <TextInput
+              style={styles.inputField}
+              value={inputValues.longitude.toString()}
+              onChangeText={(value) => handleInputChange('longitude', value)}
+              placeholder="Longitude"
+              placeholderTextColor="black"
+            />
+
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+                <Text style={styles.buttonLabel}>Save</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+                <Text style={styles.buttonLabel}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      </Animated.View>
+    </Modal>
   );
 };
-export default ModalRegularChild;
-
 
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    // marginTop: 50,
+  },
+  imageContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  captureButtonBg: {
+    backgroundColor: 'grey',
+    height: 100,
+    width: 200,
+    marginTop: 30,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  captureButton: {
+    borderRadius: 25,
+    color: 'black',
+    textAlign: 'center',
+    paddingTop: 30,
+  },
+  captureButtonText: {
+    color: '#888',
+    marginTop: 10,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    width: '80%',
+    alignSelf: 'center',
   },
   inputField: {
     color: 'black',
@@ -205,96 +217,64 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderRadius: 5,
     padding: 10,
-    marginVertical: 30,
-    width: '80%',
+    marginBottom: 20,
     fontSize: 18,
-    textAlign: 'center',
-    backgroundColor: '#EEEEEE'
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    marginTop: 20,
-    justifyContent: 'space-evenly',
-    width: '60%',
-  },
-  saveButton: {
-    backgroundColor: 'green',
-    borderRadius: 10,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    flex: 1,
-    marginRight: 10,
-  },
-  cancelButton: {
-    backgroundColor: 'red',
-    borderRadius: 10,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    flex: 1,
-    marginLeft: 10,
-  },
-  buttonLabel: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    backgroundColor: '#EEEEEE',
   },
   dropdownButton: {
     borderWidth: 1,
-    borderColor: 'black',
-    borderRadius: 5,
-    padding: 10,
-    marginVertical: 10,
-    width: 220,
-    height: 50,
-    backgroundColor: 'white',
-    width: '80%',
-  },
-  dropdownButtonText: {
-    fontSize: 16,
-    color: 'black',
-    textAlign: 'center',
-  },
-  dropdownIcon: {
-    color: 'black',
-    fontSize: 18,
-    textAlign: 'center',
-  },
-  dropdown: {
-    marginTop: 2,
-    borderWidth: 1,
-    borderColor: 'black',
-    borderRadius: 5,
-    width: 220,
-    backgroundColor: 'white',
-    textAlign: 'center',
-  },
-  dropdownText: {
-    // fontSize: 16,
-    color: 'black',
-    textAlign: 'center',
-    paddingVertical: 8,
-  },
-  // camera
-  captureButtonBg: {
-    backgroundColor: 'grey',
-    height: 100,
-    width: 200,
-    marginTop: 30,
-    borderRadius: 20,
-  },
-  captureButton: {
-    // backgroundColor: 'grey',
-    borderRadius: 25,
-    color: 'black',
-    textAlign: "center",
-    paddingTop: 30,
-    borderRadius: 10,
-  },
-  imageContainer: {
-    alignItems: 'center',
-    marginBottom: 8,
-  },
+borderColor: 'black',
+borderRadius: 5,
+padding: 10,
+marginBottom: 20,
+backgroundColor: 'white',
+},
+dropdownButtonText: {
+fontSize: 16,
+color: 'black',
+textAlign: 'center',
+},
+dropdownIcon: {
+color: 'black',
+fontSize: 18,
+textAlign: 'center',
+},
+dropdown: {
+borderWidth: 1,
+borderColor: 'black',
+borderRadius: 5,
+backgroundColor: 'white',
+textAlign: 'center',
+},
+dropdownText: {
+color: 'black',
+textAlign: 'center',
+paddingVertical: 8,
+},
+buttonContainer: {
+flexDirection: 'row',
+justifyContent: 'space-between',
+marginTop: 20,
+},
+saveButton: {
+backgroundColor: 'green',
+borderRadius: 10,
+paddingHorizontal: 20,
+paddingVertical: 10,
+width: '48%',
+},
+cancelButton: {
+backgroundColor: 'red',
+borderRadius: 10,
+paddingHorizontal: 20,
+paddingVertical: 10,
+width: '48%',
+},
+buttonLabel: {
+color: 'white',
+fontWeight: 'bold',
+textAlign: 'center',
+},
 });
 
-
-
+export default ModalRegularChild;

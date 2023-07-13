@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Alert,
   Dimensions,
+  ActivityIndicator
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -17,6 +18,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DataContext } from '../../../context/DataContext';
 import { Url } from '../../../../Global_Variable/api_link';
+// import { ImageSliderBox } from 'react-native-image-slider-box';
+
 
 const ReviewData = ({ route, navigation }) => {
   const windowWidth = Dimensions.get('window').width;
@@ -26,6 +29,7 @@ const ReviewData = ({ route, navigation }) => {
   const [dropdownContainer, setDropdownContainer] = useState([]);
   const [dropdownColor, setDropdownColor] = useState([]);
   const [dropdownTurbitidy, setDropdownTurbidity] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [selectedSampleType, setSelectedSampleType] = useState('');
   const [selectedContainerType, setSelectedContainerType] = useState('');
@@ -77,11 +81,12 @@ const ReviewData = ({ route, navigation }) => {
       setCapturedImages: setCapturedImages, // Set the capturedImages state from ReviewData component
     }));
     navigation.navigate('CameraPopup', { data: route?.params?.data });
-    
+
   };
 
   const handleSave = async () => {
-    console.log("datta",route.params);
+    console.log("datta", route.params);
+    setIsLoading(true); // Show the loader
     if (data && data?.sample_id) {
       const formData = new FormData();
       // Add form fields
@@ -131,6 +136,7 @@ const ReviewData = ({ route, navigation }) => {
         console.log('Error updating data:', error);
         Alert.alert('Error', 'Failed to update data');
       }
+      setIsLoading(false); // Hide the loader
     } else {
       console.log('Sample ID not available.');
     }
@@ -226,7 +232,7 @@ const ReviewData = ({ route, navigation }) => {
       setCapturedImages: () => { } // Initial empty function
     });
     setData(initialData);
-   route?.params?.parentLastScreen?navigation.navigate(route?.params?.parentLastScreen) :navigation.goBack();
+    route?.params?.parentLastScreen ? navigation.navigate(route?.params?.parentLastScreen) : navigation.goBack();
   };
   // console.log("captureeed", appData.capturedImages );
   useEffect(() => {
@@ -245,25 +251,26 @@ const ReviewData = ({ route, navigation }) => {
             style={styles.captureButtonBg}
             onPress={() => handleImageClick()}
           >
-            <MaterialIcons
-              style={styles.captureButton}
-              name="photo-camera"
-              size={32}
-              color="black"
-            />
+            {appData.capturedImages.length === 0 ? (
+              <MaterialIcons
+                style={styles.captureButton}
+                name="photo-camera"
+                size={32}
+                color="black"
+              />
+            ) : (
+              appData.capturedImages.map((image, index) => (
+                <Image
+                  key={index}
+                  source={{ uri: image.uri }}
+                  style={styles.captureButtonBg}
+                />
+              ))
+            )}
           </TouchableOpacity>
           <Text style={{ color: '#999999' }}>Capture Image</Text>
         </View>
-        <View style={styles.capturedImagesContainer}>
-          {appData.capturedImages.map((image, index) => (
-            <View style={styles.card} key={index}>
-              <Image
-                source={{ uri: image.uri }}
-                style={styles.capturedImage}
-              />
-            </View>
-          ))}
-        </View>
+
 
 
         <View style={styles.inputContainer}>
@@ -474,33 +481,29 @@ const ReviewData = ({ route, navigation }) => {
           </View>
         </View>
 
+        {isLoading ? (
+        <ActivityIndicator size="large" color="green" style={styles.loader}/>
+      ) : (
         <View style={styles.buttonRow}>
-          <Button
-            title="Draft"
-            onPress={() => console.log('Drafts')}
-            color="black"
-          />
+          <Button title="Draft" onPress={() => console.log('Drafts')} color="black" />
           <Button title="Submit" onPress={() => handleSave()} color="green" />
-          <Button
-            title="Cancel"
-            onPress={() => onHandleCancel()}
-            color="red"
-          />
+          <Button title="Cancel" onPress={() => onHandleCancel()} color="red" />
         </View>
+      )}
       </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
- 
+
   container: {
     flex: 1,
     alignItems: 'center',
     backgroundColor: '#fff',
     paddingHorizontal: 16,
     paddingVertical: 24,
-    height:'auto',
+    height: 'auto',
   },
   imageContainer: {
     marginBottom: 10,
@@ -545,7 +548,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 10,
     color: 'black',
-    borderRadius:8,
+    borderRadius: 8,
   },
   buttonRow: {
     marginTop: 10,
@@ -564,7 +567,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     backgroundColor: '#fff',
     color: 'black',
-    width:'auto',
+    width: 'auto',
   },
   dropdownButtonText: {
     fontSize: 16,
@@ -586,7 +589,7 @@ const styles = StyleSheet.create({
   dropdownRow: {
     padding: 10,
     backgroundColor: '#fff',
-    color:'black',
+    color: 'black',
   },
   // dropdownRowText: {
   //   fontSize: 16,

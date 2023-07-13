@@ -1,65 +1,80 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, TextInput, Button, ScrollView, StyleSheet, Alert, Modal, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { Url } from '../../../../../Global_Variable/api_link';
 import SelectDropdown from 'react-native-select-dropdown';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
+import { DataContext } from '../../../../context/DataContext';
 
 const SpotSamplingScreen = () => {
-  const [serial_no, setSerial_No] = useState('');
-  const [point_of_collection, setPointOfCollection] = useState(null);
-  const [collection_time, setCollectionTime] = useState('');
-  const [latitude, setLatitude] = useState('');
-  const [longitude, setLongitude] = useState('');
+  const { appData, setAppData } = useContext(DataContext);
+  const initialState = {
+    serial_no: '',
+    point_of_collection: null,
+    collection_time: appData.currentTime,
+    latitude: appData.latitude,
+    longitude: appData.longitude,
+  };
+  const [pointOfCollectionOptions, setPointOfCollectionOptions] = useState([]);
+  const [inputValues, setInputValues] = useState(initialState);
+
+  const handleInputChange = (title, value) => {
+    setInputValues((prev) => ({
+      ...prev,
+      [title]: value,
+    }));
+  };
+
   const [dropdownData, setDropdownData] = useState([]);
   const navigation = useNavigation();
 
-  const fetchPointOfCollectionOptions = async () => {
-    try {
-      const response = await axios.get(Url + '/spotpointofcollection');
-      setDropdownData(response.data);
-    } catch (error) {
-      console.error('Error fetching point of collection options', error);
-    }
-  };
-
   useEffect(() => {
+    async function fetchPointOfCollectionOptions() {
+      try {
+        const response = await fetch(Url + '/pointofcollectionoptions');
+        const data = await response.json();
+        setPointOfCollectionOptions(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
     fetchPointOfCollectionOptions();
   }, []);
 
+  useEffect(() => setInputValues({ ...inputValues, latitude: appData?.latitude, longitude: appData?.longitude, collection_time: appData?.currentTime }), [appData]);
+
   const handleSave = () => {
-    const data = {
-      poc_val: point_of_collection ? point_of_collection.poc_id : null,
-      collection_time_val: collection_time,
-      latitude_val: latitude,
-      longitude_val: longitude,
-      serial_no: serial_no,
+    const postData = {
+      serial_no: inputValues.serial_no,
       created_by: 1,
+      poc_val: inputValues.point_of_collection ? inputValues.point_of_collection.poc_id : null,
+      collection_time_val: inputValues.collection_time,
+      latitude_val: inputValues.latitude,
+      longitude_val: inputValues.longitude,
     };
 
-    console.log(data, 'post data');
+    console.log(postData, 'post data');
 
-    axios
-      .post(Url + '/spotpostpoc', data)
-      .then(response => {
-        console.log('POST request successful', response.data);
-        showAlert('Success', 'Saved successfully.');
+    fetch(Url + '/modalregular', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(postData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Handle the response data here
       })
-      .catch(error => {
-        console.error('Error making POST request' + error);
+      .catch((error) => {
+        console.error(error);
         showAlert('Error', 'An error occurred while saving the data.');
       });
   };
 
-
   const handleCancel = () => {
-    setSerial_No(1525);
-    setPointOfCollection();
-    setCollectionTime('');
-    setLatitude('');
-    setLongitude('');
-
+    setInputValues(initialState);
     navigation.goBack();
   };
 
@@ -67,85 +82,81 @@ const SpotSamplingScreen = () => {
     Alert.alert(title, message);
   };
 
-  const incrementSerialNo = () => {
-    setSerial_No(prevCounter => prevCounter + 1);
+  const handleImageClick = () => {
+    setAppData({ ...appData, lastScreen: 'ModalRegularChild' });
+    navigation.navigate('CameraPopup', { data: { parentLastScreen: 'modalRegularChild' } });
   };
 
   return (
-     
-<ScrollView >
-<View style={styles.imageContainer}>
-
+    <ScrollView>
+      <View style={styles.imageContainer}>
         <TouchableOpacity style={styles.captureButtonBg} onPress={() => handleImageClick()}>
           <MaterialIcons style={styles.captureButton} name="photo-camera" size={32} color="black" />
         </TouchableOpacity>
         <Text style={{ color: '#888' }}>Capture Picture</Text>
       </View>
-    
-        <View style={styles.container}>
-          <Text style={styles.label}>Serial No</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Serial No"
-            placeholderTextColor="#CCCCCC"
-            value={serial_no.toString()}
-            onChangeText={() => { }}
-            // editable={false}
-          />
 
-          <Text style={styles.label}>Point Of Collection</Text>
-          <View style={styles.picker}>
-            <SelectDropdown
-              data={dropdownData.map(item => item.poc_type)}
+      <View style={styles.container}>
+        <Text style={styles.label}>Serial No</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Serial No"
+          placeholderTextColor="#CCCCCC"
+          value={inputValues.serial_no}
+          onChangeText={(value) => handleInputChange('serial_no', value)}
+        />
+
+        <Text style={styles.label}>Point Of Collection</Text>
+        <View style={styles.picker}>
+        <SelectDropdown
+              data={pointOfCollectionOptions}
+              onSelect={(selectedItem) => handleInputChange('point_of_collection', selectedItem)}
               defaultButtonText="Select Point of Collection"
-              onSelect={(selectedItem, index) => setPointOfCollection(dropdownData[index])}
-              buttonTextAfterSelection={(selectedItem, index) => selectedItem}
-              rowTextForSelection={(item, index) => item}
+              buttonTextAfterSelection={(selectedItem) => selectedItem.poc_type}
+              rowTextForSelection={(item) => item.poc_type}
               buttonStyle={styles.dropdownButton}
               buttonTextStyle={styles.dropdownButtonText}
+              renderDropdownIcon={() => <Text style={styles.dropdownIcon}>▼</Text>}
               dropdownStyle={styles.dropdown}
-              rowStyle={styles.dropdownRow}
-              rowTextStyle={styles.dropdownRowText}
+              dropdownTextStyle={styles.dropdownText}
             />
-          </View>
 
-
-          <Text style={styles.label}>Collection Time Stamp</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Collection Time Stamp"
-            placeholderTextColor="#CCCCCC"
-            value={collection_time}
-            onChangeText={text => setCollectionTime(text)}
-          />
-
-          <Text style={styles.label}>Latitude</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Latitude"
-            placeholderTextColor="#CCCCCC"
-            value={latitude}
-            onChangeText={text => setLatitude(text)}
-          />
-
-          <Text style={styles.label}>Longitude</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Longitude"
-            placeholderTextColor="#CCCCCC"
-            value={longitude}
-            onChangeText={text => setLongitude(text)}
-          />
-
-          <View style={styles.buttonContainer}>
-            <Button title="Save" onPress={handleSave} />
-            <View style={styles.buttonSpacer} />
-            <Button title="Cancel" onPress={handleCancel} />
-          </View>
         </View>
-        </ScrollView>
-  
 
+        <Text style={styles.label}>Collection Time Stamp</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Collection Time Stamp"
+          placeholderTextColor="#CCCCCC"
+          value={inputValues.collection_time}
+          onChangeText={(text) => handleInputChange('collection_time', text)}
+        />
+
+        <Text style={styles.label}>Latitude</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Latitude"
+          placeholderTextColor="#CCCCCC"
+          value={inputValues.latitude.toString()}
+          onChangeText={(text) => handleInputChange('latitude', text)}
+        />
+
+        <Text style={styles.label}>Longitude</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Longitude"
+          placeholderTextColor="#CCCCCC"
+          value={inputValues.longitude.toString()}
+          onChangeText={(text) => handleInputChange('longitude', text)}
+        />
+
+        <View style={styles.buttonContainer}>
+          <Button title="Save" onPress={handleSave} />
+          <View style={styles.buttonSpacer} />
+          <Button title="Cancel" onPress={handleCancel} />
+        </View>
+      </View>
+    </ScrollView>
   );
 };
 

@@ -94,7 +94,7 @@ const RegularScreenChild = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>11000 - Sivajothi Blue Metal</Text>
-        <TouchableOpacity onPress={()=>openModalRegular()} style={styles.addButton}>
+        <TouchableOpacity onPress={() => openModalRegular()} style={styles.addButton}>
           <MaterialIcons name="add" size={20} style={styles.addButtonIcon} />
           <Text style={styles.addButtonLabel}>Add</Text>
         </TouchableOpacity>
@@ -140,7 +140,7 @@ const RegularScreenChild = ({ navigation }) => {
                   <Text style={styles.CardDetailRight}>{item.serial_no}</Text>
                 </Text>
 
-               {modalVisible&& <ModalRegularChild visible={modalVisible} item={item} setcards={setData} onClose={closeModal} />}
+                {modalVisible && <ModalRegularChild visible={modalVisible} item={item} setcards={setData} onClose={closeModal} />}
 
                 <Text style={styles.CardDetail}>point Of Collection :
                   {item.poc_typ}

@@ -132,8 +132,8 @@ const ActionableScreenChild = ({ navigation }) => {
           data={filteredData}
           keyExtractor={(item) => item.serialNo}
           ListEmptyComponent={renderNoRecords}
-          renderItem={({ item,index }) => (
-            <View key={'Item'+index} style={styles.RegularCard}>
+          renderItem={({ item }) => (
+            <View style={styles.RegularCard}>
               <TouchableOpacity onPress={() => navigateToReviewData(item)}>
                 <Text style={styles.CardSerialNo}>
                   {item.serialNo}

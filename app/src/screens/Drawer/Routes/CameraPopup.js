@@ -67,7 +67,7 @@ const CameraPopup = ({ route, navigation, isVisible }) => {
       const timestamp = new Date().toLocaleString();
       const imagesTaken = { uri: imageUri, timestamp };
       // Add the captured image to the array
-      setCapturedImages(prevImages => [...prevImages, { uri: imageUri, timestamp }]);
+      setCapturedImages(prevImages => [...prevImages, imagesTaken]);
       console.log("URLL:", imageUri);
       if (capturedImages.length < 3) {
         // Continue capturing images until we have three
@@ -83,7 +83,7 @@ const CameraPopup = ({ route, navigation, isVisible }) => {
       }));
     }
   };
-
+  
   const openCamera = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -95,8 +95,15 @@ const CameraPopup = ({ route, navigation, isVisible }) => {
           mediaType: 'photo',
           cameraType: 'back', // Set cameraType to 'back' for rear-facing camera
         };
-
-        launchCamera(options, handleCameraCapture);
+  
+        let count = 0;
+        while (count < 3) {
+          launchCamera(options, handleCameraCapture);
+          count++;
+        }
+        if (count === 3) {
+          console.log('You have reached the maximum number of images');
+        }
       } else if (granted === PermissionsAndroid.RESULTS.DENIED) {
         console.log('Camera permission denied');
       } else if (granted === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
@@ -113,8 +120,9 @@ const CameraPopup = ({ route, navigation, isVisible }) => {
   };
 
   const handleReviewData = () => {
-    navigation.navigate(appData.lastScreen, { data: route?.params?.data });
+    // navigation.navigate(appData.lastScreen, { data: route?.params?.data });
     // navigation.navigate(appData.modalRegular, { data: route?.params?.data });
+    navigation.goBack();
   };
   const handleClose = () => {
     navigation.goBack();
@@ -149,7 +157,10 @@ const CameraPopup = ({ route, navigation, isVisible }) => {
               Capture
             </Button>
 
+            {/* <Button title="Back" onPress={() => handleReviewData()} /> */}
             <Button title="Back" onPress={() => handleReviewData()} />
+
+         
 
             {appData && (
               <View style={styles.locationContainer}>
